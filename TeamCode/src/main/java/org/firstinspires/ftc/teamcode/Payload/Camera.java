@@ -1,16 +1,8 @@
 package org.firstinspires.ftc.teamcode.Payload;
 
-import androidx.annotation.NonNull;
-
-import com.acmerobotics.dashboard.canvas.Canvas;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
-import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -21,12 +13,10 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase;
 import org.firstinspires.ftc.vision.apriltag.AprilTagPoseFtc;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class Camera {
-    private AprilTagProcessor aprilTag;
-    private VisionPortal visionPortal;
+public final class Camera {
+    private final AprilTagProcessor aprilTag;
 
     public Camera(HardwareMap hardwareMap) {
         aprilTag = new AprilTagProcessor.Builder()
@@ -42,7 +32,7 @@ public class Camera {
         aprilTag.setDecimation(3);
 
         // Create the vision portal by using a builder.
-        visionPortal = new VisionPortal.Builder()
+        new VisionPortal.Builder()
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
                 .enableLiveView(true)
                 .setStreamFormat(VisionPortal.StreamFormat.YUY2)
@@ -99,6 +89,7 @@ public class Camera {
 
             AprilTagPoseFtc ftcPose = tag.ftcPose;
 
+            @SuppressWarnings("all")
             Vector2d tagVec = new Vector2d(ftcPose.y, ftcPose.x);
 
             Vector2d errorVec = tagVec.minus(translateOffset);

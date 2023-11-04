@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class PixelArm {
+public final class PixelArm {
     private final Lift lift;
     private final Gripper gripperA;
     private final Gripper gripperB;
@@ -50,10 +50,6 @@ public class PixelArm {
         boolean isBusy(){
             return motor.isBusy();
         }
-
-        void rest(){
-            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        }
     }
 
     public static class Gripper{
@@ -84,12 +80,16 @@ public class PixelArm {
 
         public final Side side;
 
+        private boolean closed = false;
+
         void open(){
             servo.setPosition(OPEN_POSITION);
+            closed = false;
         }
 
         void close(){
             servo.setPosition(0.5);
+            closed = true;
         }
     }
 
@@ -108,10 +108,16 @@ public class PixelArm {
     }
 
     public Action grab(){
+        if(!gripperA.closed)gripperA.close();
+        if(!gripperB.closed)gripperB.close();
+
         return telemetryPacket -> false;
     }
 
     public Action placeOnBoard(){
+        gripperA.open();
+        gripperB.open();
+
         return telemetryPacket -> false;
     }
 }
