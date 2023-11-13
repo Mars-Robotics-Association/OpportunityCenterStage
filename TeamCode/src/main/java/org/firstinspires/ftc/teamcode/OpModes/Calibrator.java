@@ -98,10 +98,6 @@ public class Calibrator extends OpMode {
             assert category.servo != null;
             telemetry.addData("Position", category.servo.getPosition());
         }
-<<<<<<< HEAD
-=======
-
->>>>>>> c9e6ab2e48b54c32344cb97fa5adb3a180b6d07b
     }
 
     @SuppressLint("DefaultLocale")
@@ -134,13 +130,7 @@ public class Calibrator extends OpMode {
             if (shouldLock == 0x01)
                 liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-<<<<<<< HEAD
-            // stupid git
-
             double power = gamepad1.left_stick_y;
-=======
-            double power = gamepad1.right_stick_y;
->>>>>>> c9e6ab2e48b54c32344cb97fa5adb3a180b6d07b
             if (Math.abs(power) > .1) {
                 liftMotor.setPower(power * .5);
             } else liftMotor.setPower(0);
@@ -150,17 +140,15 @@ public class Calibrator extends OpMode {
             double deltaTime = getRuntime() - lastRuntime;
             lastRuntime = getRuntime();
 
-<<<<<<< HEAD
             if (Math.abs(gamepad1.left_stick_y) > .1) {
                 double change = deltaTime * gamepad1.left_stick_y * .01;
 
                 category.servo.setPosition(lastPosition + change);
             }
-=======
+
             double change = deltaTime * gamepad1.left_stick_y * .01;
 
             category.servo.setPosition(lastPosition + change);
->>>>>>> c9e6ab2e48b54c32344cb97fa5adb3a180b6d07b
         }
     }
 
