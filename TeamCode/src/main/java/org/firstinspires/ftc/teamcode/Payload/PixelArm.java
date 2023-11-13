@@ -8,11 +8,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public final class PixelArm {
-    private final Lift lift;
-    private final Gripper gripperA;
-    private final Gripper gripperB;
+    public final Lift lift;
+    public final Gripper gripperA;
+    public final Gripper gripperB;
 
-    private static class Lift{
+    public static class Lift{
         Lift(HardwareMap hardwareMap){
             motor = hardwareMap.dcMotor.get("lift_motor");
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -43,12 +43,30 @@ public final class PixelArm {
          */
         void gotoHeightInches(double inches) throws OutOfRange{
             if(inches < 0 || MAX_SAFE_INCHES < inches)throw new OutOfRange(inches);
+            if(motor.getMode() != DcMotor.RunMode.RUN_TO_POSITION)
+                motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             motor.setTargetPosition((int) (inches * TICKS_PER_INCH));
         }
 
+        /**
+         * This function will enter an implicit "Override Mode." To exit, call gotoHeightInches or freeze
+         * @param power equivalent to {@link DcMotor#setPower(double power)}
+         */
+        public void override(double power){
+            if(motor.getCurrentPosition() * TICKS_PER_INCH > MAX_SAFE_INCHES - 2.0){
+                gotoHeightInches(MAX_SAFE_INCHES - 4.0);
+                return;
+            }
+            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            motor.setPower(power);
+        }
+
         boolean isBusy(){
-            return motor.isBusy();
+            boolean busy = motor.isBusy();
+            if(busy)motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            return busy;
         }
     }
 
@@ -57,17 +75,20 @@ public final class PixelArm {
         private static final double OPEN_POSITION = 0.6;
 
         public enum Side{
-            A(false, "left_gripper", -2.5),
-            B(false, "right_gripper", 2.5);
+            A(false, "left_gripper", .5, .5),
+            B(false, "right_gripper", .5, .5);
 
             public final Servo.Direction direction;
             public final String name;
-            public final double offset;
 
-            Side(boolean inverted, String name, double offset) {
+            public final double closePos;
+            public final double openPos;
+
+            Side(boolean inverted, String name, double closePos, double openPos) {
                 this.direction = inverted ? Servo.Direction.REVERSE : Servo.Direction.FORWARD;
                 this.name = name;
-                this.offset = offset;
+                this.closePos = closePos;
+                this.openPos = openPos;
             }
         }
 
@@ -100,11 +121,9 @@ public final class PixelArm {
     }
 
     public Action moveLift(double inches){
-        return telemetryPacket -> {
-            lift.gotoHeightInches(inches);
+        lift.gotoHeightInches(inches);
 
-            return !lift.isBusy();
-        };
+        return telemetryPacket -> !lift.isBusy();
     }
 
     public Action grab(){

@@ -1,47 +1,32 @@
 package org.firstinspires.ftc.teamcode.Payload;
 
 import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.Vector2d;
 
+import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDrive;
+
+@SuppressWarnings("unused")
 public final class HighLevel {
     private final Payload payload;
 
     private final Payload.GameState gameState;
 
-    private final boolean disabled;
-
     HighLevel(Payload payload){
         this.payload = payload;
-        disabled = payload.drive == null;
         gameState = payload.gameState;
     }
 
-    public Action align(Camera.AlignmentController controller){
-        return telemetryPacket -> {
-            if(disabled)return false;
+    private Pose2d computeActualPosition(Pose2d rawPose){
+        Pose2d robotPose = payload.drive.pose;
+        Vector2d position = robotPose.heading.times(rawPose.position);
+        Rotation2d heading = robotPose.heading.times(rawPose.heading);
 
-            PoseVelocity2d errors = controller.obtainErrors();
-            switch (controller.getState()){
-                case ACTIVE:
-                    payload.drive.setDrivePowers(errors);
-                    return true;
-                case LOST_TARGET:
-                case WITHIN_TOLERANCE:
-                default: // << why is this case necessary
-                    payload.drive.setDrivePowers(new PoseVelocity2d
-                            (new Vector2d(0, 0), 0));
-                    return false;
-            }
-        };
+        return new Pose2d(position, heading);
     }
 
-    public Camera.AlignmentController alignWithTag(int tag, PixelArm.Gripper.Side side){
-        return payload.camera.alignmentController(
-                tag, new Vector2d(6, side.offset), 1);
-    }
-
-    public Action alignWithBackboard(){
+    public Pose2d getBackboardTagPose(){
         int id = 0;
 
         switch (gameState.teamColor){
@@ -51,10 +36,28 @@ public final class HighLevel {
 
         switch (gameState.signalState){
             case LEFT: id += 0;break;
-            case MIDDLE: id += 1;break;
             case RIGHT: id += 2;break;
+            case MIDDLE: id += 1;break;
         }
 
-        return align(alignWithTag(id, PixelArm.Gripper.Side.A));
+        Pose2d rawPose = payload.camera.findTagWithID(id);
+
+        assert rawPose != null;
+        return computeActualPosition(rawPose);
+    }
+
+    public Action alignWithBackboard(){
+        // get pose of tag in global-pose
+        Pose2d tagPose = getBackboardTagPose();
+
+        // move back a bit
+        MecanumDrive drive = payload.drive;
+        Pose2d targetPose = new Pose2d(tagPose.position.plus(new Vector2d(-6, 0)), drive.pose.heading);
+
+        // go there as smooth as Rick Astley
+        return payload.drive.actionBuilder(drive.pose)
+                .setTangent(drive.pose.heading)
+                .splineToLinearHeading(targetPose, targetPose.heading)
+                .build();
     }
 }

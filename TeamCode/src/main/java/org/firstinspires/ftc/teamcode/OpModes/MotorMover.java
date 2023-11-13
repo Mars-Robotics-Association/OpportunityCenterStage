@@ -24,22 +24,21 @@ public class MotorMover extends OpMode {
     @SuppressLint("DefaultLocale")
     @Override
     public void loop() {
-        motors.get(selectedMotor).setPower(gamepad1.left_stick_x);
+        int changeMotorTo = selectedMotor;
 
-        int changeIndexTo = selectedMotor;
-
-        if(gamepad1.dpad_up)changeIndexTo--;
-        if(gamepad1.dpad_down)changeIndexTo++;
+        if(gamepad1.dpad_up)changeMotorTo--;
+        if(gamepad1.dpad_down)changeMotorTo++;
 
         if(canSwitchMotor){
-            canSwitchMotor = changeIndexTo == selectedMotor;
+            canSwitchMotor = changeMotorTo == selectedMotor;
 
-            if(changeIndexTo == motors.size()) selectedMotor = 0;
-            else if (changeIndexTo < 0) selectedMotor = motors.size() - 1;
-            else selectedMotor = changeIndexTo;
+            if(changeMotorTo == motors.size()) changeMotorTo = 0; // jump backward
+            if(changeMotorTo == -1) changeMotorTo = motors.size() - 1; // wrap forward
 
+            selectedMotor = changeMotorTo;
         }else canSwitchMotor = true;
 
+        motors.get(selectedMotor).setPower(gamepad1.left_stick_x);
 
         telemetry.addLine("Motor Ports:");
         for (int i = 0; i < motors.size(); i++) {
