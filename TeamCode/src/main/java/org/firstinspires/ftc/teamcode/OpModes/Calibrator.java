@@ -130,6 +130,8 @@ public class Calibrator extends OpMode {
             if (shouldLock == 0x01)
                 liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+            // stupid git
+
             double power = gamepad1.left_stick_y;
             if (Math.abs(power) > .1) {
                 liftMotor.setPower(power * .5);
