@@ -7,7 +7,6 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -15,28 +14,20 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Payload.Payload;
-import org.firstinspires.ftc.teamcode.Payload.PixelArm;
 import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDrive;
 
 import java.util.function.Function;
 
 @SuppressWarnings("unused")
 @Autonomous
-public class ParkBlue extends LinearOpMode{
+public class PurplePixelAndPark extends LinearOpMode{
 
     private MecanumDrive drive;
+    private Payload payload;
 
-    private <A> Action $(A component, Function<A, Action> operation){
-        if(component == null)return telemetryPacket -> false;
-        return operation.apply(component);
-    }
-    private <A> Action $seq(A component, Function<A, Action[]> operation){
-        if(component == null)return telemetryPacket -> false;
-        return new SequentialAction(operation.apply(component));
-    }
-    private <A> Action $par(A component, Function<A, Action[]> operation){
-        if(component == null)return telemetryPacket -> false;
-        return new ParallelAction(operation.apply(component));
+    private Action $(Function<Payload, Action> operation){
+        if(payload == null)return telemetryPacket -> false;
+        return operation.apply(payload);
     }
 
     private TrajectoryActionBuilder path(){return drive.actionBuilder(drive.pose);}
@@ -44,7 +35,7 @@ public class ParkBlue extends LinearOpMode{
     public void runOpMode() {
         Telemetry telemetry = new MultipleTelemetry(super.telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        Payload payload = new Payload(hardwareMap, drive, true);
+        payload = new Payload(hardwareMap, drive, true);
 
         Payload.GameState gameState = payload.gameState;
 
@@ -55,7 +46,7 @@ public class ParkBlue extends LinearOpMode{
 
         drive = new MecanumDrive(hardwareMap,
                 new Pose2d(
-                        gameState.startSlot.posX,
+                        gameState.startSlot.startPosX,
                         60.00 * flipY,
                         startHeading
                         ));
@@ -64,29 +55,29 @@ public class ParkBlue extends LinearOpMode{
         switch (gameState.signalState){
             case LEFT  : pixelAngle = startHeading + toRadians(90);
             break;
-            case MIDDLE: pixelAngle = startHeading;
-            break;
             case RIGHT : pixelAngle = startHeading - toRadians(90);
+            break;
+            case MIDDLE: pixelAngle = startHeading;
         }
 
         Action grabAndPlacePurplePixel = drive.actionBuilder(drive.pose)
                 // drive up to Box of Signals
-                .lineToY(34.00 * flipY)
+                .lineToY(36.00 * flipY)
                 // look at correct pixel
                 .turnTo(pixelAngle)
                 // grab said pixel
-                .stopAndAdd( $(payload.pixelArm, PixelArm::grab) )
+                .stopAndAdd( $(Payload::grabPixel) )
                 // look at backboard
-                .turnTo(0)
+                .turnTo(toRadians(0))
                 // drive to it
                 .lineToX(24.00)
                 // raise lift and align with backboard
-                .stopAndAdd( $par(payload, (c) -> new Action[]{
-                        c.pixelArm.moveLift(4.0),
-                        c.highLevel.alignWithBackboard()
-                }))
+                .stopAndAdd(new ParallelAction(
+                        $(c -> c.raiseLift(6.0)),
+                        $(Payload::alignWithBackboard)
+                ))
                 // place pixel
-                .stopAndAdd( $(payload.pixelArm, PixelArm::placeOnBoard) )
+                .stopAndAdd( $(Payload::placeOnBoard) )
                 .build();
 
         waitForStart();

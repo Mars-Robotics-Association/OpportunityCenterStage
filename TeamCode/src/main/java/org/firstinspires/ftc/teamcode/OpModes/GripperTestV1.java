@@ -2,14 +2,10 @@ package org.firstinspires.ftc.teamcode.OpModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.Range;
 
 
 @TeleOp(name="GripperTestV1", group="Robot")
-
-
 public class GripperTestV1 extends OpMode {
 
     //Declare OpMode members.
@@ -30,7 +26,7 @@ public class GripperTestV1 extends OpMode {
     private boolean leftGripperPos = false; //closed
     private boolean rightGripperPos = false; //closed
 
-    /*
+    /**
      * Code to run ONCE when the driver hits INIT
      */
     @Override
@@ -46,21 +42,21 @@ public class GripperTestV1 extends OpMode {
 
     }
 
-    /*
+    /**
      * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
      */
     @Override
     public void init_loop() {
     }
 
-    /*
+    /**
      * Code to run ONCE when the driver hits PLAY
      */
     @Override
     public void start() {
     }
 
-    /*
+    /**
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
     @Override
@@ -88,13 +84,13 @@ public class GripperTestV1 extends OpMode {
                 leftBumperState = !leftBumperState;
             }
 
-            // Use gamepad buttons to move the arm up (Y) and down (A)
-          //  if (gamepad1.y)
-         //       liftMotor.setPower(ARM_UP_POWER);
+        // Use gamepad buttons to move the arm up (Y) and down (A)
+        //  if (gamepad1.y)
+        //       liftMotor.setPower(ARM_UP_POWER);
         //    else if (gamepad1.a)
         //       liftMotor.setPower(ARM_DOWN_POWER);
         //    else
-         //       liftMotor.setPower(0.0);*/
+        //       liftMotor.setPower(0.0);
 
         // Send telemetry message to signify robot running;
         telemetry.addData("leftGripperOpen",  leftGripperOpen);
@@ -104,7 +100,7 @@ public class GripperTestV1 extends OpMode {
         //updateTelemetry();
     }
 
-    /*
+    /**
      * Code to run ONCE after the driver hits STOP
      */
     @Override
