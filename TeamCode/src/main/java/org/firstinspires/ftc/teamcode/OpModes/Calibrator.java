@@ -145,10 +145,6 @@ public class Calibrator extends OpMode {
 
                 category.servo.setPosition(lastPosition + change);
             }
-
-            double change = deltaTime * gamepad1.left_stick_y * .01;
-
-            category.servo.setPosition(lastPosition + change);
         }
     }
 
