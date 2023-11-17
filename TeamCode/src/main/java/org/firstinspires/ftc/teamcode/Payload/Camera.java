@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Payload;
 
-import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -31,7 +32,7 @@ public final class Camera {
 
         aprilTag.setDecimation(3);
 
-        // Create the vision portal by using a builder.
+        // Create the vision portal using a builder.
         new VisionPortal.Builder()
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
                 .enableLiveView(true)
@@ -40,67 +41,17 @@ public final class Camera {
                 .build();
     }
 
-    private AprilTagDetection findTagWithID(int desiredTag){
+    public Pose2d findTagWithID(int desiredTag){
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
         for (AprilTagDetection detection : currentDetections)
-            if ((detection.metadata != null) && (detection.id == desiredTag))return detection;
+            if ((detection.ftcPose != null) && (detection.id == desiredTag)){
+                AprilTagPoseFtc ftcPose = detection.ftcPose;
 
+                Vector2d position = new Vector2d(ftcPose.y*2 - ftcPose.y, ftcPose.x*2 - ftcPose.x);
+                Rotation2d heading = Rotation2d.exp(Math.toRadians(ftcPose.bearing));
+
+                return new Pose2d(position, heading);
+            }
         return null;
-    }
-
-    public enum AlignmentState{
-        ACTIVE,
-        WITHIN_TOLERANCE,
-        LOST_TARGET
-    }
-
-    public AlignmentController alignmentController(int desiredTag, Vector2d translateOffset, double tolerance){
-        return new AlignmentController(desiredTag, translateOffset, tolerance);
-    }
-
-    public class AlignmentController{
-        private final int desiredTag;
-        private final Vector2d translateOffset;
-        private final double tolerance;
-
-        AlignmentController(int desiredTag, Vector2d translateOffset, double tolerance){
-            this.desiredTag = desiredTag;
-            this.translateOffset = translateOffset;
-            this.tolerance = tolerance;
-        }
-
-        private AlignmentState state = AlignmentState.ACTIVE;
-
-        public AlignmentState getState() {
-            return state;
-        }
-
-        static final double GAIN_X = 0.02;
-        static final double GAIN_Y = 0.02;
-        static final double GAIN_YAW = 0.01;
-
-        public PoseVelocity2d obtainErrors() {
-            AprilTagDetection tag = findTagWithID(desiredTag);
-            // there is nothing we can do  -Napoleon
-            if(tag == null){
-                state = AlignmentState.LOST_TARGET;
-                return null;
-            }
-
-            AprilTagPoseFtc ftcPose = tag.ftcPose;
-
-            @SuppressWarnings("all")
-            Vector2d tagVec = new Vector2d(ftcPose.y, ftcPose.x);
-
-            Vector2d errorVec = tagVec.minus(translateOffset);
-            if(errorVec.dot(errorVec) <= tolerance){
-                state = AlignmentState.WITHIN_TOLERANCE;
-                return null;
-            }
-            Vector2d powerVec = new Vector2d(errorVec.x * GAIN_X, errorVec.y * GAIN_Y);
-
-            state = AlignmentState.ACTIVE;
-            return new PoseVelocity2d(powerVec, -ftcPose.yaw * GAIN_YAW);
-        }
     }
 }
