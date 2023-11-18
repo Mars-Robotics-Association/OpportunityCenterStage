@@ -58,6 +58,8 @@ public class Calibrator extends OpMode {
         }
 
         static void initialize(HardwareMap hardwareMap){
+
+
             for (Category category : Category.values()) {
                 if (category.servoName != null)
                     category.servo = hardwareMap.servo.get(category.servoName);
@@ -141,7 +143,7 @@ public class Calibrator extends OpMode {
             lastRuntime = getRuntime();
 
             if (Math.abs(gamepad1.left_stick_y) > .1) {
-                double change = deltaTime * gamepad1.left_stick_y * .01;
+                double change = deltaTime * gamepad1.left_stick_y * .1;
 
                 category.servo.setPosition(lastPosition + change);
             }

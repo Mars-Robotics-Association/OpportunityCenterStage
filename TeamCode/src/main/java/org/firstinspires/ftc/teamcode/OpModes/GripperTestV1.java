@@ -20,18 +20,18 @@ public class GripperTestV1 extends OpMode {
     private boolean rightBumperState = true;
     private boolean leftBumperState = true;
     private boolean wristServoState = true;
-    public double leftGripperOpen = .5;//position at which left gripper is open
+    public double leftGripperOpen = .3;//position at which left gripper is open
     public double leftGripperClosed = .8; //position at which right gripper is closed
     public double rightGripperOpen = .1;//position at which right gripper is open
-    public double rightGripperClosed = .1;//position at which right gripper is closed
+    public double rightGripperClosed = -.5;//position at which right gripper is closed
 
     public double wristServoUp = .1;//position at which the wrist action is up
     public double wristServoDown = .8;//position at which the wrist action is down
 
     private boolean leftGripperPos = false; //closed
     private boolean rightGripperPos = false; //closed
-<<<<<<< HEAD
-    private boolean wristServoPos = false; //down
+
+    //private boolean wristServoPos = false; //down
     /*
 =======
 
@@ -44,10 +44,10 @@ public class GripperTestV1 extends OpMode {
         // Define and initialize ALL installed servos.
             leftGripperServo  = hardwareMap.get(Servo.class, "leftGripperServo");
             rightGripperServo = hardwareMap.get(Servo.class, "rightGripperServo");
-            wristServo = hardwareMap.get(Servo.class,"wristServo");
-            leftGripperServo.setPosition(MID_SERVO);
-            rightGripperServo.setPosition(MID_SERVO);
-            wristServo.setPosition(wristServoDown);
+           // wristServo = hardwareMap.get(Servo.class,"wristServo");
+            leftGripperServo.setPosition(leftGripperClosed);
+            rightGripperServo.setPosition(rightGripperClosed);
+            //wristServo.setPosition(wristServoDown);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData(">", "Robot Ready.  Press Play.");

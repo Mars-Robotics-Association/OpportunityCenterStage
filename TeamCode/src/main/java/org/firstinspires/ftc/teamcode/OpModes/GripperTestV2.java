@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="GripperTestV2", group="Robot")
 
-
 public class GripperTestV2 extends OpMode {
 
     //Declare OpMode members.
@@ -17,17 +16,17 @@ public class GripperTestV2 extends OpMode {
     public Servo rightGripperServo   = null;
     public Servo    wristServo   = null;
 
-    public static final double MID_SERVO   =  0.4;
-    public static final double GRIPPER_SPEED  = 0.02 ;        // sets rate to move servo
+    //public static final double MID_SERVO   =  0.4;
+    //public static final double GRIPPER_SPEED  = 0.02 ;        // sets rate to move servo
     public static final double ARM_UP_POWER    =  0.50 ;   // Run arm motor up at 50% power
     public static final double ARM_DOWN_POWER  = -0.25 ;   // Run arm motor down at -25% power
     private boolean rightBumperState = true;
     private boolean leftBumperState = true;
     private boolean wristServoState = true;
     public double leftGripperOpen = .3;//position at which left gripper is open
-    public double leftGripperClosed = .5; //position at which left gripper is closed
+    public double leftGripperClosed = 0; //position at which left gripper is closed
     public double rightGripperOpen = -.2;//position at which right gripper is open
-    public double rightGripperClosed = -.5;//position at which right gripper is closed
+    public double rightGripperClosed = 0;//position at which right gripper is closed
 
     public double wristServoUp = .1;//position at which the wrist action is up
     public double wristServoDown = .8;//position at which the wrist action is down
@@ -87,6 +86,7 @@ public class GripperTestV2 extends OpMode {
                 rightGripperServo.setPosition(rightGripperOpen);
             }
             rightBumperState = !rightBumperState;
+            telemetry.addData("Updated rightBumper",rightBumperState);
         }
 
         if (gamepad1.left_bumper) {
@@ -97,6 +97,7 @@ public class GripperTestV2 extends OpMode {
                 leftGripperServo.setPosition(leftGripperOpen);
             }
             leftBumperState = !leftBumperState;
+            telemetry.addData("Updated leftBumper",leftBumperState);
         }
 
         // Use gamepad buttons to move the arm up (Y) and down (A)
