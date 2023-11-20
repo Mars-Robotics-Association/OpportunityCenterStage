@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
-
 @TeleOp(name="GripperTestV1", group="Robot")
+@Config
 public class GripperTestV1 extends OpMode {
 
     //Declare OpMode members.
@@ -13,10 +14,10 @@ public class GripperTestV1 extends OpMode {
     public Servo    rightGripperServo   = null;
    // public Servo    wristServo   = null;
 
-    public static final double MID_SERVO   =  0.1 ;
-    public static final double CLAW_SPEED  = 0.02 ;        // sets rate to move servo
-    public static final double ARM_UP_POWER    =  0.50 ;   // Run arm motor up at 50% power
-    public static final double ARM_DOWN_POWER  = -0.25 ;   // Run arm motor down at -25% power
+    public static double MID_SERVO   =  0.1 ;
+    public static double CLAW_SPEED  = 0.02 ;        // sets rate to move servo
+    public static double ARM_UP_POWER    =  0.50 ;   // Run arm motor up at 50% power
+    public static double ARM_DOWN_POWER  = -0.25 ;   // Run arm motor down at -25% power
     private boolean rightBumperState = true;
     private boolean leftBumperState = true;
     public double leftGripperOpen = .5;//position at which left gripper is open

@@ -6,45 +6,49 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import java.util.ArrayList;
+import java.util.Map.Entry;
 
 @TeleOp
 public class MotorMover extends OpMode {
-    ArrayList<DcMotor> motors = new ArrayList<>();
+    Entry<String, DcMotor>[] motors = null;
 
-    @Override
+    @Override @SuppressWarnings("all")
     public void init() {
-        hardwareMap.dcMotor.iterator()
-                .forEachRemaining(dcMotor -> motors.add(dcMotor));
+        motors = (Entry<String, DcMotor>[]) hardwareMap.dcMotor.entrySet().toArray();
     }
 
     int selectedMotor = 0;
-    boolean canSwitchMotor = true;
+
+    private double lastChangeTimestamp;
 
     @SuppressLint("DefaultLocale")
     @Override
     public void loop() {
-        int changeMotorTo = selectedMotor;
+        changeMotor: if (getRuntime() - lastChangeTimestamp > 0.5) {
+            int selector = (gamepad1.dpad_up ? 0x10 : 0x00) | (gamepad1.dpad_down ? 0x01 : 0x00);
 
-        if(gamepad1.dpad_up)changeMotorTo--;
-        if(gamepad1.dpad_down)changeMotorTo++;
+            switch(selector){
+                case 0x10:
+                    if (selectedMotor == 0)
+                        selectedMotor = motors.length;
+                    selectedMotor--;
+                    break changeMotor;
+                case 0x01:
+                    selectedMotor++;
+                    if (selectedMotor == motors.length)
+                        selectedMotor = 0;
+                    break changeMotor;
+            }
+            lastChangeTimestamp = getRuntime();
+        }
 
-        if(canSwitchMotor){
-            canSwitchMotor = changeMotorTo == selectedMotor;
-
-            if(changeMotorTo == motors.size()) changeMotorTo = 0; // jump backward
-            if(changeMotorTo == -1) changeMotorTo = motors.size() - 1; // wrap forward
-
-            selectedMotor = changeMotorTo;
-        }else canSwitchMotor = true;
-
-        motors.get(selectedMotor).setPower(gamepad1.left_stick_x);
+        motors[selectedMotor].getValue().setPower(gamepad1.left_stick_x);
 
         telemetry.addLine("Motor Ports:");
-        for (int i = 0; i < motors.size(); i++) {
-            DcMotor motor = motors.get(i);
+        for (int i = 0; i < motors.length; i++) {
             String cursor = (i == selectedMotor) ? "-->" : "";
-            telemetry.addLine(String.format("%s %d", cursor, motor.getPortNumber()));
+            DcMotor motor = motors[i].getValue();
+            telemetry.addLine(String.format("%s %s", cursor, motor.getConnectionInfo()));
         }
     }
 }

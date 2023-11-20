@@ -13,24 +13,35 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Payload.Payload;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Iterator;
+
 @TeleOp
 public class Calibrator extends OpMode {
 
     private ColorSensor colorSensor;
     private DcMotor liftMotor;
-    private boolean canSwitchCategory;
+
+    private double lastSelectionTime;
     private double lastRuntime;
 
     @Override
     public void init() {
-        colorSensor = hardwareMap.colorSensor.iterator().next();
-        liftMotor = hardwareMap.dcMotor.get("lift_motor");
-        liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        Iterator<ColorSensor> colorIterator = hardwareMap.colorSensor.iterator();
+        if(colorIterator.hasNext()){
+            colorSensor = colorIterator.next();
+            Category.TEAM_SENSOR.available = true;
+        }
+
+        if(hardwareMap.dcMotor.contains("lift_motor")) {
+            liftMotor = hardwareMap.dcMotor.get("lift_motor");
+            liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            Category.LIFT_MOTOR.available = true;
+        }
 
         Category.initialize(hardwareMap);
 
-        lastRuntime = getRuntime();
+        lastSelectionTime = lastRuntime = getRuntime();
     }
 
     private enum Category{
@@ -45,22 +56,23 @@ public class Calibrator extends OpMode {
         @Nullable public final String servoName;
         @Nullable public Servo servo;
 
-        public Category prev() {
-            if(this == TEAM_SENSOR) return GRIPPER_RIGHT;
+        public boolean available = true;
 
+        public Category prev() {
+            if(this == TEAM_SENSOR)return GRIPPER_RIGHT;
             return ALL[ordinal() - 1];
         }
 
         public Category next() {
-            if(this == GRIPPER_RIGHT) return TEAM_SENSOR;
-
+            if(this == GRIPPER_RIGHT)return TEAM_SENSOR;
             return ALL[ordinal() + 1];
         }
 
         static void initialize(HardwareMap hardwareMap){
             for (Category category : Category.values()) {
-                if (category.servoName != null)
-                    category.servo = hardwareMap.servo.get(category.servoName);
+                if (category.servoName == null)continue;
+                category.available = true;
+                category.servo = hardwareMap.servo.get(category.servoName);
             }
         }
 
@@ -83,17 +95,23 @@ public class Calibrator extends OpMode {
         assert closestColor != null;
 
         Telemetry t = telemetry;
+        if(!category.available){
+            t.addLine("This device is currently unavailable");
+            return;
+        }
+
         if (category == Category.TEAM_SENSOR) {
-            t.addData("Raw Color Values", Payload.GameState.debugRGBReadings);
+            double[] values = Payload.GameState.debugRGBReadings;
+            t.addData("Raw Color Values", String.format("r:%.3f g:%.3f b:%.3f", values[0], values[0], values[0]));
             t.addLine("Processing Results");
-            t.addData("Closest Color", String.format("%s (%a, %a, %a)",
+            t.addData("Closest Color", String.format("%s (r:%.3f, g:%.3f, b:%.3f)",
                     closestColor.name(), closestColor.r1, closestColor.g1, closestColor.b1));
             t.addData("Team Color", state.teamColor.name());
             t.addData("Starting Slot", state.startSlot.name());
         } else if (category == Category.LIFT_MOTOR) {
-            t.addData("Is it safe to nudge the lift?", liftMotor.getZeroPowerBehavior() == DcMotor.ZeroPowerBehavior.FLOAT ? "Yes" : "No");
-            t.addData("Lift Motor Encoder Position", liftMotor.getCurrentPosition());
+            t.addData("Is the lift motor locked?", liftMotor.getZeroPowerBehavior() == DcMotor.ZeroPowerBehavior.BRAKE ? "Yes" : "No");
             t.addLine(String.format("Lift Motor Current Power: %.3f", liftMotor.getPower()));
+            t.addData("Lift Motor Encoder Position", liftMotor.getCurrentPosition());
         } else {
             assert category.servo != null;
             telemetry.addData("Position", category.servo.getPosition());
@@ -101,26 +119,33 @@ public class Calibrator extends OpMode {
     }
 
     @SuppressLint("DefaultLocale")
-    private void gamepadControl(){
-        int selector = 0;
+    private void gamepadControl() {
+        if (getRuntime() - lastSelectionTime < 1.0) {
+            int selector = 0;
+            if (gamepad1.dpad_up) selector--;
+            if (gamepad1.dpad_down) selector++;
 
-        if(gamepad1.dpad_up  )selector--;
-        if(gamepad1.dpad_down)selector++;
-
-        if(canSwitchCategory){
-            canSwitchCategory = false;
-
-            switch (selector){
-                case -1: category = category.prev(); break;
-                case +1: category = category.next(); break;
-                case  0: canSwitchCategory = true;
+            switch (selector) {
+                case -1:
+                    category = category.prev();
+                    lastSelectionTime = getRuntime();
+                    break;
+                case +1:
+                    category = category.next();
+                    lastSelectionTime = getRuntime();
+                    break;
             }
-        }else canSwitchCategory = true;
+        }
 
         // don't let it run on its own
-        if(category != Category.LIFT_MOTOR)liftMotor.setPower(0);
+        if(category != Category.LIFT_MOTOR && Category.LIFT_MOTOR.available){
+            liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            liftMotor.setPower(0);
+        }
 
         Servo servo = category.servo;
+
+        if(!category.available)return;
 
         if(category == Category.LIFT_MOTOR) {
             int shouldLock = (gamepad1.a ? 0x10 : 0x00) | (gamepad1.x ? 0x01 : 0x00);
@@ -141,9 +166,9 @@ public class Calibrator extends OpMode {
             lastRuntime = getRuntime();
 
             if (Math.abs(gamepad1.left_stick_y) > .1) {
-                double change = deltaTime * gamepad1.left_stick_y * .01;
+                double change = deltaTime * gamepad1.left_stick_y * .1;
 
-                category.servo.setPosition(lastPosition + change);
+                servo.setPosition(lastPosition + change);
             }
         }
     }

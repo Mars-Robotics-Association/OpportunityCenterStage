@@ -54,7 +54,7 @@ public final class PixelArm {
          * @param power equivalent to {@link DcMotor#setPower(double power)}
          */
         public void override(double power){
-            if(motor.getCurrentPosition() * TICKS_PER_INCH > MAX_SAFE_INCHES - 2.0){
+            if((double)(motor.getCurrentPosition()) / TICKS_PER_INCH > MAX_SAFE_INCHES - 2.0){
                 gotoHeightInches(MAX_SAFE_INCHES - 4.0);
                 return;
             }
@@ -72,11 +72,9 @@ public final class PixelArm {
 
     public static class Gripper{
 
-        private static final double OPEN_POSITION = 0.6;
-
         public enum Side{
-            A(false, "left_gripper", .5, .5),
-            B(false, "right_gripper", .5, .5);
+            A(false, "left_gripper", .8, .5),
+            B(false, "right_gripper", .48, .34);
 
             public final Servo.Direction direction;
             public final String name;
@@ -103,13 +101,18 @@ public final class PixelArm {
 
         private boolean closed = false;
 
-        void open(){
-            servo.setPosition(OPEN_POSITION);
+        public void toggle(){
+            if(closed)open();
+            else close();
+        }
+
+        public void open(){
+            servo.setPosition(side.openPos);
             closed = false;
         }
 
-        void close(){
-            servo.setPosition(0.5);
+        public void close(){
+            servo.setPosition(side.closePos);
             closed = true;
         }
     }

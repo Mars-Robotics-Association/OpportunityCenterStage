@@ -14,15 +14,19 @@ import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDrive;
 @Config
 public class RefinedTeleOp extends OpMode {
 
+    public static double LIFT_POWER = .5;
+
     private MecanumDrive drive;
     private Payload payload;
 
-    public static double LIFT_POWER = .5;
+    private double lastGripperTimestamp;
 
     @Override
     public void init() {
         drive = new MecanumDrive(hardwareMap, new Pose2d(12, 60, Math.toRadians(270)));
         payload = new Payload(hardwareMap, drive, false);
+
+        lastGripperTimestamp = getRuntime();
     }
 
     @Override
@@ -41,5 +45,16 @@ public class RefinedTeleOp extends OpMode {
         liftPower *= LIFT_POWER;
 
         payload.pixelArm.lift.override(liftPower);
+
+        if(getRuntime() - lastGripperTimestamp > 0.5) {
+            if (gamepad1.left_bumper) {
+                payload.pixelArm.gripperA.toggle();
+                lastGripperTimestamp = getRuntime();
+            }
+            if (gamepad1.right_bumper) {
+                payload.pixelArm.gripperA.toggle();
+                lastGripperTimestamp = getRuntime();
+            }
+        }
     }
 }
