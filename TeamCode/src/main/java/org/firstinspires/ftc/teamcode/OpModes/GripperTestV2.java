@@ -23,17 +23,17 @@ public class GripperTestV2 extends OpMode {
     private boolean rightBumperState = true;
     private boolean leftBumperState = true;
     private boolean wristServoState = true;
-    public double leftGripperOpen = .3;//position at which left gripper is open
-    public double leftGripperClosed = 0; //position at which left gripper is closed
-    public double rightGripperOpen = -.2;//position at which right gripper is open
-    public double rightGripperClosed = 0;//position at which right gripper is closed
+    public double leftGripperOpen = .34;//position at which left gripper is open
+    public double leftGripperClosed = .48; //position at which left gripper is closed
+    public double rightGripperOpen = .2;//position at which right gripper is open
+    public double rightGripperClosed = .06;//position at which right gripper is closed
 
-    public double wristServoUp = .1;//position at which the wrist action is up
-    public double wristServoDown = .8;//position at which the wrist action is down
+    public double wristServoUp = .9;//position at which the wrist action is up
+    public double wristServoDown = .1;//position at which the wrist action is down
 
-    private boolean leftGripperPos = false; //closed
-    private boolean rightGripperPos = false; //closed
-    private boolean wristServoPos = false; //down
+    //private boolean leftGripperPos = false; //closed
+    //private boolean rightGripperPos = false; //closed
+    //private boolean wristServoPos = false; //down
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -77,7 +77,7 @@ public class GripperTestV2 extends OpMode {
     public void loop() {
 
 
-        // Use gamepad left & right Bumpers to open and close the gripper
+        // Use gamepad left & right triggers to open and close the gripper
         if (gamepad1.right_bumper) {
             if (rightBumperState) {
                 rightGripperServo.setPosition(rightGripperClosed);

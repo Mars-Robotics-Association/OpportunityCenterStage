@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-
 @TeleOp(name="OppyCenterStageV1", group="Robot")
 
 public class OppyCenterStageV1 extends OpMode {
@@ -17,32 +16,34 @@ public class OppyCenterStageV1 extends OpMode {
     public DcMotor  rightRear     = null;
     public DcMotor  liftMotor     = null;
     public Servo leftGripperServo    = null;
-    public Servo    rightGripperServo   = null;
-    public Servo    wristServo   = null;
+    public Servo rightGripperServo   = null;
+    public Servo wristServo   = null;
 
+   // double clawOffset = 0;
 
-
-    double clawOffset = 0;
-
-    public static final double MID_SERVO   =  0.5 ;
-    public static final double CLAW_SPEED  = 0.02 ;        // sets rate to move servo
+   // public static final double MID_SERVO   =  0.5 ;
+   // public static final double CLAW_SPEED  = 0.02 ;        // sets rate to move servo
     public static final double ARM_UP_POWER    =  0.50 ;   // Run arm motor up at 50% power
-    public static final double ARM_DOWN_POWER  = -0.25 ;   // Run arm motor down at -25% power
-    private boolean rightBumperState = false;
-    private boolean leftBumperState = false;
-    public double leftGripperOpen = .5;
-    public double leftGripperClosed = .8;
-    public double rightGripperOpen = .5;
-    public double rightGripperClosed = .8;
-    private boolean leftGripperPos = false; //closed
-    private boolean rightGripperPos = false; //closed
+    public static final double ARM_DOWN_POWER  = -0.5 ;   // Run arm motor down at -25% power
+    private boolean rightBumperState = true;
+    private boolean leftBumperState = true;
+    //private boolean wristServoState = true;
+    public double leftGripperOpen = .34;//position at which left gripper is open
+    public double leftGripperClosed = .48; //position at which left gripper is closed
+    public double rightGripperOpen = .2;//position at which right gripper is open
+    public double rightGripperClosed = .06;//position at which right gripper is closed
+
+    public double wristServoUp = .9;//position at which the wrist action is up
+    public double wristServoDown = .1;//position at which the wrist action is down
+
+    public double gripperTimeStamp  = .5;
 
     /*
      * Code to run ONCE when the driver hits INIT
      */
     @Override
     public void init() {
-        // Define and Initialize Motors
+        // ***DEFINE AND INITIALIZE MOTORS ***
         leftFront  = hardwareMap.get(DcMotor.class, "FL");
         rightFront = hardwareMap.get(DcMotor.class, "FR");
         leftRear  = hardwareMap.get(DcMotor.class, "BL");
@@ -61,14 +62,24 @@ public class OppyCenterStageV1 extends OpMode {
         // leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        // Define and initialize ALL installed servos.
-            /*leftGripperServo  = hardwareMap.get(Servo.class, "leftGripperServo");
-            rightGripperServo = hardwareMap.get(Servo.class, "rightGripperServo");
-            leftGripperServo.setPosition(MID_SERVO);
-            rightGripperServo.setPosition(MID_SERVO);*/
+        //***DEFINE AND INITIALIZE SERVOS **************************
+        leftGripperServo  = hardwareMap.get(Servo.class, "leftGripperServo");
+        rightGripperServo = hardwareMap.get(Servo.class, "rightGripperServo");
+        wristServo = hardwareMap.get(Servo.class,"wristServo");
+
+        leftGripperServo.setPosition(leftGripperClosed);
+        rightGripperServo.setPosition(rightGripperClosed);
+        wristServo.setPosition(wristServoDown);
 
         // Send telemetry message to signify robot waiting;
-        telemetry.addData(">", "Robot Ready.  Press Play.");    //
+
+        //send telemetry message to show initial gripper position
+        telemetry.addData("initial left Gripper Position",  leftGripperServo.getPosition());
+        telemetry.addData("initial Right Gripper Position",  rightGripperServo.getPosition());
+        telemetry.addData("initial Wrist Servo Position", wristServo.getPosition());
+
+        // Send telemetry message to signify robot waiting;
+        telemetry.addData(">", "Robot Ready.  Press Play.");
     }
 
     /*
@@ -90,6 +101,8 @@ public class OppyCenterStageV1 extends OpMode {
      */
     @Override
     public void loop() {
+
+        //*** DRIVE OPERATION ***************************
         double y = -gamepad1.left_stick_y; // Remember, this is reversed!
         double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
         double rx = gamepad1.right_stick_x;
@@ -107,7 +120,37 @@ public class OppyCenterStageV1 extends OpMode {
         rightFront.setPower(frontRightPower);
         rightRear.setPower(backRightPower);
 
+        //***GRIPPER OPERATION ***********************************
+        // Use gamepad left & right bumpers to open and close the gripper
+        if (getRuntime() - gripperTimeStamp > .5) //slow loop cycle so bumper responds correctly
+        {
+        if (gamepad1.right_bumper) {
+            if (rightBumperState) {
+                rightGripperServo.setPosition(rightGripperClosed);
+            } else {
+                rightGripperServo.setPosition(rightGripperOpen);
+            }
+            rightBumperState = !rightBumperState;
+            gripperTimeStamp = getRuntime();//update the gripperTimeStamp
 
+            telemetry.addData("Updated rightBumper", rightBumperState);
+        }
+        }
+        if (getRuntime() - gripperTimeStamp > .5)//slow loop cycle so bumper responds correctly
+        {
+        if (gamepad1.left_bumper) {
+            if (leftBumperState) {
+                leftGripperServo.setPosition(leftGripperClosed);
+            }
+            else {
+                leftGripperServo.setPosition(leftGripperOpen);
+            }
+            leftBumperState = !leftBumperState;
+            telemetry.addData("Updated leftBumper",leftBumperState);
+        }
+        }
+
+//Keeping this in case we want to have continuous motion instead of a set position
         // Use gamepad left & right Bumpers to open and close the claw
             /*if (gamepad1.right_bumper) {
                 if (rightBumperState) {
@@ -134,14 +177,26 @@ public class OppyCenterStageV1 extends OpMode {
             clawOffset = Range.clip(clawOffset, -0.5, 0.5);
             leftGripperServo.setPosition(MID_SERVO + clawOffset);
             rightGripperServo.setPosition(MID_SERVO - clawOffset);
+             */
 
+        //**WRIST OPERATION *****************
+
+        // Use gamepad buttons to move the arm up (Y) and down (A)
+        if (gamepad1.x)
+            wristServo.setPosition(wristServoUp);
+        else if (gamepad1.a)
+            wristServo.setPosition(wristServoDown);
+        else
+            wristServo.setPosition(0);
+
+//******lIFT OPERATION *******************************
             // Use gamepad buttons to move the arm up (Y) and down (A)
             if (gamepad1.y)
                 liftMotor.setPower(ARM_UP_POWER);
-            else if (gamepad1.a)
+            else if (gamepad1.b)
                 liftMotor.setPower(ARM_DOWN_POWER);
             else
-                liftMotor.setPower(0.0);*/
+                liftMotor.setPower(0.0);
 
         // Send telemetry message to signify robot running;
         //telemetry.addData("gripper",  "Offset = %.2f", clawOffset);
