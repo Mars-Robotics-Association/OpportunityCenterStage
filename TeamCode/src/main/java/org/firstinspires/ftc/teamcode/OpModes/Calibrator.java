@@ -69,6 +69,8 @@ public class Calibrator extends OpMode {
         }
 
         static void initialize(HardwareMap hardwareMap){
+
+
             for (Category category : Category.values()) {
                 if (category.servoName == null)continue;
                 category.available = true;
