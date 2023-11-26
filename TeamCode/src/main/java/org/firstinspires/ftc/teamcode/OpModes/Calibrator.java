@@ -20,7 +20,6 @@ public class Calibrator extends OpMode {
 
     private ColorSensor colorSensor;
     private DcMotor liftMotor;
-
     private double lastSelectionTime;
     private double lastRuntime;
 

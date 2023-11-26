@@ -41,13 +41,14 @@ public final class Camera {
                 .build();
     }
 
+    @SuppressWarnings("all")
     public Pose2d findTagWithID(int desiredTag){
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
         for (AprilTagDetection detection : currentDetections)
             if ((detection.ftcPose != null) && (detection.id == desiredTag)){
                 AprilTagPoseFtc ftcPose = detection.ftcPose;
 
-                Vector2d position = new Vector2d(ftcPose.y*2 - ftcPose.y, ftcPose.x*2 - ftcPose.x);
+                Vector2d position = new Vector2d(ftcPose.y, ftcPose.x);
                 Rotation2d heading = Rotation2d.exp(Math.toRadians(ftcPose.bearing));
 
                 return new Pose2d(position, heading);

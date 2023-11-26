@@ -58,6 +58,7 @@ public final class PixelArm {
                 gotoHeightInches(MAX_SAFE_INCHES - 4.0);
                 return;
             }
+
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             motor.setPower(power);
