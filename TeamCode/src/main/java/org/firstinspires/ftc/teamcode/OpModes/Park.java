@@ -21,7 +21,6 @@ import java.util.function.Function;
 @SuppressWarnings("unused")
 @Autonomous
 public class Park extends LinearOpMode{
-
     private MecanumDrive drive;
     private Payload payload;
 
@@ -60,28 +59,16 @@ public class Park extends LinearOpMode{
             case MIDDLE: pixelAngle = startHeading;
         }
 
-        Action grabAndPlacePurplePixel = drive.actionBuilder(drive.pose)
-                // drive up to Box of Signals
-                .lineToY(36.00 * flipY)
-                // look at correct pixel
-                .turnTo(pixelAngle)
-                // grab said pixel
-                .stopAndAdd( $(Payload::grabPixel) )
+        Action park = drive.actionBuilder(drive.pose)
                 // look at backboard
                 .turnTo(toRadians(0))
                 // drive to it
                 .lineToX(24.00)
-                // raise lift and align with backboard
-                .stopAndAdd(new ParallelAction(
-                        $(c -> c.raiseLift(6.0)),
-                        $(Payload::alignWithBackboard)
-                ))
-                // place pixel
-                .stopAndAdd( $(Payload::placeOnBoard) )
+                // park
                 .build();
 
         waitForStart();
 
-        Actions.runBlocking(grabAndPlacePurplePixel);
+        Actions.runBlocking(park);
     }
 }
