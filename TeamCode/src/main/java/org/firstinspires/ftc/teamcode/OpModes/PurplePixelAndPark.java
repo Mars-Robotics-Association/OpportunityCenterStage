@@ -11,23 +11,34 @@ import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Payload.Payload;
+import org.firstinspires.ftc.teamcode.Payload.Payload.*;
+import org.firstinspires.ftc.teamcode.Payload.PixelArm;
 import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDrive;
 
-import java.util.function.Function;
+import java.util.Iterator;
+
+import kotlin.jvm.functions.Function0;
 
 @SuppressWarnings("unused")
 @Autonomous
 public class PurplePixelAndPark extends LinearOpMode{
 
-    private MecanumDrive drive;
-    private Payload payload;
+    interface VoidFunction{void invoke();}
 
-    private Action $(Function<Payload, Action> operation){
-        if(payload == null)return telemetryPacket -> false;
-        return operation.apply(payload);
+    private MecanumDrive drive;
+
+    private Action conv(VoidFunction operation){
+        operation.invoke();
+        return telemetryPacket -> false;
+    }
+
+    private Action conv(VoidFunction operation, Function0<Boolean> waitUntil){
+        operation.invoke();
+        return telemetryPacket -> waitUntil.invoke();
     }
 
     private TrajectoryActionBuilder path(){return drive.actionBuilder(drive.pose);}
@@ -35,11 +46,21 @@ public class PurplePixelAndPark extends LinearOpMode{
     public void runOpMode() {
         Telemetry telemetry = new MultipleTelemetry(super.telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        payload = new Payload(hardwareMap, drive, true);
+        Payload payload = new Payload(hardwareMap, drive, false);
 
-        Payload.GameState gameState = payload.gameState;
+        GameState gameState = payload.gameState;
 
-        boolean isBlueTeam = gameState.teamColor == Payload.GameState.TeamColor.BLUE;
+        Iterator<ColorSensor> colorIterator = hardwareMap.colorSensor.iterator();
+
+        if(colorIterator.hasNext())
+            gameState = GameState.fromSensor(colorIterator.next());
+        else {
+            gameState.startSlot = GameState.StartSlot.CLOSER;
+            gameState.teamColor = GameState.TeamColor.BLUE;
+            gameState.signalState = GameState.SignalState.MIDDLE;
+        }
+
+        boolean isBlueTeam = gameState.teamColor == GameState.TeamColor.BLUE;
         double flipY = gameState.teamColor.flipY;
 
         double startHeading = isBlueTeam ? toRadians(270) : toRadians(90);
@@ -60,24 +81,27 @@ public class PurplePixelAndPark extends LinearOpMode{
             case MIDDLE: pixelAngle = startHeading;
         }
 
+        PixelArm arm = payload.pixelArm;
+
         Action grabAndPlacePurplePixel = drive.actionBuilder(drive.pose)
                 // drive up to Box of Signals
                 .lineToY(36.00 * flipY)
+                .lineToX(drive.pose.position.x - 2)
                 // look at correct pixel
                 .turnTo(pixelAngle)
                 // grab said pixel
-                .stopAndAdd( $(Payload::grabPixel) )
+                .stopAndAdd( conv(arm.gripperB::close) )
                 // look at backboard
                 .turnTo(toRadians(0))
                 // drive to it
                 .lineToX(24.00)
                 // raise lift and align with backboard
                 .stopAndAdd(new ParallelAction(
-                        $(c -> c.raiseLift(6.0)),
-                        $(Payload::alignWithBackboard)
+                        conv(() -> arm.lift.gotoHeight(6.0), arm.lift::isBusy),
+                        payload.highLevel.alignWithBackboard()
                 ))
                 // place pixel
-                .stopAndAdd( $(Payload::placeOnBoard) )
+                .stopAndAdd(conv(payload.pixelArm.gripperB::open))
                 .build();
 
         waitForStart();

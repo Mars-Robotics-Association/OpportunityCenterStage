@@ -5,17 +5,18 @@ import static java.lang.Math.toRadians;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Payload.Payload;
 import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDrive;
 
+import java.util.Iterator;
 import java.util.function.Function;
 
 @SuppressWarnings("unused")
@@ -38,6 +39,16 @@ public class Park extends LinearOpMode{
 
         Payload.GameState gameState = payload.gameState;
 
+        Iterator<ColorSensor> colorIterator = hardwareMap.colorSensor.iterator();
+
+        if(colorIterator.hasNext())
+            gameState = Payload.GameState.fromSensor(colorIterator.next());
+        else {
+                gameState.startSlot = Payload.GameState.StartSlot.CLOSER;
+                gameState.teamColor = Payload.GameState.TeamColor.BLUE;
+                gameState.signalState = Payload.GameState.SignalState.MIDDLE;
+            }
+
         boolean isBlueTeam = gameState.teamColor == Payload.GameState.TeamColor.BLUE;
         double flipY = gameState.teamColor.flipY;
 
@@ -49,15 +60,6 @@ public class Park extends LinearOpMode{
                         60.00 * flipY,
                         startHeading
                         ));
-
-        double pixelAngle = 0;
-        switch (gameState.signalState){
-            case LEFT  : pixelAngle = startHeading + toRadians(90);
-            break;
-            case RIGHT : pixelAngle = startHeading - toRadians(90);
-            break;
-            case MIDDLE: pixelAngle = startHeading;
-        }
 
         Action park = drive.actionBuilder(drive.pose)
                 // look at backboard

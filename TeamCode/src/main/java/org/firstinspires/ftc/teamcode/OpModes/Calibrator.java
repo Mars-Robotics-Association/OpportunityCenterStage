@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -33,6 +34,7 @@ public class Calibrator extends OpMode {
 
         if(hardwareMap.dcMotor.contains("lift_motor")) {
             liftMotor = hardwareMap.dcMotor.get("lift_motor");
+            liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
             liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             Category.LIFT_MOTOR.available = true;
@@ -90,7 +92,7 @@ public class Calibrator extends OpMode {
 
     @SuppressLint("DefaultLocale")
     private void logFeedbackData(){
-        Payload.GameState state = Payload.GameState.getSlotAndTeamFromSensor(colorSensor);
+        Payload.GameState state = Payload.GameState.fromSensor(colorSensor);
 
         Payload.GameState.ColorSensorChoice closestColor = state.colorChoice;
         assert closestColor != null;

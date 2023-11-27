@@ -8,14 +8,38 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Payload.Payload;
+import org.firstinspires.ftc.teamcode.Payload.PixelArm;
 import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.TimeSemaphore;
 
 @TeleOp
 @Config
-public class RefinedTeleOp extends OpMode {
+public class ExperimentalTeleOp extends OpMode {
 
-    public static double LIFT_POWER = .5;
+    enum LiftPreset {
+        GROUND (0, 1),
+        BOARD_L(12, 1 << 1),
+        BOARD_H(24, 1 << 2);
+
+        public static LiftPreset resolve(int inputMask){
+            for (LiftPreset preset : LiftPreset.values())
+                if ((inputMask & preset.mask) == preset.mask)return preset;
+
+            return null;
+        }
+
+        private final double height;
+        public final int mask;
+
+        public int apply(boolean condition){
+            return condition ? mask : 0;
+        }
+
+        LiftPreset(double height, int mask){
+            this.height = height;
+            this.mask = mask;
+        }
+    }
 
     private MecanumDrive drive;
     private Payload payload;
@@ -37,12 +61,25 @@ public class RefinedTeleOp extends OpMode {
                         -gamepad1.left_stick_x
                 ), -gamepad1.right_stick_x));
 
-        double liftPower = 0;
+        liftPresets: if(gamepad1.left_trigger > 0.2f){
+            PixelArm pixelArm = payload.pixelArm;
 
-        if (gamepad1.dpad_up)liftPower += LIFT_POWER;
-        if (gamepad1.dpad_down)liftPower -= LIFT_POWER;
+            int mask = 0;
 
-        payload.pixelArm.lift.override(liftPower);
+            mask |= LiftPreset.GROUND .apply(gamepad1.a);
+            mask |= LiftPreset.BOARD_L.apply(gamepad1.x);
+            mask |= LiftPreset.BOARD_H.apply(gamepad1.y);
+
+            LiftPreset preset = LiftPreset.resolve(mask);
+
+            if(preset == null)break liftPresets;
+            pixelArm.lift.gotoHeight(preset.height);
+
+            if(preset == LiftPreset.GROUND)
+                 pixelArm.wrist.toGroundAngle();
+            else pixelArm.wrist.toBoardAngle();
+
+        }
 
         if (gamepad1.left_bumper && gripperLeft.poll())
             payload.pixelArm.gripperA.toggle();

@@ -2,20 +2,21 @@ package org.firstinspires.ftc.teamcode.Payload;
 
 import android.annotation.SuppressLint;
 
-import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public final class PixelArm {
     public final Lift lift;
+    public final Wrist wrist;
     public final Gripper gripperA;
     public final Gripper gripperB;
 
     public static class Lift{
         Lift(HardwareMap hardwareMap){
             motor = hardwareMap.dcMotor.get("lift_motor");
-            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motor.setDirection(DcMotorSimple.Direction.REVERSE);
 
             // this will get changed often to prevent constant power draw
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -34,19 +35,18 @@ public final class PixelArm {
         // Inches to Encoder Ticks conversion
         private static final double TICKS_PER_INCH = 100;
         // Maximum height allowed
-        private static final double MAX_SAFE_INCHES = 5;
+        private static final double MAX_SAFE_INCHES = 12;
 
         /**
          * Raises the lift to a desired height.
          * @param inches Height measured from the ground in inches.
          * @throws OutOfRange Thrown when {@code inches} exceeds {@link #MAX_SAFE_INCHES} or less than 0.
          */
-        void gotoHeightInches(double inches) throws OutOfRange{
+        public void gotoHeight(double inches) throws OutOfRange{
             if(inches < 0 || MAX_SAFE_INCHES < inches)throw new OutOfRange(inches);
-            if(motor.getMode() != DcMotor.RunMode.RUN_TO_POSITION)
-                motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             motor.setTargetPosition((int) (inches * TICKS_PER_INCH));
+            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 
         /**
@@ -55,7 +55,7 @@ public final class PixelArm {
          */
         public void override(double power){
             if((double)(motor.getCurrentPosition()) / TICKS_PER_INCH > MAX_SAFE_INCHES - 2.0){
-                gotoHeightInches(MAX_SAFE_INCHES - 4.0);
+                gotoHeight(MAX_SAFE_INCHES - 4.0);
                 return;
             }
 
@@ -64,7 +64,7 @@ public final class PixelArm {
             motor.setPower(power);
         }
 
-        boolean isBusy(){
+        public boolean isBusy(){
             boolean busy = motor.isBusy();
             if(busy)motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             return busy;
@@ -74,17 +74,15 @@ public final class PixelArm {
     public static class Gripper{
 
         public enum Side{
-            A(false, "left_gripper", .8, .5),
-            B(false, "right_gripper", .48, .34);
+            A("left_gripper", .8, .5),
+            B("right_gripper", .48, .34);
 
-            public final Servo.Direction direction;
             public final String name;
 
             public final double closePos;
             public final double openPos;
 
-            Side(boolean inverted, String name, double closePos, double openPos) {
-                this.direction = inverted ? Servo.Direction.REVERSE : Servo.Direction.FORWARD;
+            Side(String name, double closePos, double openPos) {
                 this.name = name;
                 this.closePos = closePos;
                 this.openPos = openPos;
@@ -118,29 +116,29 @@ public final class PixelArm {
         }
     }
 
+    public static class Wrist{
+        private static final double GROUND_ANGLE = 0.3;
+        private static final double BOARD_ANGLE = 0.6;
+
+        private final Servo servo;
+
+        Wrist(HardwareMap hardwareMap){
+            this.servo = hardwareMap.servo.get("wrist_servo");
+        }
+
+        public void toGroundAngle(){
+            servo.setPosition(GROUND_ANGLE);
+        }
+
+        public void toBoardAngle(){
+            servo.setPosition(BOARD_ANGLE);
+        }
+    }
+
     public PixelArm(HardwareMap hardwareMap){
         lift = new Lift(hardwareMap);
+        wrist = new Wrist(hardwareMap);
         gripperA = new Gripper(hardwareMap, Gripper.Side.A);
         gripperB = new Gripper(hardwareMap, Gripper.Side.B);
-    }
-
-    public Action moveLift(double inches){
-        lift.gotoHeightInches(inches);
-
-        return telemetryPacket -> !lift.isBusy();
-    }
-
-    public Action grab(){
-        if(!gripperA.closed)gripperA.close();
-        if(!gripperB.closed)gripperB.close();
-
-        return telemetryPacket -> false;
-    }
-
-    public Action placeOnBoard(){
-        gripperA.open();
-        gripperB.open();
-
-        return telemetryPacket -> false;
     }
 }

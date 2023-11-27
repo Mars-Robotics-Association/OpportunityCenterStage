@@ -1,8 +1,5 @@
 package org.firstinspires.ftc.teamcode.Payload;
 
-import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -15,12 +12,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class Payload {
-    public GameState gameState = new GameState();
 
-    public Camera camera;
-    public PixelArm pixelArm;
-    public HighLevel highLevel;
 
+    public GameState gameState;
+    public Camera camera = null;
+    public PixelArm pixelArm = null;
+    public HighLevel highLevel = null;
     final MecanumDrive drive;
 
     @SuppressWarnings("unused")
@@ -65,7 +62,7 @@ public final class Payload {
 
         public static double[] debugRGBReadings = new double[3];
 
-        public static GameState getSlotAndTeamFromSensor(ColorSensor colorSensor){
+        public static GameState fromSensor(ColorSensor colorSensor){
             debugRGBReadings = new double[]{
                     colorSensor.red(),
                     colorSensor.green(),
@@ -120,36 +117,12 @@ public final class Payload {
     }
 
     public Payload(HardwareMap hardwareMap, MecanumDrive drive, boolean disable) {
+        gameState = new GameState();
+
         this.drive = drive;
         if(disable)return;
         camera = new Camera(hardwareMap);
         pixelArm = new PixelArm(hardwareMap);
         highLevel = new HighLevel(this);
-    }
-
-    public Action grabPixel(){
-        return pixelArm.grab();
-    }
-
-    public Action placeOnBoard(){
-        return pixelArm.placeOnBoard();
-    }
-
-    public Action raiseLift(double inches){
-        return pixelArm.moveLift(inches);
-    }
-
-    public Action alignWithBackboard(){
-        // get pose of tag in global-pose
-        Pose2d tagPose = highLevel.getBackboardTagPose();
-
-        // move back a bit
-        Pose2d targetPose = new Pose2d(tagPose.position.plus(new Vector2d(-6, 0)), drive.pose.heading);
-
-        // go there as smooth as Rick Astley
-        return drive.actionBuilder(drive.pose)
-                .setTangent(drive.pose.heading)
-                .splineToLinearHeading(targetPose, targetPose.heading)
-                .build();
     }
 }
