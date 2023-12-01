@@ -97,7 +97,7 @@ public class PurplePixelAndPark extends LinearOpMode{
                 .lineToX(24.00)
                 // raise lift and align with backboard
                 .stopAndAdd(new ParallelAction(
-                        conv(() -> arm.lift.gotoHeight(6.0), arm.lift::isBusy),
+                        conv(() -> arm.lift.setHeight(6.0), arm.lift::isBusy),
                         payload.highLevel.alignWithBackboard()
                 ))
                 // place pixel

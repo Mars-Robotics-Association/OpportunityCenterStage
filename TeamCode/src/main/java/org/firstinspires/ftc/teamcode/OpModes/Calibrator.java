@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Payload.Payload;
+import org.firstinspires.ftc.teamcode.utils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
@@ -23,6 +24,8 @@ public class Calibrator extends OpMode {
     private DcMotor liftMotor;
     private double lastSelectionTime;
     private double lastRuntime;
+
+    private utils.Debouncer selectorBlock = new utils.Debouncer(this, 0.5);
 
     @Override
     public void init() {
@@ -70,8 +73,6 @@ public class Calibrator extends OpMode {
         }
 
         static void initialize(HardwareMap hardwareMap){
-
-
             for (Category category : Category.values()) {
                 if (category.servoName == null)continue;
                 category.available = true;
@@ -98,10 +99,6 @@ public class Calibrator extends OpMode {
         assert closestColor != null;
 
         Telemetry t = telemetry;
-        if(!category.available){
-            t.addLine("This device is currently unavailable");
-            return;
-        }
 
         if (category == Category.TEAM_SENSOR) {
             double[] values = Payload.GameState.debugRGBReadings;
@@ -123,23 +120,6 @@ public class Calibrator extends OpMode {
 
     @SuppressLint("DefaultLocale")
     private void gamepadControl() {
-        if (getRuntime() - lastSelectionTime < 1.0) {
-            int selector = 0;
-            if (gamepad1.dpad_up) selector--;
-            if (gamepad1.dpad_down) selector++;
-
-            switch (selector) {
-                case -1:
-                    category = category.prev();
-                    lastSelectionTime = getRuntime();
-                    break;
-                case +1:
-                    category = category.next();
-                    lastSelectionTime = getRuntime();
-                    break;
-            }
-        }
-
         // don't let it run on its own
         if(category != Category.LIFT_MOTOR && Category.LIFT_MOTOR.available){
             liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -178,9 +158,21 @@ public class Calibrator extends OpMode {
 
     @Override
     public void loop() {
-        gamepadControl();
+        if(selectorBlock.poll(gamepad1.dpad_up || gamepad1.dpad_down)) {
+            if(gamepad1.dpad_up)
+                category = category.prev();
+            else if (gamepad1.dpad_down)
+                category = category.next();
+        }
+
         telemetry.addData("Currently testing system", category.name());
-        logFeedbackData();
+
+        if(category.available){
+            gamepadControl();
+            logFeedbackData();
+        }else
+            telemetry.addLine("This device is currently unavailable");
+
         telemetry.update();
     }
 }

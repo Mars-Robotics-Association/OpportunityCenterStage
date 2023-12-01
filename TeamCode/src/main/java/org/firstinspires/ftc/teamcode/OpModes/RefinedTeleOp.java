@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
+
+import static org.firstinspires.ftc.teamcode.utils.boolToDir;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
@@ -9,19 +12,20 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Payload.Payload;
 import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDrive;
-import org.firstinspires.ftc.teamcode.TimeSemaphore;
+import org.firstinspires.ftc.teamcode.utils.Debouncer;
 
 @TeleOp
 @Config
 public class RefinedTeleOp extends OpMode {
 
-    public static double LIFT_POWER = .5;
+    public static double LIFT_SPEED = 1;
 
     private MecanumDrive drive;
     private Payload payload;
 
-    private final TimeSemaphore gripperLeft = new TimeSemaphore(this, 0.5);
-    private final TimeSemaphore gripperRight = new TimeSemaphore(this, 0.5);
+    private final Debouncer gripperLeft = new Debouncer(this, 0.5);
+    private final Debouncer gripperRight = new Debouncer(this, 0.5);
+    private double lastRuntime;
 
     @Override
     public void init() {
@@ -31,22 +35,34 @@ public class RefinedTeleOp extends OpMode {
 
     @Override
     public void loop() {
+        double deltaTime = getRuntime() - lastRuntime;
+        lastRuntime = getRuntime();
+
         drive.setDrivePowers(new PoseVelocity2d(
                 new Vector2d(
                         -gamepad1.left_stick_y,
                         -gamepad1.left_stick_x
                 ), -gamepad1.right_stick_x));
 
-        double liftPower = 0;
+        double liftSpeed = boolToDir(gamepad1.dpad_up, gamepad1.dpad_down, LIFT_SPEED);
 
-        if (gamepad1.dpad_up)liftPower += LIFT_POWER;
-        if (gamepad1.dpad_down)liftPower -= LIFT_POWER;
+        payload.pixelArm.lift.motor.setPower(liftSpeed);
 
-        payload.pixelArm.lift.override(liftPower);
-
-        if (gamepad1.left_bumper && gripperLeft.poll())
+        if (gripperLeft.poll(gamepad1.left_bumper))
             payload.pixelArm.gripperA.toggle();
-        if (gamepad1.right_bumper && gripperRight.poll())
+        if (gripperRight.poll(gamepad1.right_bumper))
             payload.pixelArm.gripperB.toggle();
+
+        if (gamepad1.dpad_left)
+            payload.pixelArm.wrist.toGroundAngle();
+        if (gamepad1.dpad_right)
+            payload.pixelArm.wrist.toBoardAngle();
+    }
+
+    @Override
+    public void stop() {
+        payload.pixelArm.wrist.toStorageAngle();
+
+        super.stop();
     }
 }

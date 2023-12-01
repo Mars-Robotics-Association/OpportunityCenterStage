@@ -33,6 +33,8 @@ public class Park extends LinearOpMode{
     private TrajectoryActionBuilder path(){return drive.actionBuilder(drive.pose);}
 
     public void runOpMode() {
+        payload.pixelArm.wrist.toStorageAngle();
+
         Telemetry telemetry = new MultipleTelemetry(super.telemetry, FtcDashboard.getInstance().getTelemetry());
 
         payload = new Payload(hardwareMap, drive, true);
@@ -44,10 +46,10 @@ public class Park extends LinearOpMode{
         if(colorIterator.hasNext())
             gameState = Payload.GameState.fromSensor(colorIterator.next());
         else {
-                gameState.startSlot = Payload.GameState.StartSlot.CLOSER;
-                gameState.teamColor = Payload.GameState.TeamColor.BLUE;
-                gameState.signalState = Payload.GameState.SignalState.MIDDLE;
-            }
+            gameState.startSlot = Payload.GameState.StartSlot.CLOSER;
+            gameState.teamColor = Payload.GameState.TeamColor.BLUE;
+            gameState.signalState = Payload.GameState.SignalState.MIDDLE;
+        }
 
         boolean isBlueTeam = gameState.teamColor == Payload.GameState.TeamColor.BLUE;
         double flipY = gameState.teamColor.flipY;

@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.Payload;
 import android.annotation.SuppressLint;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -16,10 +15,7 @@ public final class PixelArm {
     public static class Lift{
         Lift(HardwareMap hardwareMap){
             motor = hardwareMap.dcMotor.get("lift_motor");
-            motor.setDirection(DcMotorSimple.Direction.REVERSE);
-
-            // this will get changed often to prevent constant power draw
-            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
 
         static class OutOfRange extends RuntimeException{
@@ -29,53 +25,39 @@ public final class PixelArm {
             }
         }
 
-        private final DcMotor motor;
+        public final DcMotor motor;
 
         // Derive these value from Calibration Mode
         // Inches to Encoder Ticks conversion
-        private static final double TICKS_PER_INCH = 100;
+        private static final double TICKS_PER_INCH = 37.192307692307692307692307692308;
         // Maximum height allowed
-        private static final double MAX_SAFE_INCHES = 12;
+        private static final double MAX_SAFE_INCHES = 20;
 
         /**
          * Raises the lift to a desired height.
          * @param inches Height measured from the ground in inches.
          * @throws OutOfRange Thrown when {@code inches} exceeds {@link #MAX_SAFE_INCHES} or less than 0.
          */
-        public void gotoHeight(double inches) throws OutOfRange{
+        public void setHeight(double inches) throws OutOfRange{
             if(inches < 0 || MAX_SAFE_INCHES < inches)throw new OutOfRange(inches);
-            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             motor.setTargetPosition((int) (inches * TICKS_PER_INCH));
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 
-        /**
-         * This function will enter an implicit "Override Mode." To exit, call gotoHeightInches or freeze
-         * @param power equivalent to {@link DcMotor#setPower(double power)}
-         */
-        public void override(double power){
-            if((double)(motor.getCurrentPosition()) / TICKS_PER_INCH > MAX_SAFE_INCHES - 2.0){
-                gotoHeight(MAX_SAFE_INCHES - 4.0);
-                return;
-            }
-
-            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            motor.setPower(power);
+        public double getHeight(){
+            return (double)(motor.getCurrentPosition()) / TICKS_PER_INCH;
         }
 
         public boolean isBusy(){
-            boolean busy = motor.isBusy();
-            if(busy)motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            return busy;
+            return motor.isBusy();
         }
     }
 
     public static class Gripper{
 
         public enum Side{
-            A("left_gripper", .8, .5),
-            B("right_gripper", .48, .34);
+            A("left_gripper", .4688, .4077),
+            B("right_gripper", .0350, .1127);
 
             public final String name;
 
@@ -117,9 +99,9 @@ public final class PixelArm {
     }
 
     public static class Wrist{
-        private static final double GROUND_ANGLE = 0.3;
-        private static final double BOARD_ANGLE = 0.6;
-
+        private static final double GROUND_POSITION = 0.0888;
+        private static final double BOARD_POSITION = 0.2211;
+        private static final double STORAGE_POSITION = 0.4422;
         private final Servo servo;
 
         Wrist(HardwareMap hardwareMap){
@@ -127,11 +109,14 @@ public final class PixelArm {
         }
 
         public void toGroundAngle(){
-            servo.setPosition(GROUND_ANGLE);
+            servo.setPosition(GROUND_POSITION);
         }
 
         public void toBoardAngle(){
-            servo.setPosition(BOARD_ANGLE);
+            servo.setPosition(BOARD_POSITION);
+        }
+        public void toStorageAngle(){
+            servo.setPosition(STORAGE_POSITION);
         }
     }
 

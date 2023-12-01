@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Payload.Payload;
 import org.firstinspires.ftc.teamcode.Payload.PixelArm;
 import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDrive;
-import org.firstinspires.ftc.teamcode.TimeSemaphore;
+import org.firstinspires.ftc.teamcode.utils;
 
 @TeleOp
 @Config
@@ -44,8 +44,8 @@ public class ExperimentalTeleOp extends OpMode {
     private MecanumDrive drive;
     private Payload payload;
 
-    private final TimeSemaphore gripperLeft = new TimeSemaphore(this, 0.5);
-    private final TimeSemaphore gripperRight = new TimeSemaphore(this, 0.5);
+    private final utils.Debouncer gripperLeft = new utils.Debouncer(this, 0.5);
+    private final utils.Debouncer gripperRight = new utils.Debouncer(this, 0.5);
 
     @Override
     public void init() {
@@ -73,7 +73,7 @@ public class ExperimentalTeleOp extends OpMode {
             LiftPreset preset = LiftPreset.resolve(mask);
 
             if(preset == null)break liftPresets;
-            pixelArm.lift.gotoHeight(preset.height);
+            pixelArm.lift.setHeight(preset.height);
 
             if(preset == LiftPreset.GROUND)
                  pixelArm.wrist.toGroundAngle();
