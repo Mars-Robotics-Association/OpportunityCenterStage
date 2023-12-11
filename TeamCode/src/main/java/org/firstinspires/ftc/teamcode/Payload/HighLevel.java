@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDrive;
 public final class HighLevel {
     private final Payload payload;
 
-    private final Payload.GameState gameState;
+    private final GameState gameState;
 
     HighLevel(Payload payload){
         this.payload = payload;

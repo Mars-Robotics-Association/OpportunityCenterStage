@@ -1,8 +1,5 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
-
-import static org.firstinspires.ftc.teamcode.utils.boolToDir;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
@@ -12,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Payload.Payload;
 import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDrive;
+import org.firstinspires.ftc.teamcode.utils;
 import org.firstinspires.ftc.teamcode.utils.Debouncer;
 
 @TeleOp
@@ -19,32 +17,31 @@ import org.firstinspires.ftc.teamcode.utils.Debouncer;
 public class RefinedTeleOp extends OpMode {
 
     public static double LIFT_SPEED = 1;
+    public static double SLO_MO = 0.3;
 
     private MecanumDrive drive;
     private Payload payload;
 
     private final Debouncer gripperLeft = new Debouncer(this, 0.5);
     private final Debouncer gripperRight = new Debouncer(this, 0.5);
-    private double lastRuntime;
 
     @Override
     public void init() {
         drive = new MecanumDrive(hardwareMap, new Pose2d(12, 60, Math.toRadians(270)));
-        payload = new Payload(hardwareMap, drive, false);
+        payload = new Payload(hardwareMap, drive);
     }
 
     @Override
     public void loop() {
-        double deltaTime = getRuntime() - lastRuntime;
-        lastRuntime = getRuntime();
+        double slowMul = gamepad1.a ? SLO_MO : 1;
 
         drive.setDrivePowers(new PoseVelocity2d(
                 new Vector2d(
-                        -gamepad1.left_stick_y,
-                        -gamepad1.left_stick_x
-                ), -gamepad1.right_stick_x));
+                        -gamepad1.left_stick_y * slowMul,
+                        -gamepad1.left_stick_x * slowMul
+                ), -gamepad1.right_stick_x * slowMul));
 
-        double liftSpeed = boolToDir(gamepad1.dpad_up, gamepad1.dpad_down, LIFT_SPEED);
+        double liftSpeed = utils.boolsToDir(gamepad1.dpad_up, gamepad1.dpad_down, LIFT_SPEED);
 
         payload.pixelArm.lift.motor.setPower(liftSpeed);
 
@@ -57,12 +54,13 @@ public class RefinedTeleOp extends OpMode {
             payload.pixelArm.wrist.toGroundAngle();
         if (gamepad1.dpad_right)
             payload.pixelArm.wrist.toBoardAngle();
-    }
 
-    @Override
-    public void stop() {
-        payload.pixelArm.wrist.toStorageAngle();
+        float openValue = gamepad1.left_trigger - gamepad1.right_trigger;
 
-        super.stop();
+        if (openValue > 0.2f){
+           payload.intake.open();
+        } else if (openValue < 0.2f){
+            payload.intake.close();
+        }
     }
 }

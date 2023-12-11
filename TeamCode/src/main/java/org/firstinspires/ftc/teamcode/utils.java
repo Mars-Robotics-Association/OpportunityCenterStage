@@ -3,16 +3,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 public final class utils {
-    public static int boolToDir(boolean positive, boolean negative){
-        int value = 0;
 
-        if(positive)value += 1;
-        if(negative)value -= 1;
-
-        return value;
-    }
-
-    public static double boolToDir(boolean positive, boolean negative, double multiplier){
+    public static double boolsToDir(boolean positive, boolean negative, double multiplier){
         double value = 0;
 
         if(positive)value += multiplier;

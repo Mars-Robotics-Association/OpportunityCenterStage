@@ -50,7 +50,7 @@ public class ExperimentalTeleOp extends OpMode {
     @Override
     public void init() {
         drive = new MecanumDrive(hardwareMap, new Pose2d(12, 60, Math.toRadians(270)));
-        payload = new Payload(hardwareMap, drive, false);
+        payload = new Payload(hardwareMap, drive);
     }
 
     @Override

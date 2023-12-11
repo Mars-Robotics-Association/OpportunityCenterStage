@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Payload;
 
-import android.annotation.SuppressLint;
-
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -18,45 +17,35 @@ public final class PixelArm {
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
 
-        static class OutOfRange extends RuntimeException{
-            @SuppressLint("DefaultLocale")
-            OutOfRange(double attemptedHeight){
-                super(String.format("Lift cannot safely achieve height of %f inches", attemptedHeight));
-            }
-        }
-
         public final DcMotor motor;
 
         // Derive these value from Calibration Mode
         // Inches to Encoder Ticks conversion
         private static final double TICKS_PER_INCH = 37.192307692307692307692307692308;
-        // Maximum height allowed
-        private static final double MAX_SAFE_INCHES = 20;
 
-        /**
-         * Raises the lift to a desired height.
-         * @param inches Height measured from the ground in inches.
-         * @throws OutOfRange Thrown when {@code inches} exceeds {@link #MAX_SAFE_INCHES} or less than 0.
-         */
-        public void setHeight(double inches) throws OutOfRange{
-            if(inches < 0 || MAX_SAFE_INCHES < inches)throw new OutOfRange(inches);
-            motor.setTargetPosition((int) (inches * TICKS_PER_INCH));
-            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
+        private static final double GAIN = 1;
 
-        public double getHeight(){
-            return (double)(motor.getCurrentPosition()) / TICKS_PER_INCH;
-        }
+        public Action setHeight(double inches){
+            return telemetryPacket -> {
+                double position = motor.getCurrentPosition() / TICKS_PER_INCH;
 
-        public boolean isBusy(){
-            return motor.isBusy();
+                double error = position - inches;
+
+                if(Math.abs(error) > 1){
+                    motor.setPower(-error * GAIN);
+                    return true;
+                }else{
+                    motor.setPower(0);
+                    return false;
+                }
+            };
         }
     }
 
     public static class Gripper{
 
         public enum Side{
-            A("left_gripper", .4688, .4077),
+            A("left_gripper", .1616, .1144),
             B("right_gripper", .0350, .1127);
 
             public final String name;
@@ -99,9 +88,9 @@ public final class PixelArm {
     }
 
     public static class Wrist{
-        private static final double GROUND_POSITION = 0.0888;
-        private static final double BOARD_POSITION = 0.2211;
-        private static final double STORAGE_POSITION = 0.4422;
+        private static final double GROUND_POSITION = .0672;
+        private static final double BOARD_POSITION = .2733;
+        private static final double STORAGE_POSITION = GROUND_POSITION;
         private final Servo servo;
 
         Wrist(HardwareMap hardwareMap){
