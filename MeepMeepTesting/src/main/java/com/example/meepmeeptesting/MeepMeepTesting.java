@@ -17,8 +17,8 @@ public class MeepMeepTesting {
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(11, 61, 0))
                 .build());
 
-        meepMeep.setBackground(MeepMeep.Background.FIELD_CENTERSTAGE_OFFICIAL)
-                .setDarkMode(false)
+                .setDarkMode(true)
+        meepMeep.setBackground(MeepMeep.Background.FIELD_CENTERSTAGE_JUICE_DARK)
                 .setBackgroundAlpha(0.95f)
                 .addEntity(myBot)
                 .start();
