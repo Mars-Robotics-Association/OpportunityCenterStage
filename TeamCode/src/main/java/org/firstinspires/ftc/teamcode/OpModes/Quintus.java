@@ -32,10 +32,10 @@ public class Quintus
 
 
     //Positional util functions
-    private Pose2d computeActualPosition(Pose2d rawPose){
+    private Pose2d computeActualPosition(Pose2d readingSample){
         Pose2d robotPose = drive.pose;
-        Vector2d position = robotPose.heading.times(rawPose.position);
-        Rotation2d heading = robotPose.heading.times(rawPose.heading);
+        Vector2d position = robotPose.heading.times(readingSample.position);
+        Rotation2d heading = robotPose.heading.times(readingSample.heading);
 
         return new Pose2d(position, heading);
     }

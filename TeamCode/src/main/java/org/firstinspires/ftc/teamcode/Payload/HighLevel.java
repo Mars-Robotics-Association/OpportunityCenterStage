@@ -10,18 +10,21 @@ import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDrive;
 @SuppressWarnings("unused")
 public final class HighLevel {
     private final Payload payload;
-
     private final GameState gameState;
+    private final MecanumDrive drive;
 
     HighLevel(Payload payload){
         this.payload = payload;
         gameState = payload.gameState;
+        drive = payload.drive;
     }
 
-    private Pose2d computeActualPosition(Pose2d rawPose){
-        Pose2d robotPose = payload.drive.pose;
-        Vector2d position = robotPose.heading.times(rawPose.position);
-        Rotation2d heading = robotPose.heading.times(rawPose.heading);
+
+    //Positional util functions
+    private Pose2d computeActualPosition(Pose2d readingSample){
+        Pose2d robotPose = drive.pose;
+        Vector2d position = robotPose.heading.times(readingSample.position);
+        Rotation2d heading = robotPose.heading.times(readingSample.heading);
 
         return new Pose2d(position, heading);
     }
@@ -46,16 +49,16 @@ public final class HighLevel {
         return computeActualPosition(rawPose);
     }
 
+    //Methods for moving to known locations
     public Action alignWithBackboard(){
         // get pose of tag in global-pose
         Pose2d tagPose = getBackboardTagPose();
 
         // move back a bit
-        MecanumDrive drive = payload.drive;
         Pose2d targetPose = new Pose2d(tagPose.position.plus(new Vector2d(-6, 0)), drive.pose.heading);
 
         // go there as smooth as Rick Astley
-        return payload.drive.actionBuilder(drive.pose)
+        return drive.actionBuilder(drive.pose)
                 .setTangent(drive.pose.heading)
                 .splineToLinearHeading(targetPose, targetPose.heading)
                 .build();

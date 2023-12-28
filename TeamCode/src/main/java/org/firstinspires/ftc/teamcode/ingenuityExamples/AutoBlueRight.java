@@ -3,27 +3,24 @@ package org.firstinspires.ftc.teamcode.ingenuityExamples;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
-import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
-import org.firstinspires.ftc.teamcode.MecanumDrive;
-import org.firstinspires.ftc.teamcode.tuning.TuningOpModes;
+import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDrive;
 
 @Autonomous(name = "Auto Blue Right", group = "AutonomousCompetition")
 public final class AutoBlueRight extends LinearOpMode {
-    private Motor armMotor;
+    private DcMotor armMotor;
     private Servo gripper;
     private Servo wrist;
     private TouchSensor touchSensor;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        if (TuningOpModes.DRIVE_CLASS.equals(MecanumDrive.class)) {
-            armMotor = new Motor(hardwareMap, "armMotor", Motor.GoBILDA.RPM_312);
+            armMotor = hardwareMap.dcMotor.get("armMotor");
             gripper = hardwareMap.servo.get("gripper");
             wrist = hardwareMap.servo.get("wrist");
             touchSensor = hardwareMap.get(TouchSensor.class, "sensor_touch");
@@ -33,9 +30,9 @@ public final class AutoBlueRight extends LinearOpMode {
 
             // stow the arm and gripper
             while (!touchSensor.isPressed()) {
-                armMotor.set(0.3);
+                armMotor.setPower(0.3);
             }
-            armMotor.set(0);
+            armMotor.setPower(0);
 
 
             MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(-36, 64, Math.toRadians(270)));
@@ -52,8 +49,6 @@ public final class AutoBlueRight extends LinearOpMode {
 
 
 
-        } else {
-            throw new AssertionError();
-        }
+
     }
 }
