@@ -28,7 +28,11 @@ public class Quintus
     }
 
     //Common autonomous functions
-    //TODO: psuedocode
+    //TODO:
+    //Detect position of team prop (opencv or queen team prop)
+    //Place purple pixel next to team prop
+    //Place yellow pixel in correct position
+    //Park (close → corner; far → middle)
 
 
     //Positional util functions
