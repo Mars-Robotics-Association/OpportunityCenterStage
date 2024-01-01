@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.RoadRunner.TankDrive;
 
 public final class ManualFeedbackTuner extends LinearOpMode {
-    public static double DISTANCE = 64;
+    public static double DISTANCE = 56;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -19,7 +19,7 @@ public final class ManualFeedbackTuner extends LinearOpMode {
 
             while (opModeIsActive()) {
                 Actions.runBlocking(
-                    drive.actionBuilder(new Pose2d(0, 0, 0))
+                    drive.actionBuilder(drive.pose)
                             .lineToX(DISTANCE)
                             .lineToX(0)
                             .build());
@@ -31,7 +31,7 @@ public final class ManualFeedbackTuner extends LinearOpMode {
 
             while (opModeIsActive()) {
                 Actions.runBlocking(
-                    drive.actionBuilder(new Pose2d(0, 0, 0))
+                    drive.actionBuilder(drive.pose)
                             .lineToX(DISTANCE)
                             .lineToX(0)
                             .build());
