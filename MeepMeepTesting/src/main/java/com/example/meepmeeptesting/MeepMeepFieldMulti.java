@@ -10,13 +10,12 @@ import com.noahbres.meepmeep.core.colorscheme.scheme.ColorSchemeRedLight;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
-// santi-cam: 👏😲
 public class MeepMeepFieldMulti {
     public enum autoStart {RED_STACK1, RED_STACK2, RED_STACK3, RED_BACK, BLUE_STACK, BLUE_BACK }
     public static autoStart start = autoStart.RED_BACK;
 
     public static void main(String[] args) {
-        MeepMeep meepMeep = new MeepMeep(600, 240);
+        MeepMeep meepMeep = new MeepMeep(800);
         RoadRunnerBotEntity redBot1 = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 13)
@@ -92,7 +91,7 @@ public class MeepMeepFieldMulti {
                 .build());
 
 
-        meepMeep.setBackground(MeepMeep.Background.FIELD_CENTERSTAGE_JUICE_DARK)
+        meepMeep.setBackground(MeepMeep.Background.FIELD_CENTERSTAGE_JUICE_DARK )
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
                 .addEntity(redBot1)
