@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.RoadRunner.TankDrive;
 
 public final class ManualFeedbackTuner extends LinearOpMode {
-    public static double DISTANCE = 56;
+    public static double DISTANCE = 54;
 
     @Override
     public void runOpMode() throws InterruptedException {

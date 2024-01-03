@@ -57,7 +57,7 @@ public final class MecanumDrive {
         public double trackWidthTicks = 20904.152704583685;
 
         // feedforward parameters (in tick units)
-        public double kV = 0.0000994363371254881;
+        public double kV = 0.0000834363371254881;
         public double kS = 1.3213296302710313;
         public double kA = 0.00001;
 
@@ -71,13 +71,13 @@ public final class MecanumDrive {
         public double maxAngAccel = Math.PI;
 
         // path controller gains
-        public double axialGain = 0.0;
-        public double lateralGain = 0.0;
-        public double headingGain = 0.0; // shared with turn
+        public double axialGain = 3;
+        public double lateralGain = 6;
+        public double headingGain = 6; // shared with turn
 
-        public double axialVelGain = 0.0;
-        public double lateralVelGain = 0.0;
-        public double headingVelGain = 0.0; // shared with turn
+        public double axialVelGain = .5;
+        public double lateralVelGain = .5;
+        public double headingVelGain = .1; // shared with turn
     }
 
     public static Params PARAMS = new Params();
@@ -197,7 +197,7 @@ public final class MecanumDrive {
 
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD,
+                RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
                 RevHubOrientationOnRobot.UsbFacingDirection.UP));
         imu.initialize(parameters);
 
