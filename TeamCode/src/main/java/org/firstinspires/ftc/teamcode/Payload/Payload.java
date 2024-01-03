@@ -15,7 +15,7 @@ public final class Payload {
         gameState = new GameState();
 
         this.drive = drive;
-        camera = new Camera(hardwareMap);
+        camera = new Camera(hardwareMap, gameState.teamColor);
         pixelArm = new PixelArm(hardwareMap);
         intake = new Intake(hardwareMap);
         highLevel = new HighLevel(this);

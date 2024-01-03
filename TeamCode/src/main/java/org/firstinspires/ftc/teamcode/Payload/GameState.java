@@ -3,16 +3,11 @@ package org.firstinspires.ftc.teamcode.Payload;
 public final class GameState {
     public SignalState signalState;
     public TeamColor teamColor;
+    public ParkSpot parkSpot;
 
     public enum SignalState {LEFT, MIDDLE, RIGHT}
 
-    public enum TeamColor {
-        BLUE(1), RED(-1);
+    public enum TeamColor {BLUE, RED}
 
-        public final double flipY;
-
-        TeamColor(double flipY) {
-            this.flipY = flipY;
-        }
-    }
+    public enum ParkSpot {NEAR, FAR}
 }
