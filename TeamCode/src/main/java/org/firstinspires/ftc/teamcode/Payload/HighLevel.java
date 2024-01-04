@@ -7,6 +7,7 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDrive;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 @SuppressWarnings("unused")
 public final class HighLevel {
@@ -24,7 +25,7 @@ public final class HighLevel {
     //Common autonomous functions
     //TODO:
     //Detect position of team prop (opencv or queen team prop)
-    public GameState.SignalState detectPropPos(){
+    /*public GameState.SignalState detectPropPos(){
         payload.camera.waitForNextScan();
 
         Camera.SearchRegion positiveRegion = null;
@@ -46,7 +47,7 @@ public final class HighLevel {
             RobotLog.ee("HighLevel#detectPropPos", "Camera failed to detect a prop. Try tuning Search Regions and their thresholds");
             return null;
         }
-    }
+    }*/
 
     enum PropPosition{
         BLUE_NEAR_LEFT(16.5, 33, 0),
@@ -199,7 +200,8 @@ public final class HighLevel {
             case MIDDLE: id += 1;break;
         }
 
-        Pose2d rawPose = payload.camera.findTagWithID(id);
+        AprilTagDetection tag = payload.camera.findTagWithID(id);
+        Pose2d rawPose = new Pose2d(new Vector2d(tag.rawPose.x,tag.rawPose.y), new Rotation2d(0,0));
 
         assert rawPose != null;
         return computeActualPosition(rawPose);
