@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.Payload.GameState;
 import org.firstinspires.ftc.teamcode.Payload.Payload;
 import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDrive;
-import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 /*
 Robot class for Quintus
@@ -142,8 +141,7 @@ public class Quintus
             case MIDDLE: id += 1;break;
         }
 
-        AprilTagDetection tag = payload.camera.findTagWithID(id);
-        Pose2d rawPose = new Pose2d(new Vector2d(tag.rawPose.x,tag.rawPose.y), new Rotation2d(0,0));
+        Pose2d rawPose = payload.camera.findTagWithID(id);
 
         assert rawPose != null;
         return computeActualPosition(rawPose);
