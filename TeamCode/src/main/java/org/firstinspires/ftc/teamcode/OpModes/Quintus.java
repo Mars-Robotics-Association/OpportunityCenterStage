@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Payload.GameState;
@@ -41,40 +42,128 @@ public class Quintus
         */
         return 2;
     }
-    //Place purple pixel next to team prop
-    public void placePurpPix(int parkPos, int color){
-        /* take: the position found in detectPropPos
-        - have code (case) for positions
-        drive.pos(); //drive to pos
-        2. place pixel :)
-        3. move away from lines (case) (back towards the wall or go through towards mid)
-         */
 
-        //drive.pos();
-        payload.pixelArm.gripperB.open(); //place pixel
-        if (parkPos==0 && color==0) { //0==near wall and red 1==mid and blue
-            //drive.pos(); //back up
-            //drive.pos(); //drive right to corner
+    //Place purple pixel next to team prop and get into position for yellow pixel placement
+    public void placePurpPix(int parkPos, int color,int propPos){
+        //parkPos = near/far
+        //color = reb/blue
+        //propPos: used for cases (how?)
+
+        if (parkPos==0 && color==0) { //red near
+            switch(propPos) {
+                case 0://line near backboard
+                    Actions.runBlocking(drive.actionBuilder(drive.pose)
+                            .splineTo(new Vector2d(12, -35), Math.toRadians(0))
+                            .build());
+                    break;
+                case 1://mid line
+                    Actions.runBlocking(drive.actionBuilder(drive.pose)
+                            .splineTo(new Vector2d(12, -30), Math.toRadians(90))
+                            .build());
+                    break;
+                case 2://far line
+                    Actions.runBlocking(drive.actionBuilder(drive.pose)
+                            .splineTo(new Vector2d(12, -35), Math.toRadians(180))
+                            .build());
+                    break;
+                }
+            payload.pixelArm.gripperB.open(); //place pixel
+            Actions.runBlocking(drive.actionBuilder(drive.pose) //back away
+                    .splineTo(new Vector2d(12, -60), Math.toRadians(90))
+                    .splineTo(new Vector2d(12, -60), Math.toRadians(0))
+                    .build());
+
         }
-        else if (parkPos==0 && color==1){
-            //drive.pos(); //back up
-            //drive.pos(); //drive left to corner
-        }
-        else if (parkPos==1 && color==0) {
+        else if (parkPos==0 && color==1){ //blue near
+            switch(propPos) {
+                case 0://line near backboard
+                    Actions.runBlocking(drive.actionBuilder(drive.pose)
+                            .splineTo(new Vector2d(12, 35), Math.toRadians(0))
+                            .build());
+                    break;
+                case 1://mid line
+                    Actions.runBlocking(drive.actionBuilder(drive.pose)
+                            .splineTo(new Vector2d(12, 30), Math.toRadians(-90))
+                            .build());
+                    break;
+                case 2://far line
+                    Actions.runBlocking(drive.actionBuilder(drive.pose)
+                            .splineTo(new Vector2d(12, 35), Math.toRadians(-180))
+                            .build());
+                    break;
+                }
+            payload.pixelArm.gripperB.open(); //place pixel
+            Actions.runBlocking(drive.actionBuilder(drive.pose) //back away
+                    .splineTo(new Vector2d(12, 60), Math.toRadians(-90))
+                    .splineTo(new Vector2d(12, 60), Math.toRadians(0))
+                    .build());
+            }
+        else if (parkPos==1 && color==0) { //red far
             //drive.pos(); //back up
             //drive.pos(); //drive left
             //drive.pos(); //drive forward
             //drive.pos(); //drive right towards corner
+            switch(propPos) {
+                case 0://line near backboard
+                    Actions.runBlocking(drive.actionBuilder(drive.pose)
+                            .splineTo(new Vector2d(-35, -35), Math.toRadians(0))
+                            .build());
+                    break;
+                case 1://mid line
+                    Actions.runBlocking(drive.actionBuilder(drive.pose)
+                            .splineTo(new Vector2d(-35, -30), Math.toRadians(90))
+                            .build());
+                    break;
+                case 2://far line
+                    Actions.runBlocking(drive.actionBuilder(drive.pose)
+                            .splineTo(new Vector2d(-35, -35), Math.toRadians(180))
+                            .build());
+                    break;
+            }
+            payload.pixelArm.gripperB.open(); //place pixel
+            Actions.runBlocking(drive.actionBuilder(drive.pose)
+                    .splineTo(new Vector2d(-35, -60), Math.toRadians(90)) //back away
+                    .splineTo(new Vector2d(-35, -60), Math.toRadians(180)) //turn to back
+                    .splineTo(new Vector2d(-57, -30), Math.toRadians(90)) //go around lines
+                    .splineTo(new Vector2d(-35, -12), Math.toRadians(0)) //turn to towards back board
+                    .splineTo(new Vector2d(32, -12), Math.toRadians(0)) //go under curtain
+                    .build());
         }
-        else if (parkPos==1 && color==1){
+        else if (parkPos==1 && color==1){ //blue far
             //drive.pos(); //back up
             //drive.pos(); //drive right
             //drive.pos(); //drive forward
             //drive.pos(); //drive left through curtain
+            switch(propPos) {
+                case 0://line near backboard
+                    Actions.runBlocking(drive.actionBuilder(drive.pose)
+                            .splineTo(new Vector2d(-35, 35), Math.toRadians(0))
+                            .build());
+                    break;
+                case 1://mid line
+                    Actions.runBlocking(drive.actionBuilder(drive.pose)
+                            .splineTo(new Vector2d(-35, 30), Math.toRadians(-90))
+                            .build());
+                    break;
+                case 2://far line
+                    Actions.runBlocking(drive.actionBuilder(drive.pose)
+                            .splineTo(new Vector2d(-35, 35), Math.toRadians(-180))
+                            .build());
+                    break;
+            }
+            payload.pixelArm.gripperB.open(); //place pixel
+            Actions.runBlocking(drive.actionBuilder(drive.pose)
+                    .splineTo(new Vector2d(-35, 60), Math.toRadians(-90)) //back away
+                    .splineTo(new Vector2d(-35, 60), Math.toRadians(-180)) //turn to back
+                    .splineTo(new Vector2d(-57, 30), Math.toRadians(-90)) //go around lines
+                    .splineTo(new Vector2d(-35, 12), Math.toRadians(0)) //turn to towards back board
+                    .splineTo(new Vector2d(32, 12), Math.toRadians(0)) //go under curtain
+                    .build());
         }
 
-
     }
+
+
     //Place yellow pixel in correct position
     public void placeYellowPix(int propPos){
         payload.pixelArm.lift.setHeight(8); //raise lift, TODO find inches value
@@ -161,6 +250,6 @@ public class Quintus
         return drive.actionBuilder(drive.pose)
                 .setTangent(drive.pose.heading)
                 .splineToLinearHeading(targetPose, targetPose.heading)
-                .build();
+                .build());
     }
 }

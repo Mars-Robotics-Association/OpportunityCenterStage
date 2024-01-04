@@ -53,7 +53,7 @@ public class AutoTest extends LinearOpMode {
                 drive.actionBuilder(drive.pose)
                         .splineTo(new Vector2d(48, 0), Math.toRadians(0))
                         .build());
-
+                // may need to adjust tics per inch
 
 
         payload.pixelArm.wrist.toStorageAngle();
