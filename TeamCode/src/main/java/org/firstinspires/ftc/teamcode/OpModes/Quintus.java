@@ -51,9 +51,9 @@ public class Quintus
 
         if (gameState.parkSpot == GameState.ParkSpot.NEAR && gameState.teamColor == GameState.TeamColor.RED) { //red near
             switch(gameState.signalState) {
-                case LEFT://line near backboard
+                case RIGHT://line near backboard
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
-                            .splineTo(new Vector2d(12, -35), Math.toRadians(0))
+                            .splineTo(new Vector2d(12, -36), Math.toRadians(0))
                             .build());
                     break;
                 case MIDDLE://mid line
@@ -61,9 +61,9 @@ public class Quintus
                             .splineTo(new Vector2d(12, -30), Math.toRadians(90))
                             .build());
                     break;
-                case RIGHT://far line
+                case LEFT://far line
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
-                            .splineTo(new Vector2d(12, -35), Math.toRadians(180))
+                            .splineTo(new Vector2d(12, -36), Math.toRadians(180))
                             .build());
                     break;
                 }
@@ -76,7 +76,7 @@ public class Quintus
         }
         else if (gameState.parkSpot== GameState.ParkSpot.NEAR && gameState.teamColor== GameState.TeamColor.BLUE){ //blue near
             switch(gameState.signalState) {
-                case LEFT://line near backboard
+                case RIGHT://line near backboard
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
                             .splineTo(new Vector2d(12, 35), Math.toRadians(0))
                             .build());
@@ -86,7 +86,7 @@ public class Quintus
                             .splineTo(new Vector2d(12, 30), Math.toRadians(-90))
                             .build());
                     break;
-                case RIGHT://far line
+                case LEFT://far line
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
                             .splineTo(new Vector2d(12, 35), Math.toRadians(-180))
                             .build());
@@ -104,7 +104,7 @@ public class Quintus
             //drive.pos(); //drive forward
             //drive.pos(); //drive right towards corner
             switch(gameState.signalState) {
-                case LEFT://line near backboard
+                case RIGHT://line near backboard
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
                             .splineTo(new Vector2d(-36, -35), Math.toRadians(0))
                             .build());
@@ -114,7 +114,7 @@ public class Quintus
                             .splineTo(new Vector2d(-36, -30), Math.toRadians(90))
                             .build());
                     break;
-                case RIGHT://far line
+                case LEFT://far line
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
                             .splineTo(new Vector2d(-36, -35), Math.toRadians(180))
                             .build());
@@ -135,7 +135,7 @@ public class Quintus
             //drive.pos(); //drive forward
             //drive.pos(); //drive left through curtain
             switch(gameState.signalState) {
-                case LEFT://line near backboard
+                case RIGHT://line near backboard
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
                             .splineTo(new Vector2d(-35, 35), Math.toRadians(0))
                             .build());
@@ -145,7 +145,7 @@ public class Quintus
                             .splineTo(new Vector2d(-35, 30), Math.toRadians(-90))
                             .build());
                     break;
-                case RIGHT://far line
+                case LEFT://far line
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
                             .splineTo(new Vector2d(-35, 35), Math.toRadians(-180))
                             .build());
