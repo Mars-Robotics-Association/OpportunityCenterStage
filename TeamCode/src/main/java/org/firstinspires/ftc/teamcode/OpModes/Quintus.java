@@ -23,9 +23,9 @@ public class Quintus
     private final GameState gameState;
     public final MecanumDrive drive;
 
-    Quintus(GameState gameState, HardwareMap hardwareMap){
+    public Quintus(GameState gameState, HardwareMap hardwareMap, Pose2d startingPos){
         this.gameState = gameState;
-        drive = new MecanumDrive(hardwareMap, new Pose2d(12, 60, Math.toRadians(270)));
+        drive = new MecanumDrive(hardwareMap, startingPos);
         payload = new Payload(hardwareMap, drive);
     }
 
@@ -44,24 +44,24 @@ public class Quintus
     }
 
     //Place purple pixel next to team prop and get into position for yellow pixel placement
-    public void placePurpPix(int parkPos, int color,int propPos){
+    public void placePurpPix(){
         //parkPos = near/far
         //color = reb/blue
         //propPos: used for cases (how?)
 
-        if (parkPos==0 && color==0) { //red near
-            switch(propPos) {
-                case 0://line near backboard
+        if (gameState.parkSpot == GameState.ParkSpot.NEAR && gameState.teamColor == GameState.TeamColor.RED) { //red near
+            switch(gameState.signalState) {
+                case LEFT://line near backboard
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
                             .splineTo(new Vector2d(12, -35), Math.toRadians(0))
                             .build());
                     break;
-                case 1://mid line
+                case MIDDLE://mid line
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
                             .splineTo(new Vector2d(12, -30), Math.toRadians(90))
                             .build());
                     break;
-                case 2://far line
+                case RIGHT://far line
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
                             .splineTo(new Vector2d(12, -35), Math.toRadians(180))
                             .build());
@@ -74,19 +74,19 @@ public class Quintus
                     .build());
 
         }
-        else if (parkPos==0 && color==1){ //blue near
-            switch(propPos) {
-                case 0://line near backboard
+        else if (gameState.parkSpot== GameState.ParkSpot.NEAR && gameState.teamColor== GameState.TeamColor.BLUE){ //blue near
+            switch(gameState.signalState) {
+                case LEFT://line near backboard
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
                             .splineTo(new Vector2d(12, 35), Math.toRadians(0))
                             .build());
                     break;
-                case 1://mid line
+                case MIDDLE://mid line
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
                             .splineTo(new Vector2d(12, 30), Math.toRadians(-90))
                             .build());
                     break;
-                case 2://far line
+                case RIGHT://far line
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
                             .splineTo(new Vector2d(12, 35), Math.toRadians(-180))
                             .build());
@@ -98,23 +98,23 @@ public class Quintus
                     .splineTo(new Vector2d(12, 60), Math.toRadians(0))
                     .build());
             }
-        else if (parkPos==1 && color==0) { //red far
+        else if (gameState.parkSpot== GameState.ParkSpot.FAR && gameState.teamColor== GameState.TeamColor.RED) { //red far
             //drive.pos(); //back up
             //drive.pos(); //drive left
             //drive.pos(); //drive forward
             //drive.pos(); //drive right towards corner
-            switch(propPos) {
-                case 0://line near backboard
+            switch(gameState.signalState) {
+                case LEFT://line near backboard
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
                             .splineTo(new Vector2d(-35, -35), Math.toRadians(0))
                             .build());
                     break;
-                case 1://mid line
+                case MIDDLE://mid line
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
                             .splineTo(new Vector2d(-35, -30), Math.toRadians(90))
                             .build());
                     break;
-                case 2://far line
+                case RIGHT://far line
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
                             .splineTo(new Vector2d(-35, -35), Math.toRadians(180))
                             .build());
@@ -129,23 +129,23 @@ public class Quintus
                     .splineTo(new Vector2d(32, -12), Math.toRadians(0)) //go under curtain
                     .build());
         }
-        else if (parkPos==1 && color==1){ //blue far
+        else if (gameState.parkSpot== GameState.ParkSpot.FAR && gameState.teamColor== GameState.TeamColor.BLUE){ //blue far
             //drive.pos(); //back up
             //drive.pos(); //drive right
             //drive.pos(); //drive forward
             //drive.pos(); //drive left through curtain
-            switch(propPos) {
-                case 0://line near backboard
+            switch(gameState.signalState) {
+                case LEFT://line near backboard
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
                             .splineTo(new Vector2d(-35, 35), Math.toRadians(0))
                             .build());
                     break;
-                case 1://mid line
+                case MIDDLE://mid line
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
                             .splineTo(new Vector2d(-35, 30), Math.toRadians(-90))
                             .build());
                     break;
-                case 2://far line
+                case RIGHT://far line
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
                             .splineTo(new Vector2d(-35, 35), Math.toRadians(-180))
                             .build());
@@ -167,14 +167,14 @@ public class Quintus
     //Place yellow pixel in correct position
     public void placeYellowPix(int propPos){
         payload.pixelArm.lift.setHeight(8); //raise lift, TODO find inches value
-        switch(propPos){
-            case 0:
+        switch(gameState.signalState){
+            case LEFT:
                 //drive to pos 0
                 break;
-            case 1:
+            case MIDDLE:
                 //drive to pos 1
                 break;
-            case 2:
+            case RIGHT:
                 //drive to pos 2
                 break;
         }
@@ -185,23 +185,23 @@ public class Quintus
     }
 
     //Park (close → corner; far → middle)
-    public void autoPark(int parkpos, int color){
+    public void autoPark(){
         /* take: if park in corner or mid
         1. (case) drive to end of auto pos
          */
-        if (parkpos==0 && color==0){
+        if (gameState.parkSpot == GameState.ParkSpot.NEAR && gameState.teamColor== GameState.TeamColor.RED){
             //drive.pos(); //right
             //drive.pos(); //forward
         }
-        else if (parkpos==0 && color==1){
+        else if (gameState.parkSpot == GameState.ParkSpot.NEAR && gameState.teamColor== GameState.TeamColor.BLUE){
             //drive.pos(); //left
             //drive.pos(); //forward
         }
-        else if (parkpos==1 && color==0){
+        else if (gameState.parkSpot == GameState.ParkSpot.FAR && gameState.teamColor== GameState.TeamColor.RED){
             //drive.pos(); //left
             //drive.pos(); //forward
         }
-        else if (parkpos==1 && color==1) {
+        else if (gameState.parkSpot == GameState.ParkSpot.FAR && gameState.teamColor== GameState.TeamColor.BLUE) {
             //drive.pos(); //right
             //drive.pos(); //forward
         }
@@ -250,6 +250,6 @@ public class Quintus
         return drive.actionBuilder(drive.pose)
                 .setTangent(drive.pose.heading)
                 .splineToLinearHeading(targetPose, targetPose.heading)
-                .build());
+                .build();
     }
 }

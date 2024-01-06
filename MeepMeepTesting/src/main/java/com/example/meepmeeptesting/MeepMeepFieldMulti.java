@@ -20,6 +20,7 @@ public class MeepMeepFieldMulti {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 13)
                 .setColorScheme(new ColorSchemeRedDark())
+                .setDimensions(15,15)
                 .build();
         RoadRunnerBotEntity redBot2 = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
