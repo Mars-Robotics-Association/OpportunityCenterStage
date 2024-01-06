@@ -106,17 +106,17 @@ public class Quintus
             switch(gameState.signalState) {
                 case LEFT://line near backboard
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
-                            .splineTo(new Vector2d(-35, -35), Math.toRadians(0))
+                            .splineTo(new Vector2d(-36, -35), Math.toRadians(0))
                             .build());
                     break;
                 case MIDDLE://mid line
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
-                            .splineTo(new Vector2d(-35, -30), Math.toRadians(90))
+                            .splineTo(new Vector2d(-36, -30), Math.toRadians(90))
                             .build());
                     break;
                 case RIGHT://far line
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
-                            .splineTo(new Vector2d(-35, -35), Math.toRadians(180))
+                            .splineTo(new Vector2d(-36, -35), Math.toRadians(180))
                             .build());
                     break;
             }
