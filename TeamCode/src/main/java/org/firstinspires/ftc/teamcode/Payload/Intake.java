@@ -2,19 +2,20 @@ package org.firstinspires.ftc.teamcode.Payload;
 
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 public final class Intake {
-    private final CRServo servo;
+    private final Servo servo;
 
     Intake(HardwareMap hardwareMap){
-        servo = hardwareMap.crservo.get("intake_servo");
+        servo = hardwareMap.servo.get("intake_servo");
     }
 
-    public void open(){
-        servo.setPower(.5);
-    }
+    public void intake(){servo.setPosition(0);}
 
-    public void close(){
-        servo.setPower(-.5);
+    public void stop(){servo.setPosition(.5);}
+
+    public void outtake(){
+        servo.setPosition(1);
     }
 }

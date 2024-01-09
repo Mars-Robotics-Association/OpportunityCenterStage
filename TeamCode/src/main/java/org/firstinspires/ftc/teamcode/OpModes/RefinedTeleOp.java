@@ -55,12 +55,8 @@ public class RefinedTeleOp extends OpMode {
         if (gamepad1.dpad_right)
             payload.pixelArm.wrist.toBoardAngle();
 
-        float openValue = gamepad1.left_trigger - gamepad1.right_trigger;
-
-        if (openValue > 0.2f){
-           payload.intake.open();
-        } else if (openValue < 0.2f){
-            payload.intake.close();
-        }
+        if (gamepad1.right_bumper) payload.intake.intake();
+        else if (gamepad1.left_bumper) payload.intake.outtake();
+        else payload.intake.stop();
     }
 }
