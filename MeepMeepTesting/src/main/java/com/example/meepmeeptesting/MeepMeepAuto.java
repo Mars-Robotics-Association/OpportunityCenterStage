@@ -18,6 +18,7 @@ public class MeepMeepAuto {
         gameState.teamColor = GameState.TeamColor.RED; //team red
         gameState.parkSpot = GameState.ParkSpot.NEAR; //auto starts near backboard
 
+        TODO: left for red side doesn't == left for blue side!
          */
 
         RoadRunnerBotEntity redNear = new DefaultBotBuilder(meepMeep)
@@ -56,7 +57,7 @@ public class MeepMeepAuto {
 //                .splineTo(new Vector2d(54, -60), Math.toRadians(0)) //park in corner
 //                .build());
 //
-//        redFar.runAction(redNear.getDrive().actionBuilder(new Pose2d(-36, -65, Math.toRadians(90))) //red far middle
+//        redFar.runAction(redFar.getDrive().actionBuilder(new Pose2d(-36, -65, Math.toRadians(90))) //red far middle
 //                .splineTo(new Vector2d(-36, -30), Math.toRadians(90)) //place
 //                .setReversed(true)
 //                .splineTo(new Vector2d(-36, -50), Math.toRadians(-90)) //back away
@@ -72,7 +73,7 @@ public class MeepMeepAuto {
 //                .splineTo(new Vector2d(54, -12), Math.toRadians(0)) //park in corner
 //                .build());
 //
-//        blueNear.runAction(redNear.getDrive().actionBuilder(new Pose2d(12, 65, Math.toRadians(-90))) //blue near middle
+//        blueNear.runAction(blueNear.getDrive().actionBuilder(new Pose2d(12, 65, Math.toRadians(-90))) //blue near middle
 //                .splineTo(new Vector2d(12, 30), Math.toRadians(-90)) //place
 //                .setReversed(true)
 //                .splineTo(new Vector2d(12, 50), Math.toRadians(90)) //back up
@@ -85,7 +86,7 @@ public class MeepMeepAuto {
 //                .splineTo(new Vector2d(54, 60), Math.toRadians(0)) //park in corner
 //                .build());
 //
-//        blueFar.runAction(redNear.getDrive().actionBuilder(new Pose2d(-36, 65, Math.toRadians(-90))) //blue far middle
+//        blueFar.runAction(blueFar.getDrive().actionBuilder(new Pose2d(-36, 65, Math.toRadians(-90))) //blue far middle
 //                .splineTo(new Vector2d(-36, 30), Math.toRadians(-90)) //place
 //                .setReversed(true)
 //                .splineTo(new Vector2d(-36, 50), Math.toRadians(90)) //back away
@@ -102,7 +103,7 @@ public class MeepMeepAuto {
 //                .build());
 
 
-    //prop on left
+    //prop on left (far from backboard)
 //        redNear.runAction(redNear.getDrive().actionBuilder(new Pose2d(12, -65, Math.toRadians(90))) //red near left
 //                .splineTo(new Vector2d(10, -33), Math.toRadians(180)) //place
 //                .setReversed(true)
@@ -116,7 +117,7 @@ public class MeepMeepAuto {
 //                .splineTo(new Vector2d(54, -60), Math.toRadians(0)) //park in corner
 //                .build());
 //
-//        redFar.runAction(redNear.getDrive().actionBuilder(new Pose2d(-36, -65, Math.toRadians(90))) //red far left
+//        redFar.runAction(redFar.getDrive().actionBuilder(new Pose2d(-36, -65, Math.toRadians(90))) //red far left
 //                .splineTo(new Vector2d(-38, -33), Math.toRadians(180)) //place
 //                .setReversed(true)
 //                .splineTo(new Vector2d(-36, -50), Math.toRadians(-90)) //back away
@@ -132,7 +133,7 @@ public class MeepMeepAuto {
 //                .splineTo(new Vector2d(54, -12), Math.toRadians(0)) //park in corner
 //                .build());
 //
-//        blueNear.runAction(redNear.getDrive().actionBuilder(new Pose2d(12, 65, Math.toRadians(-90))) //blue near left
+//        blueNear.runAction(blueNear.getDrive().actionBuilder(new Pose2d(12, 65, Math.toRadians(-90))) //blue near left
 //                .splineTo(new Vector2d(10, 33), Math.toRadians(-180)) //place
 //                .setReversed(true)
 //                .splineTo(new Vector2d(12, 50), Math.toRadians(90)) //back up
@@ -145,7 +146,7 @@ public class MeepMeepAuto {
 //                .splineTo(new Vector2d(54, 60), Math.toRadians(0)) //park in corner
 //                .build());
 //
-//        blueFar.runAction(redNear.getDrive().actionBuilder(new Pose2d(-36, 65, Math.toRadians(-90))) //blue far left
+//        blueFar.runAction(blueFar.getDrive().actionBuilder(new Pose2d(-36, 65, Math.toRadians(-90))) //blue far left
 //                .splineTo(new Vector2d(-38, 33), Math.toRadians(-180)) //place
 //                .setReversed(true)
 //                .splineTo(new Vector2d(-36, 50), Math.toRadians(90)) //back away
@@ -161,7 +162,7 @@ public class MeepMeepAuto {
 //                .splineTo(new Vector2d(54, 12), Math.toRadians(0)) //park in corner
 //                .build());
 
-    //prop on right
+    //prop on right (close to backboard)
         redNear.runAction(redNear.getDrive().actionBuilder(new Pose2d(12, -65, Math.toRadians(90))) //red near right
                 .splineTo(new Vector2d(14, -33), Math.toRadians(0)) //place
                 .setReversed(true)
@@ -175,7 +176,7 @@ public class MeepMeepAuto {
                 .splineTo(new Vector2d(54, -60), Math.toRadians(0)) //park in corner
                 .build());
 
-        redFar.runAction(redNear.getDrive().actionBuilder(new Pose2d(-36, -65, Math.toRadians(90))) //red far right
+        redFar.runAction(redFar.getDrive().actionBuilder(new Pose2d(-36, -65, Math.toRadians(90))) //red far right
                 .splineTo(new Vector2d(-34, -33), Math.toRadians(0)) //place
                 .setReversed(true)
                 .splineTo(new Vector2d(-36, -50), Math.toRadians(-90)) //back away
@@ -191,7 +192,7 @@ public class MeepMeepAuto {
                 .splineTo(new Vector2d(54, -12), Math.toRadians(0)) //park in corner
                 .build());
 
-        blueNear.runAction(redNear.getDrive().actionBuilder(new Pose2d(12, 65, Math.toRadians(-90))) //blue near right
+        blueNear.runAction(blueNear.getDrive().actionBuilder(new Pose2d(12, 65, Math.toRadians(-90))) //blue near right
                 .splineTo(new Vector2d(14, 33), Math.toRadians(0)) //place
                 .setReversed(true)
                 .splineTo(new Vector2d(12, 50), Math.toRadians(90)) //back up
@@ -204,7 +205,7 @@ public class MeepMeepAuto {
                 .splineTo(new Vector2d(54, 60), Math.toRadians(0)) //park in corner
                 .build());
 
-        blueFar.runAction(redNear.getDrive().actionBuilder(new Pose2d(-36, 65, Math.toRadians(-90))) //blue far right
+        blueFar.runAction(blueFar.getDrive().actionBuilder(new Pose2d(-36, 65, Math.toRadians(-90))) //blue far right
                 .splineTo(new Vector2d(-34, 33), Math.toRadians(0)) //place
                 .setReversed(true)
                 .splineTo(new Vector2d(-36, 50), Math.toRadians(90)) //back away

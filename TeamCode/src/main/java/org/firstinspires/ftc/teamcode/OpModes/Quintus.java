@@ -33,6 +33,15 @@ public class Quintus
 //---------------------------------------------------------
     //Common autonomous functions
     //TODO:
+
+public static int colorVar = 1; //if red, y and rotation variables are negative. If blue, they are positive
+//    if (gameState.teamColor == GameState.TeamColor.BLUE){
+//        colorVar = -1;}
+//    else if (gameState.teamColor == GameState.TeamColor.RED){
+//        colorVar = -1;
+//    }
+
+
     //Detect position of team prop (opencv or queen team prop)
     public int detectPropPos(){
         /* takes: camera image, if blue/red
@@ -44,124 +53,110 @@ public class Quintus
     }
 
     //Place purple pixel next to team prop and get into position for yellow pixel placement
-    public void placePurpPix(){
-        //parkPos = near/far
-        //color = reb/blue
-        //propPos: used for cases (how?)
-
-        if (gameState.parkSpot == GameState.ParkSpot.NEAR && gameState.teamColor == GameState.TeamColor.RED) { //red near
-            switch(gameState.signalState) {
-                case RIGHT://line near backboard
-                    Actions.runBlocking(drive.actionBuilder(drive.pose)
-                            .splineTo(new Vector2d(12, -36), Math.toRadians(0))
-                            .build());
-                    break;
-                case MIDDLE://mid line
-                    Actions.runBlocking(drive.actionBuilder(drive.pose)
-                            .splineTo(new Vector2d(12, -30), Math.toRadians(90))
-                            .build());
-                    break;
-                case LEFT://far line
-                    Actions.runBlocking(drive.actionBuilder(drive.pose)
-                            .splineTo(new Vector2d(12, -36), Math.toRadians(180))
-                            .build());
-                    break;
+    public void placePurpPix() {
+        if (gameState.parkSpot == GameState.ParkSpot.NEAR) { //robot starts in position nearest to backboard
+            if (gameState.teamColor == GameState.TeamColor.BLUE) { //left
+                switch (gameState.signalState) {
+                    case RIGHT://line near backboard
+                        Actions.runBlocking(drive.actionBuilder(drive.pose)
+                                .splineTo(new Vector2d(14, 33), Math.toRadians(0)) //approach line
+                                .build());
+                        break;
+                    case MIDDLE://mid line
+                        Actions.runBlocking(drive.actionBuilder(drive.pose)
+                                .splineTo(new Vector2d(12, 30), Math.toRadians(-90)) //approach line
+                                .build());
+                        break;
+                    case LEFT://far line
+                        Actions.runBlocking(drive.actionBuilder(drive.pose)
+                                .splineTo(new Vector2d(10, 33), Math.toRadians(-180)) //approach line
+                                .build());
+                        break;
                 }
-            payload.pixelArm.gripperB.open(); //place pixel
-            Actions.runBlocking(drive.actionBuilder(drive.pose) //back away
-                    .splineTo(new Vector2d(12, -60), Math.toRadians(90))
-                    .splineTo(new Vector2d(12, -60), Math.toRadians(0))
-                    .build());
-
-        }
-        else if (gameState.parkSpot== GameState.ParkSpot.NEAR && gameState.teamColor== GameState.TeamColor.BLUE){ //blue near
-            switch(gameState.signalState) {
-                case RIGHT://line near backboard
-                    Actions.runBlocking(drive.actionBuilder(drive.pose)
-                            .splineTo(new Vector2d(12, 35), Math.toRadians(0))
-                            .build());
-                    break;
-                case MIDDLE://mid line
-                    Actions.runBlocking(drive.actionBuilder(drive.pose)
-                            .splineTo(new Vector2d(12, 30), Math.toRadians(-90))
-                            .build());
-                    break;
-                case LEFT://far line
-                    Actions.runBlocking(drive.actionBuilder(drive.pose)
-                            .splineTo(new Vector2d(12, 35), Math.toRadians(-180))
-                            .build());
-                    break;
+            } else if (gameState.teamColor == GameState.TeamColor.RED) { //left
+                switch (gameState.signalState) {
+                    case RIGHT://far line
+                        Actions.runBlocking(drive.actionBuilder(drive.pose)
+                                .splineTo(new Vector2d(10, -33), Math.toRadians(180)) //approach line
+                                .build());
+                        break;
+                    case MIDDLE://mid line
+                        Actions.runBlocking(drive.actionBuilder(drive.pose)
+                                .splineTo(new Vector2d(12, -30), Math.toRadians(-90)) //approach line
+                                .build());
+                        break;
+                    case LEFT://line near backboard
+                        Actions.runBlocking(drive.actionBuilder(drive.pose)
+                                .splineTo(new Vector2d(14, -33), Math.toRadians(0)) //approach line
+                                .build());
+                        break;
                 }
-            payload.pixelArm.gripperB.open(); //place pixel
-            Actions.runBlocking(drive.actionBuilder(drive.pose) //back away
-                    .splineTo(new Vector2d(12, 60), Math.toRadians(-90))
-                    .splineTo(new Vector2d(12, 60), Math.toRadians(0))
-                    .build());
-            }
-        else if (gameState.parkSpot== GameState.ParkSpot.FAR && gameState.teamColor== GameState.TeamColor.RED) { //red far
-            //drive.pos(); //back up
-            //drive.pos(); //drive left
-            //drive.pos(); //drive forward
-            //drive.pos(); //drive right towards corner
-            switch(gameState.signalState) {
-                case RIGHT://line near backboard
-                    Actions.runBlocking(drive.actionBuilder(drive.pose)
-                            .splineTo(new Vector2d(-36, -35), Math.toRadians(0))
-                            .build());
-                    break;
-                case MIDDLE://mid line
-                    Actions.runBlocking(drive.actionBuilder(drive.pose)
-                            .splineTo(new Vector2d(-36, -30), Math.toRadians(90))
-                            .build());
-                    break;
-                case LEFT://far line
-                    Actions.runBlocking(drive.actionBuilder(drive.pose)
-                            .splineTo(new Vector2d(-36, -35), Math.toRadians(180))
-                            .build());
-                    break;
             }
             payload.pixelArm.gripperB.open(); //place pixel
             Actions.runBlocking(drive.actionBuilder(drive.pose)
-                    .splineTo(new Vector2d(-35, -60), Math.toRadians(90)) //back away
-                    .splineTo(new Vector2d(-35, -60), Math.toRadians(180)) //turn to back
-                    .splineTo(new Vector2d(-57, -30), Math.toRadians(90)) //go around lines
-                    .splineTo(new Vector2d(-35, -12), Math.toRadians(0)) //turn to towards back board
-                    .splineTo(new Vector2d(32, -12), Math.toRadians(0)) //go under curtain
+                    .setReversed(true)
+                    .splineTo(new Vector2d(12, 50 * colorVar), Math.toRadians(90 * colorVar)) //back up
+                    .setReversed(false)
+                    .splineTo(new Vector2d(25, 45 * colorVar), Math.toRadians(0)) //turn towards back
                     .build());
-        }
-        else if (gameState.parkSpot== GameState.ParkSpot.FAR && gameState.teamColor== GameState.TeamColor.BLUE){ //blue far
+        } else if (gameState.parkSpot == GameState.ParkSpot.FAR) { //robot starts in far position
             //drive.pos(); //back up
             //drive.pos(); //drive right
             //drive.pos(); //drive forward
             //drive.pos(); //drive left through curtain
-            switch(gameState.signalState) {
-                case RIGHT://line near backboard
-                    Actions.runBlocking(drive.actionBuilder(drive.pose)
-                            .splineTo(new Vector2d(-35, 35), Math.toRadians(0))
-                            .build());
-                    break;
-                case MIDDLE://mid line
-                    Actions.runBlocking(drive.actionBuilder(drive.pose)
-                            .splineTo(new Vector2d(-35, 30), Math.toRadians(-90))
-                            .build());
-                    break;
-                case LEFT://far line
-                    Actions.runBlocking(drive.actionBuilder(drive.pose)
-                            .splineTo(new Vector2d(-35, 35), Math.toRadians(-180))
-                            .build());
-                    break;
+            if (gameState.teamColor == GameState.TeamColor.BLUE) { //blue team
+
+                switch (gameState.signalState) {
+                    case RIGHT://line near backboard
+                        Actions.runBlocking(drive.actionBuilder(drive.pose)
+                                .splineTo(new Vector2d(-34, 33), Math.toRadians(0)) //approach line
+                                .build());
+                        break;
+                    case MIDDLE://mid line
+                        Actions.runBlocking(drive.actionBuilder(drive.pose)
+                                .splineTo(new Vector2d(-36, 30), Math.toRadians(-90)) //approach line
+                                .build());
+                        break;
+                    case LEFT://far line
+                        Actions.runBlocking(drive.actionBuilder(drive.pose)
+                                .splineTo(new Vector2d(-38, 33), Math.toRadians(-180)) //approach line
+                                .build());
+                        break;
+                }
+            } else if (gameState.teamColor == GameState.TeamColor.RED) { //red team
+
+                switch (gameState.signalState) {
+                    case RIGHT://far line
+                        Actions.runBlocking(drive.actionBuilder(drive.pose)
+                                .splineTo(new Vector2d(-38, -33), Math.toRadians(180)) //approach line
+                                .build());
+                        break;
+                    case MIDDLE://mid line
+                        Actions.runBlocking(drive.actionBuilder(drive.pose)
+                                .splineTo(new Vector2d(-36, -30), Math.toRadians(90)) //approach line
+                                .build());
+                        break;
+                    case LEFT://line near backboard
+                        Actions.runBlocking(drive.actionBuilder(drive.pose)
+                                .splineTo(new Vector2d(-34, -33), Math.toRadians(-0)) //approach line
+                                .build());
+                        break;
+                }
             }
+
             payload.pixelArm.gripperB.open(); //place pixel
             Actions.runBlocking(drive.actionBuilder(drive.pose)
-                    .splineTo(new Vector2d(-35, 60), Math.toRadians(-90)) //back away
-                    .splineTo(new Vector2d(-35, 60), Math.toRadians(-180)) //turn to back
-                    .splineTo(new Vector2d(-57, 30), Math.toRadians(-90)) //go around lines
-                    .splineTo(new Vector2d(-35, 12), Math.toRadians(0)) //turn to towards back board
-                    .splineTo(new Vector2d(32, 12), Math.toRadians(0)) //go under curtain
+                    .setReversed(true)
+                    .splineTo(new Vector2d(-36, 50 * colorVar), Math.toRadians(90 * colorVar)) //back away
+                    .setReversed(false)
+                    .splineTo(new Vector2d(-49, 45 * colorVar), Math.toRadians(-180 * colorVar)) //turn to back
+                    .splineTo(new Vector2d(-57, 30 * colorVar), Math.toRadians(-90 * colorVar)) //go around lines
+                    .splineTo(new Vector2d(-36, 12 * colorVar), Math.toRadians(0)) //turn to towards back board
+                    .splineTo(new Vector2d(30, 12 * colorVar), Math.toRadians(0)) //go under curtain
                     .build());
         }
-
     }
+
 
 
     //Place yellow pixel in correct position
