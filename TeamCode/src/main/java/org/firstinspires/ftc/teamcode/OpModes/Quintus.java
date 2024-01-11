@@ -8,9 +8,13 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Payload.GameState;
+import org.firstinspires.ftc.teamcode.Payload.GameState.ParkSpot;
+import org.firstinspires.ftc.teamcode.Payload.GameState.TeamColor;
+import org.firstinspires.ftc.teamcode.Payload.GameState.SignalState;
 import org.firstinspires.ftc.teamcode.Payload.Payload;
 import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDrive;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+
 
 /*
 Robot class for Quintus
@@ -34,12 +38,17 @@ public class Quintus
     //Common autonomous functions
     //TODO:
 
-public static int colorVar = 1; //if red, y and rotation variables are negative. If blue, they are positive
-//    if (gameState.teamColor == GameState.TeamColor.BLUE){
-//        colorVar = -1;}
-//    else if (gameState.teamColor == GameState.TeamColor.RED){
-//        colorVar = -1;
-//    }
+    public static int colorVar = 1; //if red, y and rotation variables are negative. If blue, they are positive
+
+    public void start(){
+        if (gameState.teamColor == TeamColor.BLUE){
+            colorVar = 1;
+        }
+        else if (gameState.teamColor == TeamColor.RED){
+            colorVar = -1;
+        }
+    }
+
 
 
     //Detect position of team prop (opencv or queen team prop)
@@ -54,8 +63,8 @@ public static int colorVar = 1; //if red, y and rotation variables are negative.
 
     //Place purple pixel next to team prop and get into position for yellow pixel placement
     public void placePurpPix() {
-        if (gameState.parkSpot == GameState.ParkSpot.NEAR) { //robot starts in position nearest to backboard
-            if (gameState.teamColor == GameState.TeamColor.BLUE) { //left
+        if (gameState.parkSpot == ParkSpot.NEAR) { //robot starts in position nearest to backboard
+            if (gameState.teamColor == TeamColor.BLUE) { //left
                 switch (gameState.signalState) {
                     case RIGHT://line near backboard
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
@@ -73,7 +82,7 @@ public static int colorVar = 1; //if red, y and rotation variables are negative.
                                 .build());
                         break;
                 }
-            } else if (gameState.teamColor == GameState.TeamColor.RED) { //left
+            } else if (gameState.teamColor == TeamColor.RED) { //left
                 switch (gameState.signalState) {
                     case RIGHT://far line
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
@@ -100,8 +109,8 @@ public static int colorVar = 1; //if red, y and rotation variables are negative.
                     .splineTo(new Vector2d(25, 45 * colorVar), Math.toRadians(0)) //turn towards back
                     .build());
 
-        } else if (gameState.parkSpot == GameState.ParkSpot.FAR) { //robot starts in far position
-            if (gameState.teamColor == GameState.TeamColor.BLUE) { //blue team
+        } else if (gameState.parkSpot == ParkSpot.FAR) { //robot starts in far position
+            if (gameState.teamColor == TeamColor.BLUE) { //blue team
                 switch (gameState.signalState) {
                     case RIGHT://line near backboard
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
@@ -119,7 +128,7 @@ public static int colorVar = 1; //if red, y and rotation variables are negative.
                                 .build());
                         break;
                 }
-            } else if (gameState.teamColor == GameState.TeamColor.RED) { //red team
+            } else if (gameState.teamColor == TeamColor.RED) { //red team
                 switch (gameState.signalState) {
                     case RIGHT://far line
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
@@ -159,7 +168,7 @@ public static int colorVar = 1; //if red, y and rotation variables are negative.
         payload.pixelArm.lift.setHeight(8); //raise lift, TODO find inches value
         switch(gameState.signalState){
                 case LEFT:
-                    if (gameState.teamColor == GameState.TeamColor.BLUE) { //blue team
+                    if (gameState.teamColor == TeamColor.BLUE) { //blue team
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
                                 .splineTo(new Vector2d(50, 42), Math.toRadians(0)) // approach left backboard
                                 .build());
@@ -170,7 +179,7 @@ public static int colorVar = 1; //if red, y and rotation variables are negative.
                                 .setReversed(false)
                                 .build());
                     }
-                    else if (gameState.teamColor == GameState.TeamColor.RED) { //red team
+                    else if (gameState.teamColor == TeamColor.RED) { //red team
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
                                 .splineTo(new Vector2d(50, -29), Math.toRadians(0)) // approach left backboard
                                 .build());
@@ -184,7 +193,7 @@ public static int colorVar = 1; //if red, y and rotation variables are negative.
                     break;
 
             case MIDDLE:
-                if (gameState.teamColor == GameState.TeamColor.BLUE) { //blue team
+                if (gameState.teamColor == TeamColor.BLUE) { //blue team
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
                             .splineTo(new Vector2d(50, 36), Math.toRadians(0)) // approach left backboard
                             .build());
@@ -195,7 +204,7 @@ public static int colorVar = 1; //if red, y and rotation variables are negative.
                             .setReversed(false)
                             .build());
                 }
-                else if (gameState.teamColor == GameState.TeamColor.RED) { //red team
+                else if (gameState.teamColor == TeamColor.RED) { //red team
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
                             .splineTo(new Vector2d(50, -42), Math.toRadians(0)) // approach left backboard
                             .build());
@@ -208,7 +217,7 @@ public static int colorVar = 1; //if red, y and rotation variables are negative.
                 }
                 break;
             case RIGHT:
-                if (gameState.teamColor == GameState.TeamColor.BLUE) { //blue team
+                if (gameState.teamColor == TeamColor.BLUE) { //blue team
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
                             .splineTo(new Vector2d(50, 29), Math.toRadians(0)) // approach left backboard
                             .build());
@@ -220,7 +229,7 @@ public static int colorVar = 1; //if red, y and rotation variables are negative.
                             .setReversed(false)
                             .build());
                 }
-                else if (gameState.teamColor == GameState.TeamColor.RED) { //red team
+                else if (gameState.teamColor == TeamColor.RED) { //red team
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
                             .splineTo(new Vector2d(50, -42), Math.toRadians(0)) // approach left backboard
                             .build());
@@ -241,12 +250,12 @@ public static int colorVar = 1; //if red, y and rotation variables are negative.
 
 //Park (near → corner; far → middle)
     public void autoPark(){
-        if (gameState.parkSpot == GameState.ParkSpot.NEAR){
+        if (gameState.parkSpot == ParkSpot.NEAR){
            Actions.runBlocking(drive.actionBuilder(drive.pose)
                 .splineTo(new Vector2d(54, -60*colorVar), Math.toRadians(0)) // approach left backboard
                 .build());
         }
-        else if (gameState.parkSpot == GameState.ParkSpot.FAR){
+        else if (gameState.parkSpot == ParkSpot.FAR){
             Actions.runBlocking(drive.actionBuilder(drive.pose)
                 .splineTo(new Vector2d(54, -12*colorVar), Math.toRadians(0)) // approach left backboard
                 .build());

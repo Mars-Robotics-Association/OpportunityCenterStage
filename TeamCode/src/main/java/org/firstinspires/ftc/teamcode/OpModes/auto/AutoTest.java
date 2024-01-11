@@ -56,13 +56,6 @@ public class AutoTest extends LinearOpMode {
 
         waitForStart();
 
-
-        /*Actions.runBlocking(
-                drive.actionBuilder(drive.pose)
-                        .splineTo(new Vector2d(48, 0), Math.toRadians(0))
-                        .build());
-                // may need to adjust tics per inch*/
-
         //call function from Quintus
         bot.placePurpPix();
 
