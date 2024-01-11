@@ -164,7 +164,7 @@ public class Quintus
 
 
 //Place yellow pixel in correct position
-    public void placeYellowPix(int propPos){
+    public void placeYellowPix(){
         payload.pixelArm.lift.setHeight(8); //raise lift, TODO find inches value
         switch(gameState.signalState){
                 case LEFT:

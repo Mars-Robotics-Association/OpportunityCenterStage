@@ -56,8 +56,10 @@ public class AutoTest extends LinearOpMode {
 
         waitForStart();
 
-        //call function from Quintus
+    //call function from Quintus
         bot.placePurpPix();
+        //bot.placeYellowPix();
+        //bot.autoPark();
 
 
         payload.pixelArm.wrist.toStorageAngle();
