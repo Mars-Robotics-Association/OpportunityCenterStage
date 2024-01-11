@@ -99,13 +99,9 @@ public static int colorVar = 1; //if red, y and rotation variables are negative.
                     .setReversed(false)
                     .splineTo(new Vector2d(25, 45 * colorVar), Math.toRadians(0)) //turn towards back
                     .build());
-        } else if (gameState.parkSpot == GameState.ParkSpot.FAR) { //robot starts in far position
-            //drive.pos(); //back up
-            //drive.pos(); //drive right
-            //drive.pos(); //drive forward
-            //drive.pos(); //drive left through curtain
-            if (gameState.teamColor == GameState.TeamColor.BLUE) { //blue team
 
+        } else if (gameState.parkSpot == GameState.ParkSpot.FAR) { //robot starts in far position
+            if (gameState.teamColor == GameState.TeamColor.BLUE) { //blue team
                 switch (gameState.signalState) {
                     case RIGHT://line near backboard
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
@@ -124,7 +120,6 @@ public static int colorVar = 1; //if red, y and rotation variables are negative.
                         break;
                 }
             } else if (gameState.teamColor == GameState.TeamColor.RED) { //red team
-
                 switch (gameState.signalState) {
                     case RIGHT://far line
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
@@ -159,18 +154,83 @@ public static int colorVar = 1; //if red, y and rotation variables are negative.
 
 
 
-    //Place yellow pixel in correct position
+//Place yellow pixel in correct position
     public void placeYellowPix(int propPos){
         payload.pixelArm.lift.setHeight(8); //raise lift, TODO find inches value
         switch(gameState.signalState){
-            case LEFT:
-                //drive to pos 0
-                break;
+                case LEFT:
+                    if (gameState.teamColor == GameState.TeamColor.BLUE) { //blue team
+                        Actions.runBlocking(drive.actionBuilder(drive.pose)
+                                .splineTo(new Vector2d(50, 42), Math.toRadians(0)) // approach left backboard
+                                .build());
+                        payload.pixelArm.gripperA.open(); //place pixel
+                        Actions.runBlocking(drive.actionBuilder(drive.pose)
+                                .setReversed(true)
+                                .splineTo(new Vector2d(40, 42), Math.toRadians(180)) // back up
+                                .setReversed(false)
+                                .build());
+                    }
+                    else if (gameState.teamColor == GameState.TeamColor.RED) { //red team
+                        Actions.runBlocking(drive.actionBuilder(drive.pose)
+                                .splineTo(new Vector2d(50, -29), Math.toRadians(0)) // approach left backboard
+                                .build());
+                        payload.pixelArm.gripperA.open(); //place pixel
+                        Actions.runBlocking(drive.actionBuilder(drive.pose)
+                                .setReversed(true)
+                                .splineTo(new Vector2d(40, -29), Math.toRadians(180)) // back up
+                                .setReversed(false)
+                                .build());
+                    }
+                    break;
+
             case MIDDLE:
-                //drive to pos 1
+                if (gameState.teamColor == GameState.TeamColor.BLUE) { //blue team
+                    Actions.runBlocking(drive.actionBuilder(drive.pose)
+                            .splineTo(new Vector2d(50, 36), Math.toRadians(0)) // approach left backboard
+                            .build());
+                    payload.pixelArm.gripperA.open(); //place pixel
+                    Actions.runBlocking(drive.actionBuilder(drive.pose)
+                            .setReversed(true)
+                            .splineTo(new Vector2d(40, 36), Math.toRadians(180)) // back up
+                            .setReversed(false)
+                            .build());
+                }
+                else if (gameState.teamColor == GameState.TeamColor.RED) { //red team
+                    Actions.runBlocking(drive.actionBuilder(drive.pose)
+                            .splineTo(new Vector2d(50, -42), Math.toRadians(0)) // approach left backboard
+                            .build());
+                    payload.pixelArm.gripperA.open(); //place pixel
+                    Actions.runBlocking(drive.actionBuilder(drive.pose)
+                            .setReversed(true)
+                            .splineTo(new Vector2d(40, -42), Math.toRadians(180)) // back up
+                            .setReversed(false)
+                            .build());
+                }
                 break;
             case RIGHT:
-                //drive to pos 2
+                if (gameState.teamColor == GameState.TeamColor.BLUE) { //blue team
+                    Actions.runBlocking(drive.actionBuilder(drive.pose)
+                            .splineTo(new Vector2d(50, 29), Math.toRadians(0)) // approach left backboard
+                            .build());
+                    //wrist&lift set up
+                    payload.pixelArm.gripperA.open(); //place pixel
+                    Actions.runBlocking(drive.actionBuilder(drive.pose)
+                            .setReversed(true)
+                            .splineTo(new Vector2d(40, 29), Math.toRadians(180)) // back up
+                            .setReversed(false)
+                            .build());
+                }
+                else if (gameState.teamColor == GameState.TeamColor.RED) { //red team
+                    Actions.runBlocking(drive.actionBuilder(drive.pose)
+                            .splineTo(new Vector2d(50, -42), Math.toRadians(0)) // approach left backboard
+                            .build());
+                    payload.pixelArm.gripperA.open(); //place pixel
+                    Actions.runBlocking(drive.actionBuilder(drive.pose)
+                            .setReversed(true)
+                            .splineTo(new Vector2d(40, -42), Math.toRadians(180)) // back up
+                            .setReversed(false)
+                            .build());
+                }
                 break;
         }
         payload.pixelArm.gripperA.open(); //open left? gripper (gripper with yellow pixel)
@@ -179,26 +239,17 @@ public static int colorVar = 1; //if red, y and rotation variables are negative.
         payload.pixelArm.lift.setHeight(0);
     }
 
-    //Park (close → corner; far → middle)
+//Park (near → corner; far → middle)
     public void autoPark(){
-        /* take: if park in corner or mid
-        1. (case) drive to end of auto pos
-         */
-        if (gameState.parkSpot == GameState.ParkSpot.NEAR && gameState.teamColor== GameState.TeamColor.RED){
-            //drive.pos(); //right
-            //drive.pos(); //forward
+        if (gameState.parkSpot == GameState.ParkSpot.NEAR){
+           Actions.runBlocking(drive.actionBuilder(drive.pose)
+                .splineTo(new Vector2d(54, -60*colorVar), Math.toRadians(0)) // approach left backboard
+                .build());
         }
-        else if (gameState.parkSpot == GameState.ParkSpot.NEAR && gameState.teamColor== GameState.TeamColor.BLUE){
-            //drive.pos(); //left
-            //drive.pos(); //forward
-        }
-        else if (gameState.parkSpot == GameState.ParkSpot.FAR && gameState.teamColor== GameState.TeamColor.RED){
-            //drive.pos(); //left
-            //drive.pos(); //forward
-        }
-        else if (gameState.parkSpot == GameState.ParkSpot.FAR && gameState.teamColor== GameState.TeamColor.BLUE) {
-            //drive.pos(); //right
-            //drive.pos(); //forward
+        else if (gameState.parkSpot == GameState.ParkSpot.FAR){
+            Actions.runBlocking(drive.actionBuilder(drive.pose)
+                .splineTo(new Vector2d(54, -12*colorVar), Math.toRadians(0)) // approach left backboard
+                .build());
         }
     }
 //--------------------------------------------------------------------------------------

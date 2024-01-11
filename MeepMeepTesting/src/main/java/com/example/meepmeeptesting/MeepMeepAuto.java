@@ -139,7 +139,7 @@ public class MeepMeepAuto {
 //                .splineTo(new Vector2d(12, 50), Math.toRadians(90)) //back up
 //                .setReversed(false)
 //                .splineTo(new Vector2d(25, 45), Math.toRadians(0)) //turn
-//                .splineTo(new Vector2d(50, 29), Math.toRadians(0)) //go to mid back board
+//                .splineTo(new Vector2d(50, 29), Math.toRadians(0)) //go to left back board
 //                .setReversed(true)
 //                .splineTo(new Vector2d(40, 29), Math.toRadians(180)) //backup
 //                .setReversed(false)

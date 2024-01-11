@@ -4,6 +4,7 @@ public final class GameState {
     public SignalState signalState;
     public TeamColor teamColor;
     public ParkSpot parkSpot;
+    //can we add a separate variable for park location vs start location?
 
     public enum SignalState {LEFT, MIDDLE, RIGHT}
 
