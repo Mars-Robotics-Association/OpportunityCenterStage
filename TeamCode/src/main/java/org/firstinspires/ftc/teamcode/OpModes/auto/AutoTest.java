@@ -22,6 +22,8 @@ public class AutoTest extends LinearOpMode {
     DcMotorEx leftBack;
     DcMotorEx rightBack;
     DcMotorEx rightFront;
+    private Quintus bot ;
+    private GameState gameState;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -47,14 +49,14 @@ public class AutoTest extends LinearOpMode {
 
 
         //using roadrunner
-        GameState gameState = new GameState();
         gameState.signalState = GameState.SignalState.MIDDLE; //prop on middle line
         gameState.teamColor = GameState.TeamColor.RED; //team red
         gameState.parkSpot = GameState.ParkSpot.NEAR; //auto starts near backboard
-        Quintus bot = new Quintus(new GameState(), this.hardwareMap, new Pose2d(12,-65,90));
+        Quintus bot = new Quintus(gameState, this.hardwareMap, new Pose2d(12,-65,90));
         MecanumDrive drive = bot.drive;
 
         waitForStart();
+        bot.start();
 
     //call function from Quintus
         bot.placePurpPix();

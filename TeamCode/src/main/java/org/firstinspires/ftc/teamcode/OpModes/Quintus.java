@@ -24,7 +24,7 @@ It will contain all common functionality of the robot including navigation, payl
 public class Quintus
 {
     private final Payload payload;
-    private final GameState gameState;
+    private GameState gameState;
     public final MecanumDrive drive;
 
     public Quintus(GameState gameState, HardwareMap hardwareMap, Pose2d startingPos){
@@ -286,11 +286,11 @@ public class Quintus
             case MIDDLE: id += 1;break;
         }
 
-        AprilTagDetection tag = payload.camera.findTagWithID(id);
-        Pose2d rawPose = new Pose2d(new Vector2d(tag.rawPose.x,tag.rawPose.y), new Rotation2d(0,0));
+        //AprilTagDetection tag = payload.camera.findTagWithID(id);
+        //Pose2d rawPose = new Pose2d(new Vector2d(tag.rawPose.x,tag.rawPose.y), new Rotation2d(0,0));
 
-        assert rawPose != null;
-        return computeActualPosition(rawPose);
+        //assert rawPose != null;
+        return computeActualPosition(new Pose2d(0,0,0));
     }
 
     //Methods for moving to known locations
