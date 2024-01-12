@@ -46,7 +46,7 @@ public class AutoTest extends LinearOpMode {
 
         Payload payload = new Payload(hardwareMap, null);
         payload.pixelArm.wrist.toStorageAngle();
-
+        gameState = new GameState();
 
         //using roadrunner
         gameState.signalState = GameState.SignalState.MIDDLE; //prop on middle line

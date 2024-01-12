@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.Payload;
 
-public final class GameState {
+public class GameState {
     public SignalState signalState;
     public TeamColor teamColor;
     public ParkSpot parkSpot;
