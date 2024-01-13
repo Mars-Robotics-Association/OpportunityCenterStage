@@ -38,7 +38,7 @@ public class Quintus
     //Common autonomous functions
     //TODO:
 
-    public static int colorVar = 1; //if red, y and rotation variables are negative. If blue, they are positive
+    public static int colorVar = -1; //if red, y and rotation variables are negative. If blue, they are positive
 
     public void start(){
         if (gameState.teamColor == TeamColor.BLUE){
@@ -62,7 +62,8 @@ public class Quintus
     }
 
     //Place purple pixel next to team prop and get into position for yellow pixel placement
-    public void placePurpPix() {
+    public void placePurpPix(GameState myGameState) {
+        gameState = myGameState;
         if (gameState.parkSpot == ParkSpot.NEAR) { //robot starts in position nearest to backboard
             if (gameState.teamColor == TeamColor.BLUE) { //left
                 switch (gameState.signalState) {
@@ -91,7 +92,7 @@ public class Quintus
                         break;
                     case MIDDLE://mid line
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
-                                .splineTo(new Vector2d(12, -30), Math.toRadians(-90)) //approach line
+                                .splineTo(new Vector2d(12, -36), Math.toRadians(90)) //approach line
                                 .build());
                         break;
                     case LEFT://line near backboard
@@ -101,7 +102,9 @@ public class Quintus
                         break;
                 }
             }
+            payload.pixelArm.wrist.toGroundAngle();
             payload.pixelArm.gripperB.open(); //place pixel
+            payload.pixelArm.wrist.toStorageAngle();
             Actions.runBlocking(drive.actionBuilder(drive.pose)
                     .setReversed(true)
                     .splineTo(new Vector2d(12, 50 * colorVar), Math.toRadians(90 * colorVar)) //back up
@@ -165,7 +168,7 @@ public class Quintus
 
 //Place yellow pixel in correct position
     public void placeYellowPix(){
-        payload.pixelArm.lift.setHeight(8); //raise lift, TODO find inches value
+        payload.pixelArm.lift.setLiftHeight(.5); //raise lift
         switch(gameState.signalState){
                 case LEFT:
                     if (gameState.teamColor == TeamColor.BLUE) { //blue team
@@ -201,18 +204,17 @@ public class Quintus
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
                             .setReversed(true)
                             .splineTo(new Vector2d(40, 36), Math.toRadians(180)) // back up
-                            .setReversed(false)
                             .build());
                 }
                 else if (gameState.teamColor == TeamColor.RED) { //red team
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
-                            .splineTo(new Vector2d(50, -42), Math.toRadians(0)) // approach left backboard
+                            .splineTo(new Vector2d(48, -36), Math.toRadians(0)) // approach left backboard
                             .build());
+                    payload.pixelArm.wrist.toBoardAngle();
                     payload.pixelArm.gripperA.open(); //place pixel
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
                             .setReversed(true)
-                            .splineTo(new Vector2d(40, -42), Math.toRadians(180)) // back up
-                            .setReversed(false)
+                            .splineTo(new Vector2d(40, -36), Math.toRadians(180)) // back up
                             .build());
                 }
                 break;
@@ -242,17 +244,15 @@ public class Quintus
                 }
                 break;
         }
-        payload.pixelArm.gripperA.open(); //open left? gripper (gripper with yellow pixel)
-        //drive.pos();  //drive backwards away from board TODO find pos
-        //lower lift
-        payload.pixelArm.lift.setHeight(0);
+        //payload.pixelArm.lift.setLiftHeight(0); //lower lift
     }
 
 //Park (near → corner; far → middle)
     public void autoPark(){
+        payload.pixelArm.lift.setLiftHeight(0); //lower lift
         if (gameState.parkSpot == ParkSpot.NEAR){
            Actions.runBlocking(drive.actionBuilder(drive.pose)
-                .splineTo(new Vector2d(54, -60*colorVar), Math.toRadians(0)) // approach left backboard
+                .splineTo(new Vector2d(48, -54), Math.toRadians(0)) // approach left backboard
                 .build());
         }
         else if (gameState.parkSpot == ParkSpot.FAR){

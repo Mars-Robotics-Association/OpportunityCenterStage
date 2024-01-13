@@ -15,6 +15,9 @@ public final class PixelArm {
         Lift(HardwareMap hardwareMap){
             motor = hardwareMap.dcMotor.get("lift_motor");
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            motor.setTargetPosition(0);
+            motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
 
         public final DcMotor motor;
@@ -25,7 +28,7 @@ public final class PixelArm {
 
         private static final double GAIN = 1;
 
-        public Action setHeight(double inches){
+        public Action setHeight(double inches){ //for teleop
             return telemetryPacket -> {
                 double position = motor.getCurrentPosition() / TICKS_PER_INCH;
 
@@ -39,6 +42,13 @@ public final class PixelArm {
                     return false;
                 }
             };
+        }
+
+        public void setLiftHeight(double inches){ //for auto
+            //motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motor.setPower(0.5);
+            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motor.setTargetPosition((int)(inches*TICKS_PER_INCH));
         }
     }
 
@@ -107,6 +117,8 @@ public final class PixelArm {
             servo.setPosition(STORAGE_POSITION);
         }
     }
+
+
 
     public PixelArm(HardwareMap hardwareMap){
         lift = new Lift(hardwareMap);

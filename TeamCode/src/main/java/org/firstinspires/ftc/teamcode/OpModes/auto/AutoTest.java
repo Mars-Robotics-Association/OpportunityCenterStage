@@ -52,18 +52,30 @@ public class AutoTest extends LinearOpMode {
         gameState.signalState = GameState.SignalState.MIDDLE; //prop on middle line
         gameState.teamColor = GameState.TeamColor.RED; //team red
         gameState.parkSpot = GameState.ParkSpot.NEAR; //auto starts near backboard
-        Quintus bot = new Quintus(gameState, this.hardwareMap, new Pose2d(12,-65,90));
+        Quintus bot = new Quintus(gameState, this.hardwareMap, new Pose2d(12, -65, Math.toRadians(90)));
         MecanumDrive drive = bot.drive;
 
         waitForStart();
         bot.start();
 
-    //call function from Quintus
-        bot.placePurpPix();
-        //bot.placeYellowPix();
-        //bot.autoPark();
+        if(this.opModeIsActive()) {
+            //call function from Quintus
+            payload.pixelArm.wrist.toGroundAngle(); //starts with gripper up
+            waitFor(1);
+            payload.pixelArm.gripperA.close();
+            payload.pixelArm.gripperB.close();
+            waitFor(1);
+            payload.pixelArm.wrist.toStorageAngle();
+            bot.placePurpPix(gameState);
+            bot.placeYellowPix();
+            bot.autoPark();
 
 
-        payload.pixelArm.wrist.toStorageAngle();
+            payload.pixelArm.wrist.toStorageAngle();
+        }
+    }
+    public void waitFor(double timer){
+        double startTime = this.time;
+        while(this.time<startTime+timer){}
     }
 }
