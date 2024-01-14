@@ -23,7 +23,7 @@ It will contain all common functionality of the robot including navigation, payl
  */
 public class Quintus
 {
-    private final Payload payload;
+    public final Payload payload;
     private GameState gameState;
     public final MecanumDrive drive;
 
@@ -39,7 +39,6 @@ public class Quintus
     //TODO:
 
     public static int colorVar = -1; //if red, y and rotation variables are negative. If blue, they are positive
-
     public void start(){
         if (gameState.teamColor == TeamColor.BLUE){
             colorVar = 1;
