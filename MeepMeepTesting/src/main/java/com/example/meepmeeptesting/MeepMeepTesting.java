@@ -5,9 +5,17 @@ import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
+
+
 public class MeepMeepTesting {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
+        /*GameState gameState = new GameState();
+        gameState.signalState = GameState.SignalState.MIDDLE; //prop on middle line
+        gameState.teamColor = GameState.TeamColor.RED; //team red
+        gameState.parkSpot = GameState.ParkSpot.NEAR; //auto starts near backboard
+
+         */
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
@@ -30,5 +38,7 @@ public class MeepMeepTesting {
                 .setBackgroundAlpha(0.95f)
                 .addEntity(myBot)
                 .start();
+
+
+        }
     }
-}

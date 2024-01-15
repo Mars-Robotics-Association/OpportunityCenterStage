@@ -15,6 +15,9 @@ public final class PixelArm {
         Lift(HardwareMap hardwareMap){
             motor = hardwareMap.dcMotor.get("lift_motor");
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            motor.setTargetPosition(0);
+            motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
 
         public final DcMotor motor;
@@ -25,7 +28,7 @@ public final class PixelArm {
 
         private static final double GAIN = 1;
 
-        public Action setHeight(double inches){
+        public Action setHeight(double inches){ //for teleop
             return telemetryPacket -> {
                 double position = motor.getCurrentPosition() / TICKS_PER_INCH;
 
@@ -40,13 +43,20 @@ public final class PixelArm {
                 }
             };
         }
+
+        public void setLiftHeight(double inches){ //for auto
+            //motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motor.setPower(0.5);
+            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motor.setTargetPosition((int)(inches*TICKS_PER_INCH));
+        }
     }
 
     public static class Gripper{
 
         public enum Side{
-            A("left_gripper", .5449, .4861),
-            B("right_gripper", .3022, .3733);
+            A("left_gripper", .2444, .4172),
+            B("right_gripper", .7450, .6056);
             public final String name;
 
             public final double closePos;
@@ -87,8 +97,8 @@ public final class PixelArm {
     }
 
     public static class Wrist{
-        private static final double GROUND_POSITION = 0.0966;
-        private static final double BOARD_POSITION = 0.3372;
+        private static final double GROUND_POSITION = 0.201666667;
+        private static final double BOARD_POSITION = .3728;
         private static final double STORAGE_POSITION = BOARD_POSITION;
         private final Servo servo;
 
@@ -107,6 +117,8 @@ public final class PixelArm {
             servo.setPosition(STORAGE_POSITION);
         }
     }
+
+
 
     public PixelArm(HardwareMap hardwareMap){
         lift = new Lift(hardwareMap);
