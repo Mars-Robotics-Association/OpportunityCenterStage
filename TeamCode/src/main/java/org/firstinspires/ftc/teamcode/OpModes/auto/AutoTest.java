@@ -31,20 +31,19 @@ public class AutoTest extends LinearOpMode {
         gameState = new GameState();
 
         //using roadrunner
-        gameState.signalState = GameState.SignalState.MIDDLE; //prop on middle line
+        gameState.signalState = GameState.SignalState.RIGHT; //prop on middle line
         gameState.teamColor = GameState.TeamColor.RED; //team red
         gameState.parkSpot = GameState.ParkSpot.NEAR; //auto starts near backboard
         bot = new Quintus(gameState, this.hardwareMap, new Pose2d(12, -65, Math.toRadians(90)));
         //MecanumDrive drive = bot.drive; //TODO: delete if nothing breaks
-        bot.payload.pixelArm.wrist.toStorageAngle();
 
         waitForStart();
         bot.start();
 
         if(this.opModeIsActive()) {
-            //call function from Quintus
-            bot.payload.pixelArm.wrist.toGroundAngle(); //starts with gripper up
-            waitFor(1);
+        //call functions from Quintus
+            //bot.payload.pixelArm.wrist.toGroundAngle(); //starts with gripper up
+            //waitFor(1);
             bot.payload.pixelArm.gripperA.close();
             bot.payload.pixelArm.gripperB.close();
             waitFor(1);
