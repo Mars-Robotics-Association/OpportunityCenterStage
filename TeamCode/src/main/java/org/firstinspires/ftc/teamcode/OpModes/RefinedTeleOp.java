@@ -55,6 +55,8 @@ public class RefinedTeleOp extends OpMode {
         if (gamepad1.dpad_right)
             payload.pixelArm.wrist.toBoardAngle();
 
+        if (gamepad1.y)payload.winch.reelIn();
+
         if (gamepad1.right_bumper) payload.intake.intake();
         else if (gamepad1.left_bumper) payload.intake.outtake();
         else payload.intake.stop();
