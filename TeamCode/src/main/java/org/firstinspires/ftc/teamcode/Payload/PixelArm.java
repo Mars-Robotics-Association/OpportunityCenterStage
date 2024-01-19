@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Payload;
 
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -15,6 +16,7 @@ public final class PixelArm {
         Lift(HardwareMap hardwareMap){
             motor = hardwareMap.dcMotor.get("lift_motor");
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            motor.setDirection(DcMotorSimple.Direction.REVERSE);
             motor.setTargetPosition(0);
             motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -45,10 +47,9 @@ public final class PixelArm {
         }
 
         public void setLiftHeight(double inches){ //for auto
-            //motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motor.setPower(0.5);
-            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             motor.setTargetPosition((int)(inches*TICKS_PER_INCH));
+            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motor.setPower(0.8);
         }
     }
 

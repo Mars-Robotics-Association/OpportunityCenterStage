@@ -200,6 +200,7 @@ public final class MecanumDrive {
                 RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
                 RevHubOrientationOnRobot.UsbFacingDirection.UP));
         imu.initialize(parameters);
+        imu.resetYaw();
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
