@@ -22,8 +22,8 @@ public class RefinedTeleOp extends OpMode {
     private MecanumDrive drive;
     private Payload payload;
 
-    private final Debouncer gripperLeft = new Debouncer(this, 0.5);
-    private final Debouncer gripperRight = new Debouncer(this, 0.5);
+    private final Debouncer gripperLeft = new Debouncer(this, 0.1);
+    private final Debouncer gripperRight = new Debouncer(this, 0.1);
 
     @Override
     public void init() {
