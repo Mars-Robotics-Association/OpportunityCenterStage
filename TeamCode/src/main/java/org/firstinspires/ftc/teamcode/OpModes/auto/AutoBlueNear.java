@@ -8,9 +8,9 @@ import com.acmerobotics.dashboard.config.Config;
 import org.firstinspires.ftc.teamcode.OpModes.Quintus;
 import org.firstinspires.ftc.teamcode.Payload.GameState;
 
-@SuppressWarnings("unused")
 @Autonomous
 @Config
+@SuppressWarnings("unused")
 
 public class AutoBlueNear extends LinearOpMode {
     static double POWER = 0.6;
