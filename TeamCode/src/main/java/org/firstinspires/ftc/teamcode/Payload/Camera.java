@@ -96,6 +96,8 @@ public class Camera {
         public NullType processFrame(Mat input, long captureTimeNanos) {
             if(hasScanned)return null;
 
+            Core.rotate(input, input, Core.ROTATE_180);
+
             // strip the alpha channel, and why does it give us that??
             Imgproc.cvtColor(input, rgb, Imgproc.COLOR_RGBA2RGB);
 

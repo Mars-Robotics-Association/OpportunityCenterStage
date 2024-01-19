@@ -7,7 +7,7 @@ public class Winch {
     private final DcMotor motor;
 
     Winch(HardwareMap hardwareMap){
-        motor = hardwareMap.dcMotor.get("lift");
+        motor = hardwareMap.dcMotor.get("winch");
     }
 
     public void reelIn(){

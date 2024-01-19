@@ -1,17 +1,22 @@
 package org.firstinspires.ftc.teamcode.OpModes.auto;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-
 import org.firstinspires.ftc.teamcode.OpModes.Quintus;
 import org.firstinspires.ftc.teamcode.Payload.GameState;
 
 @SuppressWarnings("unused")
 @Autonomous
+@Config
+
 public class AutoRedFar extends LinearOpMode {
     static double POWER = 0.6;
+
+    public static GameState.SignalState POS = GameState.SignalState.MIDDLE;
 
     DcMotorEx leftFront;
     DcMotorEx leftBack;
@@ -26,13 +31,16 @@ public class AutoRedFar extends LinearOpMode {
         gameState = new GameState();
 
         //using roadrunner
-        gameState.signalState = GameState.SignalState.RIGHT; //prop on middle line
+        gameState.signalState = POS; //prop on middle line
         gameState.teamColor = GameState.TeamColor.RED; //team red
         gameState.parkSpot = GameState.ParkSpot.FAR; //auto starts near backboard
         bot = new Quintus(gameState, this.hardwareMap, new Pose2d(-36, -65, Math.toRadians(90)));
 
         waitForStart();
         bot.start();
+
+        Actions.runBlocking(bot.waitForScan());
+        gameState.signalState = bot.getScanResult(); //prop detections
 
         if(this.opModeIsActive()) {
         //call functions from Quintus
