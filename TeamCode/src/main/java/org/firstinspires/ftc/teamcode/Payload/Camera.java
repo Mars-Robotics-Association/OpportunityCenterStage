@@ -3,9 +3,6 @@ package org.firstinspires.ftc.teamcode.Payload;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Typeface;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -23,13 +20,11 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.lang.model.type.NullType;
@@ -82,10 +77,9 @@ public class Camera {
     }
 
     public Action waitForNextScan(boolean forceRescan){
-        if(!forceRescan && propDetector.alreadyFoundProp)
-            return propDetector.waitForNextScan();
+        if(forceRescan)propDetector.hasScanned = false;
 
-        return t -> false;
+        return t -> !propDetector.hasScanned;
     }
 
     public Action waitForNextScan(){
@@ -96,7 +90,7 @@ public class Camera {
         @Override
         public void init(int width, int height, CameraCalibration calibration) {}
 
-        public GameState.TeamColor teamColor = GameState.TeamColor.BLUE;
+        public GameState gameState;
 
         public Action waitForNextScan(){
             hasScanned = false;
@@ -110,8 +104,6 @@ public class Camera {
 
         boolean hasScanned = false;
 
-        boolean alreadyFoundProp = false;
-
         Bitmap stagingBitmap = null;
 
         private final Mat rgb = new Mat();
@@ -123,6 +115,8 @@ public class Camera {
 
         @Override
         public NullType processFrame(Mat input, long captureTimeNanos) {
+            if(hasScanned)return null;
+
             // strip the alpha channel, and why does it give us that??
             Imgproc.cvtColor(input, rgb, Imgproc.COLOR_RGBA2RGB);
 
@@ -167,7 +161,7 @@ public class Camera {
     private AprilTagProcessor aprilTag;
     private final PropDetector propDetector;
 
-    public Camera(HardwareMap hardwareMap, GameState.TeamColor teamColor) {
+    public Camera(HardwareMap hardwareMap, GameState gameState) {
 //        aprilTag = new AprilTagProcessor.Builder()
 //                .setDrawAxes(true)
 //                .setDrawCubeProjection(true)
@@ -180,7 +174,7 @@ public class Camera {
 //        aprilTag.setDecimation(3);
 
         propDetector = new PropDetector();
-        propDetector.teamColor = teamColor;
+        propDetector.gameState = gameState;
 
         new VisionPortal.Builder()
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
