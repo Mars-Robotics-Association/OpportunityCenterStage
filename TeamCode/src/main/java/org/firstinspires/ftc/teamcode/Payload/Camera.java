@@ -10,11 +10,15 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.VisionProcessor;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase;
 import org.firstinspires.ftc.vision.apriltag.AprilTagPoseFtc;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.opencv.android.Utils;
@@ -37,42 +41,17 @@ public class Camera {
     static Scalar RED_MAX  = new Scalar(8, 225, 240);
 
     public enum SearchRegion{
-        LEFT(.09, .45, .18, .26),
-        RIGHT(.91, .468, .18, .32),
-        MIDDLE(.55, .18, .5, .3);
+        LEFT(92, 479, 183, 338),
+        MIDDLE(575, 359, 441, 163),
+        RIGHT(1064, 438, 251, 330);
 
         public double coverage = -1;
-        public boolean hasProp = false;
-        private final double x;
-        private final double y;
-        private final double w;
-        private final double h;
+        final Point point;
+        final Size size;
 
-        SearchRegion(double x, double y, double w, double h){
-            this.x = x;
-            this.y = y;
-            this.w = w;
-            this.h = h;
-        }
-
-        static class PointSize{
-            private final Point point;
-            private final Size size;
-
-            PointSize(Point p, Size s){
-                this.point = p;
-                this.size = s;
-            }
-        }
-
-        public PointSize scale(Size canvasSize){
-            double sx = canvasSize.width;
-            double sy = canvasSize.width;
-
-            return new PointSize(
-                new Point(x*sx, y*sy),
-                new Size(w*sx, h*sy)
-            );
+        SearchRegion(int x, int y, int w, int h){
+            point = new Point(x, y);
+            size = new Size(w, h);
         }
     }
 
@@ -130,15 +109,12 @@ public class Camera {
             Core.add(blue, red, both);
 
             for (SearchRegion region : SearchRegion.values()) {
-                SearchRegion.PointSize ps =
-                        region.scale(both.size());
+                Size size = region.size;
 
-                Imgproc.getRectSubPix(both, ps.size, ps.point, patch);
+                Imgproc.getRectSubPix(both, size, region.point, patch);
 
                 region.coverage = (double) Core.countNonZero(patch) /
-                        (ps.size.width * ps.size.height);
-
-                region.hasProp = region.coverage > 2;
+                        size.height;
             }
 
             return null;
@@ -158,20 +134,20 @@ public class Camera {
         public void onDrawFrame(Canvas canvas, int onscreenWidth, int onscreenHeight, float scaleBmpPxToCanvasPx, float scaleCanvasDensity, Object userContext) {}
     }
 
-    private AprilTagProcessor aprilTag;
+    private final AprilTagProcessor aprilTag;
     private final PropDetector propDetector;
 
     public Camera(HardwareMap hardwareMap, GameState gameState) {
-//        aprilTag = new AprilTagProcessor.Builder()
-//                .setDrawAxes(true)
-//                .setDrawCubeProjection(true)
-//                .setDrawTagOutline(true)
-//                .setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
-//                .setTagLibrary(AprilTagGameDatabase.getCenterStageTagLibrary())
-//                .setOutputUnits(DistanceUnit.INCH, AngleUnit.RADIANS)
-//                .build();
-//
-//        aprilTag.setDecimation(3);
+        aprilTag = new AprilTagProcessor.Builder()
+                .setDrawAxes(true)
+                .setDrawCubeProjection(true)
+                .setDrawTagOutline(true)
+                .setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
+                .setTagLibrary(AprilTagGameDatabase.getCenterStageTagLibrary())
+                .setOutputUnits(DistanceUnit.INCH, AngleUnit.RADIANS)
+                .build();
+
+        aprilTag.setDecimation(3);
 
         propDetector = new PropDetector();
         propDetector.gameState = gameState;
@@ -180,12 +156,12 @@ public class Camera {
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
                 .enableLiveView(true)
                 .setStreamFormat(VisionPortal.StreamFormat.YUY2)
-                //.addProcessor(aprilTag)
+                .addProcessor(aprilTag)
                 .addProcessor(propDetector)
                 .build();
     }
 
-    public Pose2d findTagWithID(int desiredTag){
+    public @Nullable Pose2d findTagWithID(int desiredTag){
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
         for (AprilTagDetection detection : currentDetections)
             if ((detection.ftcPose != null) && (detection.id == desiredTag)){

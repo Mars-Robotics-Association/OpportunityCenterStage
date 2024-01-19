@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.Payload.GameState.SignalState;
 import org.firstinspires.ftc.teamcode.Payload.GameState.TeamColor;
 import org.firstinspires.ftc.teamcode.Payload.Payload;
 import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDrive;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 
 /*
@@ -49,12 +50,10 @@ public class Quintus
         }
     }
 
-    // this waits for the next scan
-    public Action waitForScan(){
-        return payload.camera.waitForNextScan(true);
-    }
     //Detect position of team prop (opencv or queen team prop)
-    public @Nullable SignalState getScanResult(){
+    public @Nullable SignalState doCameraScan(){
+        Actions.runBlocking(payload.camera.waitForNextScan(true));
+
         Camera.SearchRegion mostLikely = null;
 
         double highestCoverage = -1;
@@ -306,13 +305,10 @@ public class Quintus
             case MIDDLE: id += 1;break;
         }
 
-        int unused = id;
+        Pose2d rawPose = payload.camera.findTagWithID(id);
 
-        //AprilTagDetection tag = payload.camera.findTagWithID(id);
-        //Pose2d rawPose = new Pose2d(new Vector2d(tag.rawPose.x,tag.rawPose.y), new Rotation2d(0,0));
-
-        //assert rawPose != null;
-        return computeActualPosition(new Pose2d(0,0,0));
+        assert rawPose != null;
+        return computeActualPosition(rawPose);
     }
 
     //Methods for moving to known locations
