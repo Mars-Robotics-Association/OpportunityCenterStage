@@ -7,13 +7,14 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.firstinspires.ftc.teamcode.Payload.Camera;
 import org.firstinspires.ftc.teamcode.Payload.GameState;
 import org.firstinspires.ftc.teamcode.Payload.GameState.ParkSpot;
-import org.firstinspires.ftc.teamcode.Payload.GameState.TeamColor;
 import org.firstinspires.ftc.teamcode.Payload.GameState.SignalState;
+import org.firstinspires.ftc.teamcode.Payload.GameState.TeamColor;
 import org.firstinspires.ftc.teamcode.Payload.Payload;
 import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDrive;
-import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 
 /*
@@ -48,16 +49,29 @@ public class Quintus
         }
     }
 
-
-
+    // this waits for the next scan
+    public Action waitForScan(){
+        return payload.camera.waitForNextScan(true);
+    }
     //Detect position of team prop (opencv or queen team prop)
-    public int detectPropPos(){
-        /* takes: camera image, if blue/red
-        1. take the camera image,
-        2. determine which of three boxes has highest percent of red/blue pixels in photo,
-        3. output which position the team prop is in
-        */
-        return 2;
+    public @Nullable SignalState getScanResult(){
+        Camera.SearchRegion mostLikely = null;
+
+        double highestCoverage = -1;
+
+        for (Camera.SearchRegion region : Camera.SearchRegion.values())
+            if(region.coverage > highestCoverage)
+                mostLikely = region;
+
+        if (mostLikely == null)return null;
+
+        switch (mostLikely){
+            case LEFT:return SignalState.LEFT;
+            case MIDDLE:return SignalState.MIDDLE;
+            case RIGHT:return SignalState.RIGHT;
+        }
+
+        return null;
     }
 
     //Place purple pixel next to team prop and get into position for yellow pixel placement
@@ -293,6 +307,8 @@ public class Quintus
             case RIGHT: id += 2;break;
             case MIDDLE: id += 1;break;
         }
+
+        int unused = id;
 
         //AprilTagDetection tag = payload.camera.findTagWithID(id);
         //Pose2d rawPose = new Pose2d(new Vector2d(tag.rawPose.x,tag.rawPose.y), new Rotation2d(0,0));

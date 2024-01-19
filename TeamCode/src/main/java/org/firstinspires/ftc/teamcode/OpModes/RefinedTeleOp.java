@@ -22,8 +22,8 @@ public class RefinedTeleOp extends OpMode {
     private MecanumDrive drive;
     private Payload payload;
 
-    private final Debouncer gripperLeft = new Debouncer(this, 0.5);
-    private final Debouncer gripperRight = new Debouncer(this, 0.5);
+    private final Debouncer gripperLeft = new Debouncer(this, 0.1);
+    private final Debouncer gripperRight = new Debouncer(this, 0.1);
 
     @Override
     public void init() {
@@ -54,6 +54,8 @@ public class RefinedTeleOp extends OpMode {
             payload.pixelArm.wrist.toGroundAngle();
         if (gamepad1.dpad_right)
             payload.pixelArm.wrist.toBoardAngle();
+
+        if (gamepad1.y)payload.winch.reelIn();
 
         if (gamepad1.right_bumper) payload.intake.intake();
         else if (gamepad1.left_bumper) payload.intake.outtake();
