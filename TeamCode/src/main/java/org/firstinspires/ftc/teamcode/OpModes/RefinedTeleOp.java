@@ -22,8 +22,8 @@ public class RefinedTeleOp extends OpMode {
     private MecanumDrive drive;
     private Payload payload;
 
-    private final Debouncer gripperLeft = new Debouncer(this, 0.1);
-    private final Debouncer gripperRight = new Debouncer(this, 0.1);
+    private final Debouncer gripperLeft = new Debouncer(this, 0.3);
+    private final Debouncer gripperRight = new Debouncer(this, 0.3);
 
     @Override
     public void init() {
@@ -63,8 +63,8 @@ public class RefinedTeleOp extends OpMode {
         else payload.winch.stop();
 
     //red intake on back of bot
-        if (gamepad1.right_bumper) payload.intake.intake();
-        else if (gamepad1.left_bumper) payload.intake.outtake();
+        if (gamepad1.left_trigger > .3) payload.intake.intake();
+        else if (gamepad1.right_trigger > .3) payload.intake.outtake();
         else payload.intake.stop();
     }
 }

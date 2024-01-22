@@ -55,7 +55,7 @@ public class Camera {
     }
 
     public void waitForNextScan() throws InterruptedException {
-        propDetector.scanFutex.wait();
+        //propDetector.scanFutex.wait();
     }
 
     private static final class PropDetector implements VisionProcessor{
@@ -100,7 +100,7 @@ public class Camera {
                         size.height;
             }
 
-            scanFutex.notifyAll();
+            //scanFutex.notifyAll();
 
             return null;
         }
