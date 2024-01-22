@@ -14,4 +14,5 @@ public class Winch {
         motor.setPower(.8);
     }
     public void release() {motor.setPower(-.8); }
+    public void stop() {motor.setPower(0); }
 }

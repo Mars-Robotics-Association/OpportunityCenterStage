@@ -59,7 +59,8 @@ public class RefinedTeleOp extends OpMode {
 
     //winch for suspension
         if (gamepad1.y)payload.winch.reelIn();
-        if (gamepad1.x)payload.winch.release();
+        else if (gamepad1.x)payload.winch.release();
+        else payload.winch.stop();
 
     //red intake on back of bot
         if (gamepad1.right_bumper) payload.intake.intake();
