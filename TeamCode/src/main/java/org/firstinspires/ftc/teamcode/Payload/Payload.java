@@ -10,7 +10,7 @@ public final class Payload {
     public final Camera camera;
     public final PixelArm pixelArm;
     public final Intake intake;
-    public final Winch winch = null;
+    public final Winch winch;
     public Payload(HardwareMap hardwareMap, MecanumDrive drive) {
         gameState = new GameState();
 
@@ -18,6 +18,6 @@ public final class Payload {
         camera = new Camera(hardwareMap, gameState);
         pixelArm = new PixelArm(hardwareMap);
         intake = new Intake(hardwareMap);
-        //winch = new Winch(hardwareMap);
+        winch = new Winch(hardwareMap);
     }
 }

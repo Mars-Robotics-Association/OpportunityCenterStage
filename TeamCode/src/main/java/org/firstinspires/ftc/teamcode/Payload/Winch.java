@@ -11,6 +11,7 @@ public class Winch {
     }
 
     public void reelIn(){
-        motor.setPower(1.0);
+        motor.setPower(.8);
     }
+    public void release() {motor.setPower(-.8); }
 }
