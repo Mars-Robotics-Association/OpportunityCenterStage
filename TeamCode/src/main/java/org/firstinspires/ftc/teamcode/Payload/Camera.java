@@ -6,7 +6,6 @@ import android.graphics.Canvas;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -55,14 +54,8 @@ public class Camera {
         }
     }
 
-    public Action waitForNextScan(boolean forceRescan){
-        if(forceRescan)propDetector.hasScanned = false;
-
-        return t -> !propDetector.hasScanned;
-    }
-
-    public Action waitForNextScan(){
-        return waitForNextScan(false);
+    public void waitForNextScan() throws InterruptedException {
+        propDetector.scanFutex.wait();
     }
 
     private static final class PropDetector implements VisionProcessor{
@@ -71,17 +64,7 @@ public class Camera {
 
         public GameState gameState;
 
-        public Action waitForNextScan(){
-            hasScanned = false;
-            return _$ -> {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException ignored) {}
-                return !hasScanned;
-            };
-        }
-
-        boolean hasScanned = false;
+        public Object scanFutex = new Object();
 
         Bitmap stagingBitmap = null;
 
@@ -94,8 +77,6 @@ public class Camera {
 
         @Override
         public NullType processFrame(Mat input, long captureTimeNanos) {
-            if(hasScanned)return null;
-
             Core.rotate(input, input, Core.ROTATE_180);
 
             // strip the alpha channel, and why does it give us that??
@@ -118,6 +99,8 @@ public class Camera {
                 region.coverage = (double) Core.countNonZero(patch) /
                         size.height;
             }
+
+            scanFutex.notifyAll();
 
             return null;
         }

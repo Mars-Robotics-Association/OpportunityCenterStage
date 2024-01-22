@@ -15,8 +15,6 @@ import org.firstinspires.ftc.teamcode.Payload.GameState.SignalState;
 import org.firstinspires.ftc.teamcode.Payload.GameState.TeamColor;
 import org.firstinspires.ftc.teamcode.Payload.Payload;
 import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDrive;
-import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-
 
 /*
 Robot class for Quintus
@@ -51,8 +49,8 @@ public class Quintus
     }
 
     //Detect position of team prop (opencv or queen team prop)
-    public @Nullable SignalState doCameraScan(){
-        Actions.runBlocking(payload.camera.waitForNextScan(true));
+    public @Nullable SignalState doCameraScan() throws InterruptedException {
+        payload.camera.waitForNextScan();
 
         Camera.SearchRegion mostLikely = null;
 
