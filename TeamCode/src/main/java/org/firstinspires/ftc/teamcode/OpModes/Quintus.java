@@ -79,18 +79,18 @@ public class Quintus
                 switch (gameState.signalState) {
                     case LEFT://line near backboard
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
-                                .lineToY(36)
+                                .lineToY(33)
                                 .turnTo(0)
                                 .build());
                         break;
                     case MIDDLE://mid line
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
-                                .splineTo(new Vector2d(12, 36), Math.toRadians(-90)) //approach line
+                                .lineToY(36)
                                 .build());
                         break;
                     case RIGHT://far line
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
-                                .lineToY(36)
+                                .lineToY(33)
                                 .turnTo(Math.toRadians(-180))
                                 .build());
                         break;
@@ -99,18 +99,18 @@ public class Quintus
                 switch (gameState.signalState) {
                     case LEFT://far line  -- yay --
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
-                                .lineToY(-36)
+                                .lineToY(-33)
                                 .turnTo(Math.toRadians(180))
                                 .build());
                         break;
                     case MIDDLE://mid line  -- yay --
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
-                                .splineTo(new Vector2d(12, -36), Math.toRadians(90)) //approach line
+                                .lineToY(-36)
                                 .build());
                         break;
                     case RIGHT://line near backboard
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
-                                .lineToY(-36)
+                                .lineToY(-33)
                                 .turnTo(0)
                                 .build());
                         break;
@@ -132,8 +132,7 @@ public class Quintus
                 switch (gameState.signalState) {
                     case LEFT://line near backboard
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
-                                //.splineTo(new Vector2d(-34, 33), Math.toRadians(0)) //approach line
-                                .lineToY(36)
+                                .lineToY(33)
                                 .turnTo(0)
                                 .build());
                         break;
@@ -144,7 +143,7 @@ public class Quintus
                         break;
                     case RIGHT://far line
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
-                                .lineToY(36)
+                                .lineToY(33)
                                 .turnTo(Math.toRadians(180))
                                 .build());
                         break;
@@ -154,19 +153,18 @@ public class Quintus
                     case RIGHT://far line
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
                                 .lineToY(-33)
-                                .turnTo(180)
+                                .turnTo(Math.toRadians(180))
                                 .build());
                         break;
                     case MIDDLE://mid line
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
-                                .lineToY(-33)
-                                .turnTo(90)
+                                .lineToY(-36)
                                 .build());
                         break;
                     case LEFT://line near backboard
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
                                 .lineToY(-33)
-                                .turnTo(0)
+                                .turnTo(Math.toRadians(0))
                                 .build());
                         break;
                 }
@@ -180,8 +178,7 @@ public class Quintus
                     .lineToYConstantHeading(60*colorVar) //sets reversed to true
                     .setReversed(false)
                     .splineTo(new Vector2d(-56, 36 * colorVar), Math.toRadians(-90 * colorVar)) //turn to back
-                    .splineTo(new Vector2d(-56, 30 * colorVar), Math.toRadians(-45 * colorVar)) //go around lines
-                    .splineTo(new Vector2d(-36, 12), Math.toRadians(0)) //turn to towards back board
+                    .splineTo(new Vector2d(-24, 12 * colorVar), Math.toRadians(0)) //turn to towards back board
                     .splineTo(new Vector2d(30, 12 * colorVar), Math.toRadians(0)) //go under curtain
                     .build());
         }
