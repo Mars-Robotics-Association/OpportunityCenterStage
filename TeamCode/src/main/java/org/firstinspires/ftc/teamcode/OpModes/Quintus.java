@@ -52,7 +52,7 @@ public class Quintus
     public @Nullable SignalState doCameraScan() {
         Camera.SearchRegion mostLikely = Camera.SearchRegion.RIGHT;
 
-        mostLikely.coverage = Math.max(mostLikely.coverage, 2);
+        mostLikely.coverage = Math.max(mostLikely.coverage, 15);
 
         for (Camera.SearchRegion region : Camera.SearchRegion.values())
             if(region.coverage > mostLikely.coverage)
@@ -63,7 +63,7 @@ public class Quintus
                 gameState.signalState = SignalState.LEFT;break;
             case MIDDLE:
                 gameState.signalState = SignalState.MIDDLE;break;
-            case RIGHT: default:
+            case RIGHT:
                 gameState.signalState = SignalState.RIGHT;break;
         }
 
