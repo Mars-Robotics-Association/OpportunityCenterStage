@@ -40,9 +40,9 @@ public class Camera {
     static Scalar RED_MAX  = new Scalar(8, 225, 240);
 
     public enum SearchRegion{
-        LEFT(92, 479, 183, 338),
-        MIDDLE(575, 359, 441, 163),
-        RIGHT(1064, 438, 251, 330);
+        LEFT(75, 180, 200, 80),
+        MIDDLE(350, 100, 200, 150),
+        RIGHT(1000, 200, 300, 250);
 
         public double coverage = -1;
         final Point point;
@@ -54,17 +54,11 @@ public class Camera {
         }
     }
 
-    public void waitForNextScan() throws InterruptedException {
-        //propDetector.scanFutex.wait();
-    }
-
     private static final class PropDetector implements VisionProcessor{
         @Override
         public void init(int width, int height, CameraCalibration calibration) {}
 
         public GameState gameState;
-
-        public Object scanFutex = new Object();
 
         Bitmap stagingBitmap = null;
 
@@ -99,8 +93,6 @@ public class Camera {
                 region.coverage = (double) Core.countNonZero(patch) /
                         size.height;
             }
-
-            //scanFutex.notifyAll();
 
             return null;
         }

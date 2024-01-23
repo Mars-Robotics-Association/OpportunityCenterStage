@@ -49,26 +49,25 @@ public class Quintus
     }
 
     //Detect position of team prop (opencv or queen team prop)
-    public @Nullable SignalState doCameraScan() throws InterruptedException {
-        payload.camera.waitForNextScan();
+    public @Nullable SignalState doCameraScan() {
+        Camera.SearchRegion mostLikely = Camera.SearchRegion.RIGHT;
 
-        Camera.SearchRegion mostLikely = null;
-
-        double highestCoverage = -1;
+        mostLikely.coverage = Math.max(mostLikely.coverage, 2);
 
         for (Camera.SearchRegion region : Camera.SearchRegion.values())
-            if(region.coverage > highestCoverage)
+            if(region.coverage > mostLikely.coverage)
                 mostLikely = region;
 
-        if (mostLikely == null)return null;
-
         switch (mostLikely){
-            case LEFT:return SignalState.LEFT;
-            case MIDDLE:return SignalState.MIDDLE;
-            case RIGHT:return SignalState.RIGHT;
+            case LEFT:
+                gameState.signalState = SignalState.LEFT;break;
+            case MIDDLE:
+                gameState.signalState = SignalState.MIDDLE;break;
+            case RIGHT: default:
+                gameState.signalState = SignalState.RIGHT;break;
         }
 
-        return null;
+        return gameState.signalState;
     }
 
     //Place purple pixel next to team prop and get into position for yellow pixel placement
