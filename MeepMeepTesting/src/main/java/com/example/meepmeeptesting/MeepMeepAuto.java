@@ -194,7 +194,7 @@ public class MeepMeepAuto {
 
         blueNear.runAction(blueNear.getDrive().actionBuilder(new Pose2d(12, 65, Math.toRadians(-90))) //blue near right
                 .splineTo(new Vector2d(14, 33), Math.toRadians(0)) //place
-                .setReversed(true)
+                .setReversed(true) 
                 .splineTo(new Vector2d(12, 50), Math.toRadians(90)) //back up
                 .setReversed(false)
                 .splineTo(new Vector2d(25, 45), Math.toRadians(0)) //turn
