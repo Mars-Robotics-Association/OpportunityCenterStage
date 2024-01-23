@@ -104,34 +104,36 @@ public class MeepMeepAuto {
 
 
     //prop on left (far from backboard)
-//        redNear.runAction(redNear.getDrive().actionBuilder(new Pose2d(12, -65, Math.toRadians(90))) //red near left
-//                .splineTo(new Vector2d(10, -33), Math.toRadians(180)) //place
-//                .setReversed(true)
-//                .splineTo(new Vector2d(12, -50), Math.toRadians(-90)) //back up
-//                .setReversed(false)
-//                .splineTo(new Vector2d(25, -45), Math.toRadians(0)) //turn
-//                .splineTo(new Vector2d(50, -29), Math.toRadians(0)) //go to left back board
-//                .setReversed(true)
-//                .splineTo(new Vector2d(40, -29), Math.toRadians(180)) //backup
-//                .setReversed(false)
-//                .splineTo(new Vector2d(54, -60), Math.toRadians(0)) //park in corner
-//                .build());
-//
-//        redFar.runAction(redFar.getDrive().actionBuilder(new Pose2d(-36, -65, Math.toRadians(90))) //red far left
-//                .splineTo(new Vector2d(-38, -33), Math.toRadians(180)) //place
-//                .setReversed(true)
-//                .splineTo(new Vector2d(-36, -50), Math.toRadians(-90)) //back away
-//                .setReversed(false)
-//                .splineTo(new Vector2d(-49, -45), Math.toRadians(180)) //turn to back
-//                .splineTo(new Vector2d(-57, -30), Math.toRadians(90)) //go around lines
-//                .splineTo(new Vector2d(-36, -12), Math.toRadians(0)) //turn to towards back board
-//                .splineTo(new Vector2d(30, -12), Math.toRadians(0)) //go under curtain
-//                .splineTo(new Vector2d(50, -29), Math.toRadians(0)) //go to left back board
-//                .setReversed(true)
-//                .splineTo(new Vector2d(40, -29), Math.toRadians(180)) //backup
-//                .setReversed(false)
-//                .splineTo(new Vector2d(54, -12), Math.toRadians(0)) //park in corner
-//                .build());
+        redNear.runAction(redNear.getDrive().actionBuilder(new Pose2d(12, -65, Math.toRadians(90))) //red near left
+                .lineToY(-33)
+                .turnTo(Math.toRadians(180))
+                .turnTo(Math.toRadians(90))
+                .lineToY(-50)
+                .setReversed(false)
+                .splineTo(new Vector2d(25, -45), Math.toRadians(0)) //turn
+                .splineTo(new Vector2d(50, -29), Math.toRadians(0)) //go to left back board
+                .setReversed(true)
+                .splineTo(new Vector2d(40, -29), Math.toRadians(180)) //backup
+                .setReversed(false)
+                .splineTo(new Vector2d(54, -60), Math.toRadians(0)) //park in corner
+                .build());
+
+        redFar.runAction(redFar.getDrive().actionBuilder(new Pose2d(-36, -65, Math.toRadians(90))) //red far left
+                .lineToY(-33)
+                .turnTo(Math.toRadians(180))
+                .turnTo(Math.toRadians(90))
+                .lineToY(-50)
+                .setReversed(false)
+                .splineTo(new Vector2d(-49, -45), Math.toRadians(180)) //turn to back
+                .splineTo(new Vector2d(-57, -30), Math.toRadians(90)) //go around lines
+                .splineTo(new Vector2d(-36, -12), Math.toRadians(0)) //turn to towards back board
+                .splineTo(new Vector2d(30, -12), Math.toRadians(0)) //go under curtain
+                .splineTo(new Vector2d(50, -29), Math.toRadians(0)) //go to left back board
+                .setReversed(true)
+                .splineTo(new Vector2d(40, -29), Math.toRadians(180)) //backup
+                .setReversed(false)
+                .splineTo(new Vector2d(54, -12), Math.toRadians(0)) //park in corner
+                .build());
 //
 //        blueNear.runAction(blueNear.getDrive().actionBuilder(new Pose2d(12, 65, Math.toRadians(-90))) //blue near left
 //                .splineTo(new Vector2d(10, 33), Math.toRadians(-180)) //place
@@ -163,39 +165,40 @@ public class MeepMeepAuto {
 //                .build());
 
     //prop on right (close to backboard)
-        redNear.runAction(redNear.getDrive().actionBuilder(new Pose2d(12, -65, Math.toRadians(90))) //red near right
-                .splineTo(new Vector2d(14, -33), Math.toRadians(0)) //place
-                .setReversed(true)
-                .splineTo(new Vector2d(12, -50), Math.toRadians(-90)) //back up
-                .setReversed(false)
-                .splineTo(new Vector2d(25, -45), Math.toRadians(0)) //turn
-                .splineTo(new Vector2d(50, -42), Math.toRadians(0)) //go to right back board
-                .setReversed(true)
-                .splineTo(new Vector2d(40, -42), Math.toRadians(180)) //backup
-                .setReversed(false)
-                .splineTo(new Vector2d(54, -60), Math.toRadians(0)) //park in corner
-                .build());
-
-        redFar.runAction(redFar.getDrive().actionBuilder(new Pose2d(-36, -65, Math.toRadians(90))) //red far right
-                .splineTo(new Vector2d(-34, -33), Math.toRadians(0)) //place
-                .setReversed(true)
-                .splineTo(new Vector2d(-36, -50), Math.toRadians(-90)) //back away
-                .setReversed(false)
-                .splineTo(new Vector2d(-49, -45), Math.toRadians(180)) //turn to back
-                .splineTo(new Vector2d(-57, -30), Math.toRadians(90)) //go around lines
-                .splineTo(new Vector2d(-36, -12), Math.toRadians(0)) //turn to towards back board
-                .splineTo(new Vector2d(30, -12), Math.toRadians(0)) //go under curtain
-                .splineTo(new Vector2d(50, -42), Math.toRadians(0)) //go to left back board
-                .setReversed(true)
-                .splineTo(new Vector2d(40, -42), Math.toRadians(180)) //backup
-                .setReversed(false)
-                .splineTo(new Vector2d(54, -12), Math.toRadians(0)) //park in corner
-                .build());
+//        redNear.runAction(redNear.getDrive().actionBuilder(new Pose2d(12, -65, Math.toRadians(90))) //red near right
+//                .splineTo(new Vector2d(14, -33), Math.toRadians(0)) //place
+//                .setReversed(true)
+//                .splineTo(new Vector2d(12, -50), Math.toRadians(-90)) //back up
+//                .setReversed(false)
+//                .splineTo(new Vector2d(25, -45), Math.toRadians(0)) //turn
+//                .splineTo(new Vector2d(50, -42), Math.toRadians(0)) //go to right back board
+//                .setReversed(true)
+//                .splineTo(new Vector2d(40, -42), Math.toRadians(180)) //backup
+//                .setReversed(false)
+//                .splineTo(new Vector2d(54, -60), Math.toRadians(0)) //park in corner
+//                .build());
+//
+//        redFar.runAction(redFar.getDrive().actionBuilder(new Pose2d(-36, -65, Math.toRadians(90))) //red far right
+//                .splineTo(new Vector2d(-34, -33), Math.toRadians(0)) //place
+//                .setReversed(true)
+//                .splineTo(new Vector2d(-36, -50), Math.toRadians(-90)) //back away
+//                .setReversed(false)
+//                .splineTo(new Vector2d(-49, -45), Math.toRadians(180)) //turn to back
+//                .splineTo(new Vector2d(-57, -30), Math.toRadians(90)) //go around lines
+//                .splineTo(new Vector2d(-36, -12), Math.toRadians(0)) //turn to towards back board
+//                .splineTo(new Vector2d(30, -12), Math.toRadians(0)) //go under curtain
+//                .splineTo(new Vector2d(50, -42), Math.toRadians(0)) //go to left back board
+//                .setReversed(true)
+//                .splineTo(new Vector2d(40, -42), Math.toRadians(180)) //backup
+//                .setReversed(false)
+//                .splineTo(new Vector2d(54, -12), Math.toRadians(0)) //park in corner
+//                .build());
 
         blueNear.runAction(blueNear.getDrive().actionBuilder(new Pose2d(12, 65, Math.toRadians(-90))) //blue near right
-                .splineTo(new Vector2d(14, 33), Math.toRadians(0)) //place
-                .setReversed(true) 
-                .splineTo(new Vector2d(12, 50), Math.toRadians(90)) //back up
+                .lineToY(33)
+                .turnTo(Math.toRadians(0))
+                .turnTo(Math.toRadians(-90))
+                .lineToY(50)
                 .setReversed(false)
                 .splineTo(new Vector2d(25, 45), Math.toRadians(0)) //turn
                 .splineTo(new Vector2d(50, 42), Math.toRadians(0)) //go to mid back board
@@ -206,9 +209,10 @@ public class MeepMeepAuto {
                 .build());
 
         blueFar.runAction(blueFar.getDrive().actionBuilder(new Pose2d(-36, 65, Math.toRadians(-90))) //blue far right
-                .splineTo(new Vector2d(-34, 33), Math.toRadians(0)) //place
-                .setReversed(true)
-                .splineTo(new Vector2d(-36, 50), Math.toRadians(90)) //back away
+                .lineToY(33)
+                .turnTo(Math.toRadians(0))
+                .turnTo(Math.toRadians(-90))
+                .lineToY(50)
                 .setReversed(false)
                 .splineTo(new Vector2d(-49, 45), Math.toRadians(-180)) //turn to back
                 .splineTo(new Vector2d(-57, 36), Math.toRadians(-90)) //go around lines
