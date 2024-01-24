@@ -114,7 +114,6 @@ public class MeepMeepAuto {
                 .splineTo(new Vector2d(50, -29), Math.toRadians(0)) //go to left back board
                 .setReversed(true)
                 .splineTo(new Vector2d(40, -29), Math.toRadians(180)) //backup
-                .setReversed(false)
                 .splineTo(new Vector2d(54, -60), Math.toRadians(0)) //park in corner
                 .build());
 
@@ -131,7 +130,6 @@ public class MeepMeepAuto {
                 .splineTo(new Vector2d(50, -29), Math.toRadians(0)) //go to left back board
                 .setReversed(true)
                 .splineTo(new Vector2d(40, -29), Math.toRadians(180)) //backup
-                .setReversed(false)
                 .splineTo(new Vector2d(54, -12), Math.toRadians(0)) //park in corner
                 .build());
 //
@@ -204,7 +202,6 @@ public class MeepMeepAuto {
                 .splineTo(new Vector2d(50, 42), Math.toRadians(0)) //go to mid back board
                 .setReversed(true)
                 .splineTo(new Vector2d(40, 42), Math.toRadians(180)) //backup
-                .setReversed(false)
                 .splineTo(new Vector2d(54, 60), Math.toRadians(0)) //park in corner
                 .build());
 
@@ -221,7 +218,6 @@ public class MeepMeepAuto {
                 .splineTo(new Vector2d(50, 42), Math.toRadians(0)) //go to left back board
                 .setReversed(true)
                 .splineTo(new Vector2d(40, 42), Math.toRadians(180)) //backup
-                .setReversed(false)
                 .splineTo(new Vector2d(54, 12), Math.toRadians(0)) //park in corner
                 .build());
 
