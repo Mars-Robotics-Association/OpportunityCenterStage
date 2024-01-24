@@ -100,7 +100,7 @@ public final class PixelArm {
     public static class Wrist{
         private static final double GROUND_POSITION = 0.201666667;
         private static final double BOARD_POSITION = .3728;
-        private static final double STORAGE_POSITION = BOARD_POSITION;
+        private static final double STORAGE_POSITION = .225;
         private final Servo servo;
 
         Wrist(HardwareMap hardwareMap){
@@ -110,7 +110,6 @@ public final class PixelArm {
         public void toGroundAngle(){
             servo.setPosition(GROUND_POSITION);
         }
-
         public void toBoardAngle(){
             servo.setPosition(BOARD_POSITION);
         }

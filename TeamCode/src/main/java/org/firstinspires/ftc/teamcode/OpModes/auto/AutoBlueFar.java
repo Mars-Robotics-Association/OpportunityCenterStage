@@ -21,8 +21,9 @@ public class AutoBlueFar extends LinearOpMode {
         gameState.teamColor = GameState.TeamColor.BLUE; //team red
         gameState.parkSpot = GameState.ParkSpot.FAR; //auto starts near backboard
         gameState.signalState = GameState.SignalState.MIDDLE; //sets default state until prop detection overwrites action
-        Quintus bot = new Quintus(gameState, this.hardwareMap, new Pose2d(-36, 65, Math.toRadians(-90)));
+        Quintus bot = new Quintus(gameState, this.hardwareMap, new Pose2d(-36, 63, Math.toRadians(-90)));
 
+        waitFor(5); //to avoid team prop scan issues
         waitForStart();
         bot.start();
 
