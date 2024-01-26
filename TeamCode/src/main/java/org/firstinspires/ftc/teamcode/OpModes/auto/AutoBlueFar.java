@@ -22,6 +22,7 @@ public class AutoBlueFar extends LinearOpMode {
         gameState.parkSpot = GameState.ParkSpot.FAR; //auto starts near backboard
         gameState.signalState = GameState.SignalState.MIDDLE; //sets default state until prop detection overwrites action
         Quintus bot = new Quintus(gameState, this.hardwareMap, new Pose2d(-36, 63, Math.toRadians(-90)));
+        bot.setLinearOpMode(this);
 
         waitFor(5); //to avoid team prop scan issues
         waitForStart();
@@ -42,7 +43,7 @@ public class AutoBlueFar extends LinearOpMode {
             bot.autoPark();
 
 
-            bot.payload.pixelArm.wrist.toStorageAngle();
+            bot.payload.pixelArm.wrist.toPropAngle();
         }
     }
     public void waitFor(double timer){

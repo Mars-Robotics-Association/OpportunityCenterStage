@@ -26,6 +26,7 @@ public class AutoRedNear extends LinearOpMode {
         waitFor(5); //to avoid team prop scan issues
         waitForStart();
         bot.start();
+        bot.setLinearOpMode(this);
 
         gameState.signalState = bot.doCameraScan();
 
@@ -41,7 +42,7 @@ public class AutoRedNear extends LinearOpMode {
             bot.placeYellowPix();
             bot.autoPark();
 
-            bot.payload.pixelArm.wrist.toStorageAngle();
+            bot.payload.pixelArm.wrist.toPropAngle();
         }
     }
     public void waitFor(double timer){

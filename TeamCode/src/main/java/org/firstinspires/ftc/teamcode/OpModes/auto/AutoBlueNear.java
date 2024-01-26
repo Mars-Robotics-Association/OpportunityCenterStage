@@ -22,6 +22,7 @@ public class AutoBlueNear extends LinearOpMode {
         gameState.teamColor = GameState.TeamColor.BLUE; //team red
         gameState.parkSpot = GameState.ParkSpot.NEAR; //auto starts near backboard
         Quintus bot = new Quintus(gameState, this.hardwareMap, new Pose2d(12, 63, Math.toRadians(-90)));
+        bot.setLinearOpMode(this);
 
         waitFor(5); //to avoid team prop scan issues
         waitForStart();
@@ -37,7 +38,7 @@ public class AutoBlueNear extends LinearOpMode {
             bot.payload.pixelArm.gripperA.close();
             bot.payload.pixelArm.gripperB.close();
             waitFor(1);
-            bot.payload.pixelArm.wrist.toStorageAngle();
+            bot.payload.pixelArm.wrist.toPropAngle();
 
             bot.placePurpPix(gameState);
             bot.placeYellowPix();
