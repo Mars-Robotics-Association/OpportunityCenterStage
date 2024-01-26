@@ -159,7 +159,7 @@ public class Quintus
                     case LEFT://far line
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
                                 .lineToY(-48)
-                                .splineTo(new Vector2d(-37, -36), Math.toRadians(135)) //go to line;
+                                .splineTo(new Vector2d(-39, -36), Math.toRadians(135)) //go to line;
                                 .build());
                         break;
                     case MIDDLE://mid line
