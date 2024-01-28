@@ -37,12 +37,11 @@ public class AutoRedNear extends LinearOpMode {
             bot.payload.pixelArm.gripperA.close();
             bot.payload.pixelArm.gripperB.close();
             waitFor(1);
-            bot.payload.pixelArm.wrist.toStorageAngle();
+            bot.payload.pixelArm.wrist.toPropAngle();
             bot.placePurpPix(gameState);
             bot.placeYellowPix();
             bot.autoPark();
 
-            bot.payload.pixelArm.wrist.toPropAngle();
         }
     }
     public void waitFor(double timer){

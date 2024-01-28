@@ -32,18 +32,16 @@ public class AutoRedFar extends LinearOpMode {
 
         if(this.opModeIsActive()) {
         //call functions from Quintus
-            //bot.payload.pixelArm.wrist.toGroundAngle(); //starts with gripper up
-            //waitFor(1);
+            waitFor(5);
             bot.payload.pixelArm.gripperA.close();
             bot.payload.pixelArm.gripperB.close();
             waitFor(1);
-            bot.payload.pixelArm.wrist.toStorageAngle();
+            bot.payload.pixelArm.wrist.toPropAngle();
             bot.placePurpPix(gameState);
             bot.placeYellowPix();
             bot.autoPark();
 
 
-            bot.payload.pixelArm.wrist.toPropAngle();
         }
     }
     public void waitFor(double timer){

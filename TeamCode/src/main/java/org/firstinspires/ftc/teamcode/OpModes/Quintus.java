@@ -55,7 +55,7 @@ public class Quintus
     public @Nullable SignalState doCameraScan() {
         Camera.SearchRegion mostLikely = Camera.SearchRegion.RIGHT;
 
-        mostLikely.coverage = Math.max(mostLikely.coverage, 13); //calibrate to light settings in room with CameraTester
+        mostLikely.coverage = Math.max(mostLikely.coverage, 8); //calibrate to light settings in room with CameraTester
 
         for (Camera.SearchRegion region : Camera.SearchRegion.values())
             if(region.coverage > mostLikely.coverage)
@@ -92,9 +92,6 @@ public class Quintus
                         break;
                     case RIGHT://far line
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
-                                //.lineToY(33)
-                                //.turnTo(Math.toRadians(-180))
-                                //.lineToX(9.5)
                                 .lineToY(48)
                                 .splineTo(new Vector2d(10, 36), Math.toRadians(-135)) //go to line;
                                 .build());
@@ -104,9 +101,6 @@ public class Quintus
                 switch (gameState.signalState) {
                     case LEFT://far line  -- yay --
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
-                                //.lineToY(-33)
-                                //.turnTo(Math.toRadians(180))
-                                //.lineToX(9.5)
                                 .lineToY(-48)
                                 .splineTo(new Vector2d(8, -36), Math.toRadians(135)) //go to line;
                                 .build());
@@ -118,9 +112,6 @@ public class Quintus
                         break;
                     case RIGHT://line near backboard
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
-                                //.lineToY(-33)
-                                //.turnTo(0)
-                                //.lineToX(14.5)
                                 .lineToY(-48)
                                 .splineTo(new Vector2d(14, -36), Math.toRadians(45)) //go to line;
                                 .build());
@@ -131,7 +122,6 @@ public class Quintus
             waitFor(.5);
             payload.pixelArm.gripperB.open(); //place pixel
             waitFor(.5);
-            //payload.pixelArm.wrist.toStorageAngle();
             Actions.runBlocking(drive.actionBuilder(drive.pose)
                     .setReversed(true)
                     .splineTo(new Vector2d(13, 48 * colorVar), Math.toRadians(90 * colorVar)) //back up
@@ -145,9 +135,6 @@ public class Quintus
                 switch (gameState.signalState) {
                     case LEFT://line near backboard
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
-                                //.lineToY(33)
-                                //.turnTo(0)
-                                //.lineToX(-33.5)
                                 .lineToY(48)
                                 .splineTo(new Vector2d(-32, 36), Math.toRadians(-45)) //go to line;
                                 .build());
@@ -195,6 +182,7 @@ public class Quintus
                     .lineToYConstantHeading(60*colorVar) //sets reversed to true
                     .setReversed(false)
                     .splineTo(new Vector2d(-57.5, 34 * colorVar), Math.toRadians(-90 * colorVar)) //turn to back
+                    .lineToY(28 * colorVar)
                     .splineTo(new Vector2d(-24, 12 * colorVar), Math.toRadians(0)) //turn to towards back board
                     .splineTo(new Vector2d(30, 12 * colorVar), Math.toRadians(0)) //go under curtain
                     .build());
