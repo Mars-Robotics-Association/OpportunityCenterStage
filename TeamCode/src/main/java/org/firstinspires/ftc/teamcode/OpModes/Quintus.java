@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.Payload.GameState.TeamColor;
 import org.firstinspires.ftc.teamcode.Payload.Payload;
 import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDrive;
 
-/*
+/**
 Robot class for Quintus
 This class will be called by opmodes and contains the payload, drive, and references the gamestate
 It will contain all common functionality of the robot including navigation, payload automation, and more
@@ -31,22 +31,17 @@ public class Quintus
         this.gameState = gameState;
         drive = new MecanumDrive(hardwareMap, startingPos);
         payload = new Payload(hardwareMap, drive);
+
+        if (gameState.teamColor == TeamColor.BLUE)
+            colorVar = 1;
     }
 
 
 //---------------------------------------------------------
     //Common autonomous functions
-    //TODO:
+    //TODO: CLEAN UP *DRY* CODE
 
     public static int colorVar = -1; //if red, y and rotation variables are negative. If blue, they are positive
-    public void start(){
-        if (gameState.teamColor == TeamColor.BLUE){
-            colorVar = 1;
-        }
-        else if (gameState.teamColor == TeamColor.RED){
-            colorVar = -1;
-        }
-    }
 
     //Detect position of team prop (opencv or queen team prop)
     public @Nullable SignalState doCameraScan() {
@@ -115,7 +110,7 @@ public class Quintus
                         break;
                 }
             }
-            //TODO: shorter than storage angle, make wait fctn
+            //TODO: shorter than storage angle, make wait function
             payload.pixelArm.wrist.toGroundAngle();
             payload.pixelArm.gripperB.open(); //place pixel
             payload.pixelArm.wrist.toStorageAngle();

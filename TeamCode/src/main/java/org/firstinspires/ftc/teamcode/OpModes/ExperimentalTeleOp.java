@@ -73,7 +73,7 @@ public class ExperimentalTeleOp extends OpMode {
             LiftPreset preset = LiftPreset.resolve(mask);
 
             if(preset == null)break liftPresets;
-            pixelArm.lift.setHeight(preset.height);
+            pixelArm.lift.setLiftHeight(preset.height);
 
             if(preset == LiftPreset.GROUND)
                  pixelArm.wrist.toGroundAngle();

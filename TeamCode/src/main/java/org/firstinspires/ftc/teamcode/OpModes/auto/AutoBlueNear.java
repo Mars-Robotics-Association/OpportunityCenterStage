@@ -24,7 +24,6 @@ public class AutoBlueNear extends LinearOpMode {
         Quintus bot = new Quintus(gameState, this.hardwareMap, new Pose2d(12, 65, Math.toRadians(-90)));
 
         waitForStart();
-        bot.start();
 
         gameState.signalState = bot.doCameraScan();
 

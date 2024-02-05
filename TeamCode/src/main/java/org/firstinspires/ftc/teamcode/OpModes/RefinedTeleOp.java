@@ -45,26 +45,28 @@ public class RefinedTeleOp extends OpMode {
 
         payload.pixelArm.lift.motor.setPower(liftSpeed);
 
-    //grippers
+        //grippers
         if (gripperLeft.poll(gamepad1.left_bumper))
             payload.pixelArm.gripperA.toggle();
         if (gripperRight.poll(gamepad1.right_bumper))
             payload.pixelArm.gripperB.toggle();
 
-    //wrist
+        //wrist
         if (gamepad1.dpad_left)
             payload.pixelArm.wrist.toGroundAngle();
         if (gamepad1.dpad_right)
             payload.pixelArm.wrist.toBoardAngle();
 
-    //winch for suspension
+        //winch for suspension
         if (gamepad1.y)payload.winch.reelIn();
         else if (gamepad1.x)payload.winch.release();
         else payload.winch.stop();
 
-    //red intake on back of bot
+        //red intake on back of bot
         if (gamepad1.left_trigger > .3) payload.intake.intake();
         else if (gamepad1.right_trigger > .3) payload.intake.outtake();
         else payload.intake.stop();
+
+        payload.update();
     }
 }

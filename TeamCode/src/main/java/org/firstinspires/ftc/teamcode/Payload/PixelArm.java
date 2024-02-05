@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Payload;
 
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -28,28 +29,12 @@ public final class PixelArm {
         // Inches to Encoder Ticks conversion
         private static final double TICKS_PER_INCH = 37.192307692307692307692307692308;
 
-        private static final double GAIN = 1;
-
-        public Action setHeight(double inches){ //for teleop
-            return telemetryPacket -> {
-                double position = motor.getCurrentPosition() / TICKS_PER_INCH;
-
-                double error = position - inches;
-
-                if(Math.abs(error) > 1){
-                    motor.setPower(-error * GAIN);
-                    return true;
-                }else{
-                    motor.setPower(0);
-                    return false;
-                }
-            };
-        }
-
-        public void setLiftHeight(double inches){ //for auto
+        public void setLiftHeight(double inches){
             motor.setTargetPosition((int)(inches*TICKS_PER_INCH));
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             motor.setPower(0.8);
+
+            Actions.runBlocking(t -> motor.isBusy());
         }
     }
 
@@ -80,6 +65,10 @@ public final class PixelArm {
         public final Side side;
 
         private boolean closed = false;
+
+        public boolean isClosed() {
+            return closed;
+        }
 
         public void toggle(){
             if(closed)open();
