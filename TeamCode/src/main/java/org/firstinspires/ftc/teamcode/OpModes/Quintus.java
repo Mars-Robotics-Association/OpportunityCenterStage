@@ -1,11 +1,14 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
+
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.firstinspires.ftc.teamcode.Payload.Camera;
@@ -26,6 +29,7 @@ public class Quintus
     public final Payload payload;
     private GameState gameState;
     public final MecanumDrive drive;
+    private LinearOpMode linearOpMode;
 
     public Quintus(GameState gameState, HardwareMap hardwareMap, Pose2d startingPos){
         this.gameState = gameState;
@@ -47,7 +51,7 @@ public class Quintus
     public @Nullable SignalState doCameraScan() {
         Camera.SearchRegion mostLikely = Camera.SearchRegion.RIGHT;
 
-        mostLikely.coverage = Math.max(mostLikely.coverage, 15);
+        mostLikely.coverage = Math.max(mostLikely.coverage, 8); //calibrate to light settings in room with CameraTester
 
         for (Camera.SearchRegion region : Camera.SearchRegion.values())
             if(region.coverage > mostLikely.coverage)
@@ -73,19 +77,19 @@ public class Quintus
                 switch (gameState.signalState) {
                     case LEFT://line near backboard
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
-                                .lineToY(33)
-                                .turnTo(0)
+                                .lineToY(48)
+                                .splineTo(new Vector2d(16, 36), Math.toRadians(-45)) //go to line;
                                 .build());
                         break;
                     case MIDDLE://mid line
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
-                                .lineToY(36)
+                                .lineToY(33.5)
                                 .build());
                         break;
                     case RIGHT://far line
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
-                                .lineToY(33)
-                                .turnTo(Math.toRadians(-180))
+                                .lineToY(48)
+                                .splineTo(new Vector2d(10, 36), Math.toRadians(-135)) //go to line;
                                 .build());
                         break;
                 }
@@ -93,30 +97,31 @@ public class Quintus
                 switch (gameState.signalState) {
                     case LEFT://far line  -- yay --
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
-                                .lineToY(-33)
-                                .turnTo(Math.toRadians(180))
+                                .lineToY(-48)
+                                .splineTo(new Vector2d(8, -36), Math.toRadians(135)) //go to line;
                                 .build());
                         break;
                     case MIDDLE://mid line  -- yay --
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
-                                .lineToY(-36)
+                                .lineToY(-33.5)
                                 .build());
                         break;
                     case RIGHT://line near backboard
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
-                                .lineToY(-33)
-                                .turnTo(0)
+                                .lineToY(-48)
+                                .splineTo(new Vector2d(14, -36), Math.toRadians(45)) //go to line;
                                 .build());
                         break;
                 }
             }
-            //TODO: shorter than storage angle, make wait function
-            payload.pixelArm.wrist.toGroundAngle();
-            payload.pixelArm.gripperB.open(); //place pixel
             payload.pixelArm.wrist.toStorageAngle();
+            waitFor(.5);
+            payload.pixelArm.gripperB.open(); //place pixel
+            waitFor(.5);
             Actions.runBlocking(drive.actionBuilder(drive.pose)
-                    .turnTo(Math.toRadians(-90*colorVar))
-                    .lineToYConstantHeading(50*colorVar) //sets reversed to true
+                    .setReversed(true)
+                    .splineTo(new Vector2d(13, 48 * colorVar), Math.toRadians(90 * colorVar)) //back up
+                    .lineToYConstantHeading(60*colorVar) //sets reversed to true
                     .setReversed(false)
                     .splineTo(new Vector2d(25, 45 * colorVar), Math.toRadians(0)) //turn towards back
                     .build());
@@ -126,52 +131,54 @@ public class Quintus
                 switch (gameState.signalState) {
                     case LEFT://line near backboard
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
-                                .lineToY(33)
-                                .turnTo(0)
+                                .lineToY(48)
+                                .splineTo(new Vector2d(-32, 36), Math.toRadians(-45)) //go to line;
                                 .build());
                         break;
                     case MIDDLE://mid line
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
-                                .lineToY(36)
+                                .lineToY(33.5)
                                 .build());
                         break;
                     case RIGHT://far line
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
-                                .lineToY(33)
-                                .turnTo(Math.toRadians(180))
+                                .lineToY(48)
+                                .splineTo(new Vector2d(-38, 36), Math.toRadians(-135)) //go to line
                                 .build());
                         break;
                 }
             } else if (gameState.teamColor == TeamColor.RED) { //red team
                 switch (gameState.signalState) {
-                    case RIGHT://far line
+                    case LEFT://far line
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
-                                .lineToY(-33)
-                                .turnTo(Math.toRadians(180))
+                                .lineToY(-48)
+                                .splineTo(new Vector2d(-40, -36), Math.toRadians(135)) //go to line;
                                 .build());
                         break;
                     case MIDDLE://mid line
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
-                                .lineToY(-36)
+                                .lineToY(-33.5)
                                 .build());
                         break;
-                    case LEFT://line near backboard
+                    case RIGHT://line near backboard
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
-                                .lineToY(-33)
-                                .turnTo(Math.toRadians(0))
+                                .lineToY(-48)
+                                .splineTo(new Vector2d(-34, -36), Math.toRadians(45)) //go to line;
                                 .build());
                         break;
                 }
             }
-
-            payload.pixelArm.wrist.toGroundAngle();
-            payload.pixelArm.gripperB.open(); //place pixel
             payload.pixelArm.wrist.toStorageAngle();
+            waitFor(.5);
+            payload.pixelArm.gripperB.open(); //place pixel
+            waitFor(.5);
             Actions.runBlocking(drive.actionBuilder(drive.pose)
-                    .turnTo(Math.toRadians(-90*colorVar))
+                    .setReversed(true)
+                    .splineTo(new Vector2d(-36, 48 * colorVar), Math.toRadians(90 * colorVar)) //back up
                     .lineToYConstantHeading(60*colorVar) //sets reversed to true
                     .setReversed(false)
-                    .splineTo(new Vector2d(-56, 36 * colorVar), Math.toRadians(-90 * colorVar)) //turn to back
+                    .splineTo(new Vector2d(-57.5, 34 * colorVar), Math.toRadians(-90 * colorVar)) //turn to back
+                    .lineToY(28 * colorVar)
                     .splineTo(new Vector2d(-24, 12 * colorVar), Math.toRadians(0)) //turn to towards back board
                     .splineTo(new Vector2d(30, 12 * colorVar), Math.toRadians(0)) //go under curtain
                     .build());
@@ -182,27 +189,33 @@ public class Quintus
 
 //Place yellow pixel in correct position
     public void placeYellowPix(){
-        payload.pixelArm.lift.setLiftHeight(12); //raise lift
+        if (gameState.parkSpot == ParkSpot.NEAR){
+        payload.pixelArm.lift.setLiftHeight(9);} //raise lift
+        else { //raise lift higher in case other team already placed pixel
+            payload.pixelArm.lift.setLiftHeight(10);}
+        payload.pixelArm.wrist.toBoardAngle();
         switch(gameState.signalState){
                 case LEFT:
                     if (gameState.teamColor == TeamColor.BLUE) { //blue team
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
-                                .splineTo(new Vector2d(54, 42), Math.toRadians(0)) // approach left backboard
+                                .splineTo(new Vector2d(54, 41), Math.toRadians(0)) // approach left backboard
                                 .build());
                         payload.pixelArm.gripperA.open(); //place pixel
+                        waitFor(.5);
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
                                 .setReversed(true)
-                                .splineTo(new Vector2d(40, 42), Math.toRadians(180)) // back up
+                                .splineTo(new Vector2d(40, 41), Math.toRadians(180)) // back up
                                 .build());
                     }
                     else if (gameState.teamColor == TeamColor.RED) { //red team  -- yay --
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
-                                .splineTo(new Vector2d(54, -30), Math.toRadians(0)) // approach left backboard
+                                .splineTo(new Vector2d(54, -27), Math.toRadians(0)) // approach left backboard
                                 .build());
                         payload.pixelArm.gripperA.open(); //place pixel
+                        waitFor(.5);
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
                                 .setReversed(true)
-                                .splineTo(new Vector2d(40, -30), Math.toRadians(180)) // back up
+                                .splineTo(new Vector2d(40, -27), Math.toRadians(180)) // back up
                                 .build());
                     }
                     break;
@@ -210,51 +223,58 @@ public class Quintus
             case MIDDLE:
                 if (gameState.teamColor == TeamColor.BLUE) { //blue team
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
-                            .splineTo(new Vector2d(54, 36), Math.toRadians(0)) // approach left backboard
+                            .splineTo(new Vector2d(54, 33), Math.toRadians(0)) // approach left backboard
                             .build());
                     payload.pixelArm.gripperA.open(); //place pixel
+                    waitFor(.5);
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
                             .setReversed(true)
-                            .splineTo(new Vector2d(40, 36), Math.toRadians(180)) // back up
+                            .splineTo(new Vector2d(40, 33), Math.toRadians(180)) // back up
                             .build());
                 }
                 else if (gameState.teamColor == TeamColor.RED) { //red team -- yay --
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
-                            .splineTo(new Vector2d(54, -36), Math.toRadians(0)) // approach left backboard
+                            .splineTo(new Vector2d(54, -33), Math.toRadians(0)) // approach left backboard
                             .build());
-                    payload.pixelArm.wrist.toBoardAngle();
+                    //payload.pixelArm.wrist.toBoardAngle();
                     payload.pixelArm.gripperA.open(); //place pixel
+                    waitFor(.5);
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
                             .setReversed(true)
-                            .splineTo(new Vector2d(40, -36), Math.toRadians(180)) // back up
+                            .splineTo(new Vector2d(40, -33), Math.toRadians(180)) // back up
                             .build());
                 }
                 break;
             case RIGHT:
                 if (gameState.teamColor == TeamColor.BLUE) { //blue team
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
-                            .splineTo(new Vector2d(54, 29), Math.toRadians(0)) // approach left backboard
+                            .splineTo(new Vector2d(54, 27), Math.toRadians(0)) // approach left backboard
                             .build());
                     //wrist&lift set up
                     payload.pixelArm.gripperA.open(); //place pixel
+                    waitFor(.5);
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
                             .setReversed(true)
-                            .splineTo(new Vector2d(40, 29), Math.toRadians(180)) // back up
+                            .splineTo(new Vector2d(40, 27), Math.toRadians(180)) // back up
                             .build());
                 }
                 else if (gameState.teamColor == TeamColor.RED) { //red team
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
-                            .splineTo(new Vector2d(54, -42), Math.toRadians(0)) // approach left backboard
+                            .splineTo(new Vector2d(54, -41), Math.toRadians(0)) // approach left backboard
                             .build());
                     payload.pixelArm.gripperA.open(); //place pixel
+                    waitFor(.5);
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
                             .setReversed(true)
-                            .splineTo(new Vector2d(40, -42), Math.toRadians(180)) // back up
+                            .splineTo(new Vector2d(40, -41), Math.toRadians(180)) // back up
                             .build());
                 }
                 break;
         }
-        //payload.pixelArm.lift.setLiftHeight(0); //lower lift
+        payload.pixelArm.gripperA.close();
+        payload.pixelArm.gripperB.close();
+        payload.pixelArm.wrist.toStorageAngle(); //so that lift can go down :)
+        payload.pixelArm.lift.setLiftHeight(0); //lower lift
     }
 
 //Park (near → corner; far → middle)
@@ -262,18 +282,30 @@ public class Quintus
         payload.pixelArm.lift.setLiftHeight(0); //lower lift
         if (gameState.parkSpot == ParkSpot.NEAR){
            Actions.runBlocking(drive.actionBuilder(drive.pose)
-                .splineTo(new Vector2d(48, 60*colorVar), Math.toRadians(0)) // approach left backboard
+                   .setReversed(true) //save the gripper!!
+                   .splineTo(new Vector2d(48, 58*colorVar), Math.toRadians(0)) // approach left backboard
                 .build());
         }
         else if (gameState.parkSpot == ParkSpot.FAR){
             Actions.runBlocking(drive.actionBuilder(drive.pose)
-                .splineTo(new Vector2d(54, 12*colorVar), Math.toRadians(0)) // approach left backboard
+                    .setReversed(true) //save the gripper!!
+                    .splineTo(new Vector2d(54, 12*colorVar), Math.toRadians(0)) // approach left backboard
                 .build());
         }
+        //TODO: hit purple pixel for bluenearleft, pixels stick to gripper (remove take from arms)
     }
 //--------------------------------------------------------------------------------------
 
-    //Positional util functions
+//Positional util functions
+    public void setLinearOpMode(LinearOpMode newLinearOpMode){
+        linearOpMode = newLinearOpMode;
+    }
+
+    public void waitFor(double timer){
+        linearOpMode.sleep((long)(timer*1e3));
+    }
+
+
     private Pose2d computeActualPosition(Pose2d readingSample){
         Pose2d robotPose = drive.pose;
         Vector2d position = robotPose.heading.times(readingSample.position);

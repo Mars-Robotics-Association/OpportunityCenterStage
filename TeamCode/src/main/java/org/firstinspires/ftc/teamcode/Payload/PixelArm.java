@@ -89,7 +89,8 @@ public final class PixelArm {
     public static class Wrist{
         private static final double GROUND_POSITION = 0.201666667;
         private static final double BOARD_POSITION = .3728;
-        private static final double STORAGE_POSITION = BOARD_POSITION;
+        private static final double STORAGE_POSITION = .24;
+        private static final double PROP_POSITION = .215; //to bump team prop in auto
         private final Servo servo;
 
         Wrist(HardwareMap hardwareMap){
@@ -99,13 +100,16 @@ public final class PixelArm {
         public void toGroundAngle(){
             servo.setPosition(GROUND_POSITION);
         }
-
         public void toBoardAngle(){
             servo.setPosition(BOARD_POSITION);
         }
         public void toStorageAngle(){
             servo.setPosition(STORAGE_POSITION);
         }
+        public void toPropAngle(){
+            servo.setPosition(PROP_POSITION);
+        }
+
     }
 
 
