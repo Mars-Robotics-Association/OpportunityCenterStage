@@ -30,6 +30,7 @@ public class Quintus
     private GameState gameState;
     public final MecanumDrive drive;
     private LinearOpMode linearOpMode;
+    public double colorThreshold = 12;
 
     public Quintus(GameState gameState, HardwareMap hardwareMap, Pose2d startingPos){
         this.gameState = gameState;
@@ -47,11 +48,15 @@ public class Quintus
 
     public static int colorVar = -1; //if red, y and rotation variables are negative. If blue, they are positive
 
+    public void setColorThreshold(){
+        colorThreshold = Camera.SearchRegion.LEFT.coverage * 1.2; //calibrates color detection for team prop
+    }
+
     //Detect position of team prop (opencv or queen team prop)
     public @Nullable SignalState doCameraScan() {
         Camera.SearchRegion mostLikely = Camera.SearchRegion.RIGHT;
 
-        mostLikely.coverage = Math.max(mostLikely.coverage, 8); //calibrate to light settings in room with CameraTester
+        mostLikely.coverage = Math.max(mostLikely.coverage, colorThreshold); //calibrate to light settings in room with CameraTester
 
         for (Camera.SearchRegion region : Camera.SearchRegion.values())
             if(region.coverage > mostLikely.coverage)

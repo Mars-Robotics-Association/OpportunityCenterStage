@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.OpModes.Quintus;
+import org.firstinspires.ftc.teamcode.Payload.Camera;
 import org.firstinspires.ftc.teamcode.Payload.GameState;
 
 @Autonomous
@@ -25,6 +26,7 @@ public class AutoBlueNear extends LinearOpMode {
         bot.setLinearOpMode(this);
 
         waitFor(5); //to avoid team prop scan issues
+        bot.setColorThreshold(); //to update for changes in light / setting
         waitForStart();
 
         gameState.signalState = bot.doCameraScan();
