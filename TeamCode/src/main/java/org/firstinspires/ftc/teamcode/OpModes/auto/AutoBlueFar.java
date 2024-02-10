@@ -25,6 +25,7 @@ public class AutoBlueFar extends LinearOpMode {
         bot.setLinearOpMode(this);
 
         waitFor(5); //to avoid team prop scan issues
+        bot.setColorThreshold(); //to update for changes in light / setting
         waitForStart();
 
         gameState.signalState = bot.doCameraScan();
