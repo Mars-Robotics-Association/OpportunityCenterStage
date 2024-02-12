@@ -29,12 +29,12 @@ public final class PixelArm {
         // Inches to Encoder Ticks conversion
         private static final double TICKS_PER_INCH = 37.192307692307692307692307692308;
 
-        public void setLiftHeight(double inches){
+        public Action setLiftHeight(double inches){
             motor.setTargetPosition((int)(inches*TICKS_PER_INCH));
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             motor.setPower(0.8);
 
-            Actions.runBlocking(t -> motor.isBusy());
+            return t -> motor.isBusy();
         }
     }
 
@@ -70,19 +70,21 @@ public final class PixelArm {
             return closed;
         }
 
-        public void toggle(){
-            if(closed)open();
-            else close();
+        public Action toggle(){
+            if(closed)return open();
+            return close();
         }
 
-        public void open(){
+        public Action open(){
             servo.setPosition(side.openPos);
             closed = false;
+            return t -> false;
         }
 
-        public void close(){
+        public Action close(){
             servo.setPosition(side.closePos);
             closed = true;
+            return t -> false;
         }
     }
 
