@@ -2,19 +2,19 @@ package org.firstinspires.ftc.teamcode.Payload;
 
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver.BlinkinPattern;
-import com.qualcomm.hardware.rev.RevColorSensorV3;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class LightBeams {
     private static final Class<RevBlinkinLedDriver> LED = RevBlinkinLedDriver.class;
-    private static final Class<RevColorSensorV3> SENSOR = RevColorSensorV3.class;
+    private static final Class<DistanceSensor> SENSOR = DistanceSensor.class;
 
     private final RevBlinkinLedDriver beamL;
     private final RevBlinkinLedDriver beamR;
-    private final RevColorSensorV3 sensorL;
-    private final RevColorSensorV3 sensorR;
+    private final DistanceSensor sensorL;
+    private final DistanceSensor sensorR;
     private final PixelArm pixelArm;
 
     LightBeams(Payload payload) {
@@ -30,9 +30,9 @@ public class LightBeams {
 
     public void updateGripper(PixelArm.Gripper gripper,
                               RevBlinkinLedDriver beam,
-                              RevColorSensorV3 sensor
+                              DistanceSensor sensor
     ){
-        boolean noPixel = sensor.getDistance(DistanceUnit.INCH) > 2;
+        boolean noPixel = sensor.getDistance(DistanceUnit.INCH) > 3;
         boolean isOpen = !gripper.isClosed();
 
         if(noPixel){

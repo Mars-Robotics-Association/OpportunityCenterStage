@@ -37,6 +37,7 @@ public class Calibrator extends OpMode {
 
     private enum Category{
         LIFT_MOTOR,
+        STIG("stick_servo"),
         GRIPPER_WRIST("wrist_servo"),
         GRIPPER_LEFT("left_gripper"),
         GRIPPER_RIGHT("right_gripper");
@@ -60,8 +61,8 @@ public class Calibrator extends OpMode {
         static void initialize(HardwareMap hardwareMap){
             for (Category category : Category.values()) {
                 if (category.servoName == null)continue;
-                category.available = true;
-                category.servo = hardwareMap.servo.get(category.servoName);
+                category.servo = hardwareMap.tryGet(Servo.class, category.servoName);
+                category.available = category.servo != null;
             }
         }
 

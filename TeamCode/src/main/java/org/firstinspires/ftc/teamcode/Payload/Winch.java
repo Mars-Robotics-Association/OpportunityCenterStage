@@ -6,7 +6,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class Winch {
     private final DcMotor motor;
 
-    Winch(HardwareMap hardwareMap){
+    Winch(Payload payload){
+        HardwareMap hardwareMap = payload.hardwareMap;
         motor = hardwareMap.dcMotor.get("winch");
     }
 
