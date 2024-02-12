@@ -94,7 +94,7 @@ public class Quintus
                     case RIGHT://far line
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
                                 .lineToY(48)
-                                .splineTo(new Vector2d(10, 36), Math.toRadians(-135)) //go to line;
+                                .splineTo(new Vector2d(8, 36), Math.toRadians(-130)) //go to line;
                                 .build());
                         break;
                 }
@@ -103,7 +103,7 @@ public class Quintus
                     case LEFT://far line  -- yay --
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
                                 .lineToY(-48)
-                                .splineTo(new Vector2d(8, -36), Math.toRadians(135)) //go to line;
+                                .splineTo(new Vector2d(6, -36), Math.toRadians(130)) //go to line;
                                 .build());
                         break;
                     case MIDDLE://mid line  -- yay --
@@ -114,7 +114,7 @@ public class Quintus
                     case RIGHT://line near backboard
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
                                 .lineToY(-48)
-                                .splineTo(new Vector2d(14, -36), Math.toRadians(45)) //go to line;
+                                .splineTo(new Vector2d(15, -36), Math.toRadians(45)) //go to line;
                                 .build());
                         break;
                 }
@@ -137,7 +137,7 @@ public class Quintus
                     case LEFT://line near backboard
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
                                 .lineToY(48)
-                                .splineTo(new Vector2d(-32, 36), Math.toRadians(-45)) //go to line;
+                                .splineTo(new Vector2d(-31, 36), Math.toRadians(-45)) //go to line;
                                 .build());
                         break;
                     case MIDDLE://mid line
@@ -148,7 +148,7 @@ public class Quintus
                     case RIGHT://far line
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
                                 .lineToY(48)
-                                .splineTo(new Vector2d(-38, 36), Math.toRadians(-135)) //go to line
+                                .splineTo(new Vector2d(-40, 36), Math.toRadians(-130)) //go to line
                                 .build());
                         break;
                 }
@@ -157,7 +157,7 @@ public class Quintus
                     case LEFT://far line
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
                                 .lineToY(-48)
-                                .splineTo(new Vector2d(-40, -36), Math.toRadians(135)) //go to line;
+                                .splineTo(new Vector2d(-42, -36), Math.toRadians(130)) //go to line;
                                 .build());
                         break;
                     case MIDDLE://mid line
@@ -168,7 +168,7 @@ public class Quintus
                     case RIGHT://line near backboard
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
                                 .lineToY(-48)
-                                .splineTo(new Vector2d(-34, -36), Math.toRadians(45)) //go to line;
+                                .splineTo(new Vector2d(-33, -36), Math.toRadians(45)) //go to line;
                                 .build());
                         break;
                 }
@@ -182,7 +182,7 @@ public class Quintus
                     .splineTo(new Vector2d(-36, 48 * colorVar), Math.toRadians(90 * colorVar)) //back up
                     .lineToYConstantHeading(60*colorVar) //sets reversed to true
                     .setReversed(false)
-                    .splineTo(new Vector2d(-57.5, 34 * colorVar), Math.toRadians(-90 * colorVar)) //turn to back
+                    .splineTo(new Vector2d(-57, 34 * colorVar), Math.toRadians(-90 * colorVar)) //turn to back
                     .lineToY(28 * colorVar)
                     .splineTo(new Vector2d(-24, 12 * colorVar), Math.toRadians(0)) //turn to towards back board
                     .splineTo(new Vector2d(30, 12 * colorVar), Math.toRadians(0)) //go under curtain
@@ -241,7 +241,6 @@ public class Quintus
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
                             .splineTo(new Vector2d(54, -33), Math.toRadians(0)) // approach left backboard
                             .build());
-                    //payload.pixelArm.wrist.toBoardAngle();
                     payload.pixelArm.gripperA.open(); //place pixel
                     waitFor(.5);
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
