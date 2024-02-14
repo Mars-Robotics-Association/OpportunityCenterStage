@@ -49,7 +49,8 @@ public class Quintus
     public static int colorVar = -1; //if red, y and rotation variables are negative. If blue, they are positive
 
     public void setColorThreshold(){
-        colorThreshold = Camera.SearchRegion.LEFT.coverage * 1.2; //calibrates color detection for team prop
+        colorThreshold = Camera.SearchRegion.LEFT.coverage * 2.2; //calibrates color detection for team prop
+        linearOpMode.telemetry.addData("Threshold:  ", colorThreshold);
     }
 
     //Detect position of team prop (opencv or queen team prop)
@@ -61,6 +62,7 @@ public class Quintus
         for (Camera.SearchRegion region : Camera.SearchRegion.values())
             if(region.coverage > mostLikely.coverage)
                 mostLikely = region;
+                linearOpMode.telemetry.addData("Prop Level: ", mostLikely.coverage);
 
         switch (mostLikely){
             case LEFT:
@@ -83,7 +85,7 @@ public class Quintus
                     case LEFT://line near backboard
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
                                 .lineToY(48)
-                                .splineTo(new Vector2d(16, 36), Math.toRadians(-45)) //go to line;
+                                .splineTo(new Vector2d(16.5, 36), Math.toRadians(-45)) //go to line;
                                 .build());
                         break;
                     case MIDDLE://mid line
@@ -228,7 +230,7 @@ public class Quintus
             case MIDDLE:
                 if (gameState.teamColor == TeamColor.BLUE) { //blue team
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
-                            .splineTo(new Vector2d(54, 33), Math.toRadians(0)) // approach left backboard
+                            .splineTo(new Vector2d(52, 33), Math.toRadians(0)) // approach left backboard
                             .build());
                     payload.pixelArm.gripperA.open(); //place pixel
                     waitFor(.5);
@@ -239,7 +241,7 @@ public class Quintus
                 }
                 else if (gameState.teamColor == TeamColor.RED) { //red team -- yay --
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
-                            .splineTo(new Vector2d(54, -33), Math.toRadians(0)) // approach left backboard
+                            .splineTo(new Vector2d(52, -33), Math.toRadians(0)) // approach left backboard
                             .build());
                     payload.pixelArm.gripperA.open(); //place pixel
                     waitFor(.5);
@@ -252,14 +254,14 @@ public class Quintus
             case RIGHT:
                 if (gameState.teamColor == TeamColor.BLUE) { //blue team
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
-                            .splineTo(new Vector2d(54, 27), Math.toRadians(0)) // approach left backboard
+                            .splineTo(new Vector2d(54, 26), Math.toRadians(0)) // approach left backboard
                             .build());
                     //wrist&lift set up
                     payload.pixelArm.gripperA.open(); //place pixel
                     waitFor(.5);
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
                             .setReversed(true)
-                            .splineTo(new Vector2d(40, 27), Math.toRadians(180)) // back up
+                            .splineTo(new Vector2d(40, 26), Math.toRadians(180)) // back up
                             .build());
                 }
                 else if (gameState.teamColor == TeamColor.RED) { //red team

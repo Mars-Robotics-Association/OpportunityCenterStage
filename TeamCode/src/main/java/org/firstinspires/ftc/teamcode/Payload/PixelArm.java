@@ -87,10 +87,10 @@ public final class PixelArm {
     }
 
     public static class Wrist{
-        private static final double GROUND_POSITION = 0.201666667;
-        private static final double BOARD_POSITION = .3728;
-        private static final double STORAGE_POSITION = .24;
-        private static final double PROP_POSITION = .215; //to bump team prop in auto
+        private static final double GROUND_POSITION = 0.22;
+        private static final double BOARD_POSITION = .38;
+        private static final double STORAGE_POSITION = .26;
+        private static final double PROP_POSITION = .25; //to bump team prop in auto
         private final Servo servo;
 
         Wrist(HardwareMap hardwareMap){

@@ -30,7 +30,7 @@ public class AutoBlueNear extends LinearOpMode {
         waitForStart();
 
         gameState.signalState = bot.doCameraScan();
-
+        updateTelemetry(telemetry);
 
         if(this.opModeIsActive()) {
         //call functions from Quintus
@@ -45,6 +45,7 @@ public class AutoBlueNear extends LinearOpMode {
 
 
         }
+        while (this.opModeIsActive()){}
     }
     public void waitFor(double timer){
         sleep((long)(timer*1e3));
