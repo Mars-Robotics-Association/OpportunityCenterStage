@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode.OpModes;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Rotation2d;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -27,10 +28,13 @@ It will contain all common functionality of the robot including navigation, payl
 public class Quintus
 {
     public final Payload payload;
+    private final TrajectoryActionBuilder b;
     private GameState gameState;
     public final MecanumDrive drive;
     private LinearOpMode linearOpMode;
     public double colorThreshold = 12;
+
+
 
     public Quintus(GameState gameState, HardwareMap hardwareMap, Pose2d startingPos){
         this.gameState = gameState;
@@ -39,6 +43,8 @@ public class Quintus
 
         if (gameState.teamColor == TeamColor.BLUE)
             colorVar = 1;
+
+        b = drive.actionBuilder(startingPos);
     }
 
 
@@ -195,12 +201,16 @@ public class Quintus
 
 
 //Place yellow pixel in correct position
-    public void placeYellowPix(){
+    public void placeYellowPix() throws InterruptedException {
         if (gameState.parkSpot == ParkSpot.NEAR){
         payload.pixelArm.lift.setLiftHeight(9);} //raise lift
         else { //raise lift higher in case other team already placed pixel
             payload.pixelArm.lift.setLiftHeight(10);}
         payload.pixelArm.wrist.toBoardAngle();
+
+        do Thread.sleep(100);
+            while(payload.collisionAvoidance.shouldStop(12));
+
         switch(gameState.signalState){
                 case LEFT:
                     if (gameState.teamColor == TeamColor.BLUE) { //blue team

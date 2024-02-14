@@ -109,12 +109,10 @@ public final class PixelArm {
         public void toPropAngle(){
             servo.setPosition(PROP_POSITION);
         }
-
     }
 
-
-
-    public PixelArm(HardwareMap hardwareMap){
+    public PixelArm(Payload payload){
+        HardwareMap hardwareMap = payload.hardwareMap;
         lift = new Lift(hardwareMap);
         wrist = new Wrist(hardwareMap);
         gripperA = new Gripper(hardwareMap, Gripper.Side.A);
