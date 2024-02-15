@@ -245,25 +245,13 @@ public final class MecanumDrive {
             }
         }
 
-        double freezeTime = -1;
-
-        public void pause(){
-            freezeTime = Actions.now();
-        }
-
-        public void resume(){
-            freezeTime = -1;
-        }
-
         @Override
         public boolean run(@NonNull TelemetryPacket p) {
             double t;
             if (beginTs < 0) {
                 beginTs = Actions.now();
                 t = 0;
-            } else if (freezeTime > 0){
-                t = freezeTime - beginTs;
-            }else {
+            } else {
                 t = Actions.now() - beginTs;
             }
 

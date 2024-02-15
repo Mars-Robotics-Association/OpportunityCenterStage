@@ -7,8 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public final class Intake {
     private final Servo servo;
 
-    Intake(Payload payload){
-        HardwareMap hardwareMap = payload.hardwareMap;
+    Intake(HardwareMap hardwareMap){
         servo = hardwareMap.servo.get("intake_servo");
     }
 

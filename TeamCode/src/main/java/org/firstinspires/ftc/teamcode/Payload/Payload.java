@@ -1,24 +1,22 @@
 package org.firstinspires.ftc.teamcode.Payload;
 
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDrive;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
-
 public final class Payload {
-
     public final GameState gameState;
     public final MecanumDrive drive;
     public final Camera camera;
     public final PixelArm pixelArm;
     public final Intake intake;
+
     public final Winch winch;
     public final LightBeams lightBeams;
-    public final CollisionAvoidance collisionAvoidance;
-
     public final HardwareMap hardwareMap;
 
     public Payload(HardwareMap hardwareMap, MecanumDrive drive) {
@@ -27,12 +25,11 @@ public final class Payload {
         this.hardwareMap = hardwareMap;
 
         this.drive = drive;
-        camera = new Camera(this);
-        pixelArm = new PixelArm(this);
-        intake = new Intake(this);
-        winch = new Winch(this);
+        camera = new Camera(hardwareMap, gameState);
+        pixelArm = new PixelArm(hardwareMap);
+        intake = new Intake(hardwareMap);
+        winch = new Winch(hardwareMap);
         lightBeams = new LightBeams(this);
-        collisionAvoidance = new CollisionAvoidance(this);
     }
     public void update() {
         lightBeams.update();

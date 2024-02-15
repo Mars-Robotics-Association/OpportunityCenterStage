@@ -9,7 +9,6 @@ import org.firstinspires.ftc.teamcode.OpModes.Quintus;
 import org.firstinspires.ftc.teamcode.Payload.GameState;
 
 @Autonomous
-@Config
 public class AutoBlueFar extends LinearOpMode {
 
     @Override
@@ -30,7 +29,9 @@ public class AutoBlueFar extends LinearOpMode {
 
         gameState.signalState = bot.doCameraScan();
 
-        if(this.opModeIsActive()) {
+        updateTelemetry(telemetry);
+
+        if (this.opModeIsActive()) {
         //call functions from Quintus
             waitFor(5);
             bot.payload.pixelArm.gripperA.close();
@@ -44,6 +45,7 @@ public class AutoBlueFar extends LinearOpMode {
 
         }
     }
+
     public void waitFor(double timer){
         sleep((long)(timer*1e3));
     }

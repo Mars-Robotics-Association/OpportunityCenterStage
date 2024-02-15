@@ -4,7 +4,6 @@ package org.firstinspires.ftc.teamcode.OpModes;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Rotation2d;
-import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -28,13 +27,10 @@ It will contain all common functionality of the robot including navigation, payl
 public class Quintus
 {
     public final Payload payload;
-    private final TrajectoryActionBuilder b;
     private GameState gameState;
     public final MecanumDrive drive;
     private LinearOpMode linearOpMode;
     public double colorThreshold = 12;
-
-
 
     public Quintus(GameState gameState, HardwareMap hardwareMap, Pose2d startingPos){
         this.gameState = gameState;
@@ -43,8 +39,6 @@ public class Quintus
 
         if (gameState.teamColor == TeamColor.BLUE)
             colorVar = 1;
-
-        b = drive.actionBuilder(startingPos);
     }
 
 
@@ -52,11 +46,11 @@ public class Quintus
     //Common autonomous functions
     //TODO: CLEAN UP *DRY* CODE
 
-    public static int colorVar = -1; //if red, y and rotation variables are negative. If blue, they are positive
+    public int colorVar = -1; //if red, y and rotation variables are negative. If blue, they are positive
 
     public void setColorThreshold(){
         colorThreshold = Camera.SearchRegion.LEFT.coverage * 2.2; //calibrates color detection for team prop
-        linearOpMode.telemetry.addData("Threshold:  ", colorThreshold);
+        linearOpMode.telemetry.addData("Threshold    : ", colorThreshold);
     }
 
     //Detect position of team prop (opencv or queen team prop)
@@ -68,7 +62,11 @@ public class Quintus
         for (Camera.SearchRegion region : Camera.SearchRegion.values())
             if(region.coverage > mostLikely.coverage)
                 mostLikely = region;
-                linearOpMode.telemetry.addData("Prop Level: ", mostLikely.coverage);
+
+        linearOpMode.telemetry.addData("Prop Position: ", mostLikely);
+        linearOpMode.telemetry.addData("Prop Level   : ", mostLikely.coverage);
+        linearOpMode.telemetry.addData("colorVar     : ", colorVar);
+
 
         switch (mostLikely){
             case LEFT:
@@ -156,7 +154,7 @@ public class Quintus
                     case RIGHT://far line
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
                                 .lineToY(48)
-                                .splineTo(new Vector2d(-40, 36), Math.toRadians(-130)) //go to line
+                                .splineTo(new Vector2d(-39.5, 36), Math.toRadians(-130)) //go to line
                                 .build());
                         break;
                 }
@@ -165,7 +163,7 @@ public class Quintus
                     case LEFT://far line
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
                                 .lineToY(-48)
-                                .splineTo(new Vector2d(-42, -36), Math.toRadians(130)) //go to line;
+                                .splineTo(new Vector2d(-41.5, -36), Math.toRadians(130)) //go to line;
                                 .build());
                         break;
                     case MIDDLE://mid line
@@ -190,10 +188,10 @@ public class Quintus
                     .splineTo(new Vector2d(-36, 48 * colorVar), Math.toRadians(90 * colorVar)) //back up
                     .lineToYConstantHeading(60*colorVar) //sets reversed to true
                     .setReversed(false)
-                    .splineTo(new Vector2d(-57, 34 * colorVar), Math.toRadians(-90 * colorVar)) //turn to back
+                    .splineTo(new Vector2d(-56, 34 * colorVar), Math.toRadians(-90 * colorVar)) //turn to back (white pixel one)
                     .lineToY(28 * colorVar)
-                    .splineTo(new Vector2d(-24, 12 * colorVar), Math.toRadians(0)) //turn to towards back board
-                    .splineTo(new Vector2d(30, 12 * colorVar), Math.toRadians(0)) //go under curtain
+                    .splineTo(new Vector2d(-24, 14 * colorVar), Math.toRadians(0)) //turn to towards back board
+                    .splineTo(new Vector2d(30, 14 * colorVar), Math.toRadians(0)) //go under curtain
                     .build());
         }
     }
@@ -201,27 +199,24 @@ public class Quintus
 
 
 //Place yellow pixel in correct position
-    public void placeYellowPix() throws InterruptedException {
+    public void placeYellowPix(){
+        //TODO: slow for far purple pixel placement
         if (gameState.parkSpot == ParkSpot.NEAR){
         payload.pixelArm.lift.setLiftHeight(9);} //raise lift
         else { //raise lift higher in case other team already placed pixel
             payload.pixelArm.lift.setLiftHeight(10);}
         payload.pixelArm.wrist.toBoardAngle();
-
-        do Thread.sleep(100);
-            while(payload.collisionAvoidance.shouldStop(12));
-
         switch(gameState.signalState){
                 case LEFT:
                     if (gameState.teamColor == TeamColor.BLUE) { //blue team
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
-                                .splineTo(new Vector2d(54, 41), Math.toRadians(0)) // approach left backboard
+                                .splineTo(new Vector2d(54, 39.5), Math.toRadians(0)) // approach left backboard
                                 .build());
                         payload.pixelArm.gripperA.open(); //place pixel
                         waitFor(.5);
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
                                 .setReversed(true)
-                                .splineTo(new Vector2d(40, 41), Math.toRadians(180)) // back up
+                                .splineTo(new Vector2d(40, 39.5), Math.toRadians(180)) // back up
                                 .build());
                     }
                     else if (gameState.teamColor == TeamColor.RED) { //red team  -- yay --
@@ -240,7 +235,7 @@ public class Quintus
             case MIDDLE:
                 if (gameState.teamColor == TeamColor.BLUE) { //blue team
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
-                            .splineTo(new Vector2d(52, 33), Math.toRadians(0)) // approach left backboard
+                            .splineTo(new Vector2d(54, 33), Math.toRadians(0)) // approach left backboard
                             .build());
                     payload.pixelArm.gripperA.open(); //place pixel
                     waitFor(.5);
@@ -251,7 +246,7 @@ public class Quintus
                 }
                 else if (gameState.teamColor == TeamColor.RED) { //red team -- yay --
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
-                            .splineTo(new Vector2d(52, -33), Math.toRadians(0)) // approach left backboard
+                            .splineTo(new Vector2d(54, -33), Math.toRadians(0)) // approach left backboard
                             .build());
                     payload.pixelArm.gripperA.open(); //place pixel
                     waitFor(.5);
@@ -276,13 +271,13 @@ public class Quintus
                 }
                 else if (gameState.teamColor == TeamColor.RED) { //red team
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
-                            .splineTo(new Vector2d(54, -41), Math.toRadians(0)) // approach left backboard
+                            .splineTo(new Vector2d(54, -41.5), Math.toRadians(0)) // approach left backboard
                             .build());
                     payload.pixelArm.gripperA.open(); //place pixel
                     waitFor(.5);
                     Actions.runBlocking(drive.actionBuilder(drive.pose)
                             .setReversed(true)
-                            .splineTo(new Vector2d(40, -41), Math.toRadians(180)) // back up
+                            .splineTo(new Vector2d(40, -41.5), Math.toRadians(180)) // back up
                             .build());
                 }
                 break;
@@ -299,7 +294,7 @@ public class Quintus
         if (gameState.parkSpot == ParkSpot.NEAR){
            Actions.runBlocking(drive.actionBuilder(drive.pose)
                    .setReversed(true) //save the gripper!!
-                   .splineTo(new Vector2d(48, 58*colorVar), Math.toRadians(0)) // approach left backboard
+                   .splineTo(new Vector2d(48, 57.5*colorVar), Math.toRadians(0)) // approach left backboard
                 .build());
         }
         else if (gameState.parkSpot == ParkSpot.FAR){

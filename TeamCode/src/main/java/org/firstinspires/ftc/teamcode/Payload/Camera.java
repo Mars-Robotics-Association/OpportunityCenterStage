@@ -33,35 +33,11 @@ import java.util.List;
 import javax.lang.model.type.NullType;
 
 @Config
-public class Camera implements Payload.Subsystem {
+public class Camera {
     static Scalar BLUE_MIN = new Scalar(152, 133, 160);
     static Scalar BLUE_MAX = new Scalar(177, 255, 254);
     static Scalar RED_MIN  = new Scalar(0, 155, 144);
     static Scalar RED_MAX  = new Scalar(8, 225, 240);
-
-    Camera(Payload payload) {
-        aprilTag = new AprilTagProcessor.Builder()
-                .setDrawAxes(true)
-                .setDrawCubeProjection(true)
-                .setDrawTagOutline(true)
-                .setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
-                .setTagLibrary(AprilTagGameDatabase.getCenterStageTagLibrary())
-                .setOutputUnits(DistanceUnit.INCH, AngleUnit.RADIANS)
-                .build();
-
-        aprilTag.setDecimation(3);
-
-        PropDetector propDetector = new PropDetector();
-        propDetector.gameState = payload.gameState;
-
-        new VisionPortal.Builder()
-                .setCamera(payload.hardwareMap.get(WebcamName.class, "Webcam 1"))
-                .enableLiveView(true)
-                .setStreamFormat(VisionPortal.StreamFormat.YUY2)
-                .addProcessor(aprilTag)
-                .addProcessor(propDetector)
-                .build();
-    }
 
     public enum SearchRegion{
         LEFT(75, 180, 200, 80),
@@ -136,6 +112,31 @@ public class Camera implements Payload.Subsystem {
     }
 
     private final AprilTagProcessor aprilTag;
+    private final PropDetector propDetector;
+
+    public Camera(HardwareMap hardwareMap, GameState gameState) {
+        aprilTag = new AprilTagProcessor.Builder()
+                .setDrawAxes(true)
+                .setDrawCubeProjection(true)
+                .setDrawTagOutline(true)
+                .setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
+                .setTagLibrary(AprilTagGameDatabase.getCenterStageTagLibrary())
+                .setOutputUnits(DistanceUnit.INCH, AngleUnit.RADIANS)
+                .build();
+
+        aprilTag.setDecimation(3);
+
+        propDetector = new PropDetector();
+        propDetector.gameState = gameState;
+
+        new VisionPortal.Builder()
+                .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
+                .enableLiveView(true)
+                .setStreamFormat(VisionPortal.StreamFormat.YUY2)
+                .addProcessor(aprilTag)
+                .addProcessor(propDetector)
+                .build();
+    }
 
     public @Nullable Pose2d findTagWithID(int desiredTag){
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
