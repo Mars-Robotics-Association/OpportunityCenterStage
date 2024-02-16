@@ -7,7 +7,6 @@ import android.graphics.Canvas;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;

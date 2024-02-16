@@ -10,7 +10,6 @@ import org.firstinspires.ftc.teamcode.Payload.Camera;
 import org.firstinspires.ftc.teamcode.Payload.GameState;
 
 @Autonomous
-@Config
 public class AutoBlueNear extends LinearOpMode {
 
     @Override
@@ -30,9 +29,10 @@ public class AutoBlueNear extends LinearOpMode {
         waitForStart();
 
         gameState.signalState = bot.doCameraScan();
+
         updateTelemetry(telemetry);
 
-        if(this.opModeIsActive()) {
+        if (this.opModeIsActive()) {
         //call functions from Quintus
             //waitFor(1);
             bot.payload.pixelArm.gripperA.close();
@@ -45,8 +45,8 @@ public class AutoBlueNear extends LinearOpMode {
 
 
         }
-        while (this.opModeIsActive()){}
     }
+
     public void waitFor(double timer){
         sleep((long)(timer*1e3));
     }

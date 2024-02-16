@@ -9,7 +9,6 @@ import org.firstinspires.ftc.teamcode.OpModes.Quintus;
 import org.firstinspires.ftc.teamcode.Payload.GameState;
 
 @Autonomous
-@Config
 public class AutoRedNear extends LinearOpMode {
 
     @Override
@@ -30,9 +29,10 @@ public class AutoRedNear extends LinearOpMode {
 
         gameState.signalState = bot.doCameraScan();
 
-        if(this.opModeIsActive()) {
+        updateTelemetry(telemetry);
+
+        if (this.opModeIsActive()) {
         //call functions from Quintus
-            //bot.payload.pixelArm.wrist.toGroundAngle(); //starts with gripper up
             //waitFor(1);
             bot.payload.pixelArm.gripperA.close();
             bot.payload.pixelArm.gripperB.close();
@@ -44,6 +44,7 @@ public class AutoRedNear extends LinearOpMode {
 
         }
     }
+
     public void waitFor(double timer){
         sleep((long)(timer*1e3));
     }

@@ -6,10 +6,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDrive;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
-
 public final class Payload {
 
     public final GameState gameState = new GameState();
@@ -43,3 +39,4 @@ public final class Payload {
         lightBeams.update();
     }
 }
+

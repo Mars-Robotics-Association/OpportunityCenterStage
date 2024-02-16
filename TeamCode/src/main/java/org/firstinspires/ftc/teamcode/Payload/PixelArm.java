@@ -95,7 +95,7 @@ public final class PixelArm {
 
         Wrist(HardwareMap hardwareMap){
             this.servo = hardwareMap.servo.get("wrist_servo");
-            toStorageAngle();
+            //toStorageAngle(); // Putting the wrist to this position in the constructor probably breaks Autommous - we'll check
         }
 
         public void toGroundAngle(){
@@ -110,7 +110,10 @@ public final class PixelArm {
         public void toPropAngle(){
             servo.setPosition(PROP_POSITION);
         }
+
     }
+
+
 
     public PixelArm(Payload payload){
         HardwareMap hardwareMap = payload.hardwareMap;
