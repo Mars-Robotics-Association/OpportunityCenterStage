@@ -36,10 +36,10 @@ public class Quintus
 
 
 
-    public Quintus(GameState gameState, HardwareMap hardwareMap, Pose2d startingPos){
+    public Quintus(GameState gameState, OpMode opMode, Pose2d startingPos){
         this.gameState = gameState;
-        drive = new MecanumDrive(hardwareMap, startingPos);
-        payload = new Payload(hardwareMap, drive);
+        drive = new MecanumDrive(opMode.hardwareMap, startingPos);
+        payload = new Payload(opMode, drive);
 
         if (gameState.teamColor == TeamColor.BLUE)
             colorVar = 1;

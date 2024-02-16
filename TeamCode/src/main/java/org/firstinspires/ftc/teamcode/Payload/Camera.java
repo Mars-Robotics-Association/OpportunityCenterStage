@@ -33,7 +33,7 @@ import java.util.List;
 import javax.lang.model.type.NullType;
 
 @Config
-public class Camera implements Payload.Subsystem {
+public class Camera {
     static Scalar BLUE_MIN = new Scalar(152, 133, 160);
     static Scalar BLUE_MAX = new Scalar(177, 255, 254);
     static Scalar RED_MIN  = new Scalar(0, 155, 144);

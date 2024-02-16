@@ -95,6 +95,7 @@ public final class PixelArm {
 
         Wrist(HardwareMap hardwareMap){
             this.servo = hardwareMap.servo.get("wrist_servo");
+            toStorageAngle();
         }
 
         public void toGroundAngle(){

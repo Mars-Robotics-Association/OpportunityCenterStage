@@ -4,11 +4,12 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Payload.GameState;
 import org.firstinspires.ftc.teamcode.Payload.Camera;
 
-@Autonomous
+@TeleOp(group = "Utility")
 @Config
 public class ColorCalibrate extends LinearOpMode {
 
@@ -16,7 +17,7 @@ public class ColorCalibrate extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         GameState gameState = new GameState();
-        Quintus bot = new Quintus(gameState, this.hardwareMap, new Pose2d(12, -63, Math.toRadians(90)));
+        Quintus bot = new Quintus(gameState, this, new Pose2d(12, -63, Math.toRadians(90)));
 
         waitFor(5); //to avoid team prop scan issues
         waitForStart();

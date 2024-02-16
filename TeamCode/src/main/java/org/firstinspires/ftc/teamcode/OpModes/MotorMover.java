@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import java.util.Map.Entry;
 
-@TeleOp
+@TeleOp(group = "Utility")
 public class MotorMover extends OpMode {
     Entry<String, DcMotor>[] motors = null;
 
