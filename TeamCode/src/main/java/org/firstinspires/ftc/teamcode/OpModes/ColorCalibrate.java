@@ -16,7 +16,7 @@ public class ColorCalibrate extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         GameState gameState = new GameState();
-        Quintus bot = new Quintus(gameState, this.hardwareMap, new Pose2d(12, -63, Math.toRadians(90)));
+        Quintus bot = new Quintus(gameState, this, new Pose2d(12, -63, Math.toRadians(90)));
 
         waitFor(5); //to avoid team prop scan issues
         waitForStart();

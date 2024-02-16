@@ -32,10 +32,10 @@ public class Quintus
     private LinearOpMode linearOpMode;
     public double colorThreshold = 12;
 
-    public Quintus(GameState gameState, HardwareMap hardwareMap, Pose2d startingPos){
+    public Quintus(GameState gameState, OpMode opMode, Pose2d startingPos){
         this.gameState = gameState;
-        drive = new MecanumDrive(hardwareMap, startingPos);
-        payload = new Payload(hardwareMap, drive);
+        drive = new MecanumDrive(opMode.hardwareMap, startingPos);
+        payload = new Payload(opMode, drive);
 
         if (gameState.teamColor == TeamColor.BLUE)
             colorVar = 1;
@@ -199,13 +199,18 @@ public class Quintus
 
 
 //Place yellow pixel in correct position
-    public void placeYellowPix(){
+    public void placeYellowPix() throws InterruptedException {
         //TODO: slow for far purple pixel placement
         if (gameState.parkSpot == ParkSpot.NEAR){
         payload.pixelArm.lift.setLiftHeight(9);} //raise lift
         else { //raise lift higher in case other team already placed pixel
             payload.pixelArm.lift.setLiftHeight(10);}
         payload.pixelArm.wrist.toBoardAngle();
+
+        do Thread.sleep(100);
+        while(payload.collisionAvoidance.shouldStop(12));
+
+
         switch(gameState.signalState){
                 case LEFT:
                     if (gameState.teamColor == TeamColor.BLUE) { //blue team

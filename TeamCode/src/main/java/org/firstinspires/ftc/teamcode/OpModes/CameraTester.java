@@ -14,7 +14,7 @@ public class CameraTester extends OpMode {
 
     @Override
     public void init() {
-        camera = new Payload(hardwareMap, null).camera;
+        camera = new Payload(this, null).camera;
     }
 
     @SuppressLint("DefaultLocale")
