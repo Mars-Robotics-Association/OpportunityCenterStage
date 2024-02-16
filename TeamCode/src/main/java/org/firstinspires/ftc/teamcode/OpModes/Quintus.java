@@ -32,6 +32,7 @@ public class Quintus
     private LinearOpMode linearOpMode;
     public double colorThreshold = 12;
 
+
     public Quintus(GameState gameState, OpMode opMode, Pose2d startingPos){
         this.gameState = gameState;
         drive = new MecanumDrive(opMode.hardwareMap, startingPos);

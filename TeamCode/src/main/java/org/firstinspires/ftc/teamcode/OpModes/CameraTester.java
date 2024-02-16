@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Payload.Camera;
 import org.firstinspires.ftc.teamcode.Payload.Payload;
 
-@TeleOp
+@TeleOp(group = "Utility")
 public class CameraTester extends OpMode {
     private Camera camera;
 

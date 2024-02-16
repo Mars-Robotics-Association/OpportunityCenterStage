@@ -59,7 +59,7 @@ public class RefinedTeleOp extends OpMode {
 
         //winch for suspension
         if (gamepad1.y)payload.winch.reelIn();
-        else if (gamepad1.x)payload.winch.release();
+        else if (gamepad1.x)payload.skyHook.engage();
         else payload.winch.stop();
 
         //red intake on back of bot
@@ -68,5 +68,6 @@ public class RefinedTeleOp extends OpMode {
         else payload.intake.stop();
 
         payload.update();
+        telemetry.update();
     }
 }

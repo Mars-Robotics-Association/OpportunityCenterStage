@@ -13,7 +13,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.utils;
 import org.jetbrains.annotations.Nullable;
 
-@TeleOp
+@TeleOp(group = "Utility")
 public class Calibrator extends OpMode {
 
     private DcMotor liftMotor;
@@ -37,6 +37,8 @@ public class Calibrator extends OpMode {
 
     private enum Category{
         LIFT_MOTOR,
+        SKYHOOK("skyhook"),
+        LAUNCHER("launcher"),
         GRIPPER_WRIST("wrist_servo"),
         GRIPPER_LEFT("left_gripper"),
         GRIPPER_RIGHT("right_gripper");
