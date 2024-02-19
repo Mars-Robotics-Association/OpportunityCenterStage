@@ -63,7 +63,7 @@ public class Calibrator extends OpMode {
             for (Category category : Category.values()) {
                 if (category.servoName == null)continue;
                 category.servo = hardwareMap.tryGet(Servo.class, category.servoName);
-                category.available = category.servo != null;
+                boolean available = category.available = category.servo != null;
             }
         }
 

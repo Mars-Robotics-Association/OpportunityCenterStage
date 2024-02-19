@@ -8,9 +8,12 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Payload.Payload;
+import org.firstinspires.ftc.teamcode.Payload.Winch;
 import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils;
 import org.firstinspires.ftc.teamcode.utils.Debouncer;
+
+import java.util.function.Consumer;
 
 @TeleOp
 @Config
@@ -57,9 +60,11 @@ public class RefinedTeleOp extends OpMode {
         if (gamepad1.dpad_right)
             payload.pixelArm.wrist.toBoardAngle();
 
+        if (gamepad1.b)payload.launcher.fire();
+
         //winch for suspension
         if (gamepad1.y)payload.winch.reelIn();
-        else if (gamepad1.x)payload.skyHook.engage();
+        else if (gamepad1.x)payload.skyHook.toggle();
         else payload.winch.stop();
 
         //red intake on back of bot

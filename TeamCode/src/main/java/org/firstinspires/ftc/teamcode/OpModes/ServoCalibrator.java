@@ -4,26 +4,26 @@ import android.annotation.SuppressLint;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.firstinspires.ftc.teamcode.utils;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.Set;
-import java.util.SplittableRandom;
 
 @TeleOp(group = "Utility")
 public class ServoCalibrator extends OpMode {
 
     private double lastRuntime;
     private final utils.Debouncer selector = new utils.Debouncer(this, 0.5);
-    private String[] names;
+    private String[] names = {
+            "skyhook",
+            "launcher",
+            "wrist_servo",
+            "right_gripper",
+            "left_gripper"
+    };
+
     private Servo[] servos;
     private int servoIndex = 0;
 
@@ -40,16 +40,24 @@ public class ServoCalibrator extends OpMode {
 
     @Override @SuppressWarnings("all")
     public void init() {
-        ArrayList<String> nameList = new ArrayList<String>();
-        ArrayList<Servo> servoList = new ArrayList<Servo>();
+        servos = new Servo[names.length];
 
-        hardwareMap.servo.entrySet().iterator().forEachRemaining(entry -> {
-            nameList.add(entry.getKey());
-            servoList.add(entry.getValue());
-        });
+        for (int i = 0; i < names.length; i++)
+            servos[i] = hardwareMap.tryGet(Servo.class, names[i]);
+    }
 
-        names = (String[]) nameList.toArray();
-        servos = (Servo[]) servoList.toArray();
+    static String UNAVAILABLE = "🚫UNAVAILABLE🚫";
+
+    @SuppressLint("DefaultLocale")
+    private void printDeviceList(){
+        for (int i = 0; i < names.length; i++) {
+            String name = names[i];
+            Servo servo = servos[i];
+            String connectionInfo = servo != null ?
+                    servo.getConnectionInfo() : UNAVAILABLE;
+            telemetry.addData(name, connectionInfo);
+        }
+
     }
 
     @SuppressLint("DefaultLocale")
@@ -83,6 +91,9 @@ public class ServoCalibrator extends OpMode {
             else if (gamepad1.dpad_down)
                 cycleForward();
         }
+
+        printDeviceList();
+        telemetry.addLine("----------------------------");
 
         if(servos[servoIndex] != null){
             gamepadControl();

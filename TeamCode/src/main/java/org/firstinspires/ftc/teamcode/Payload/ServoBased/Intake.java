@@ -1,13 +1,15 @@
-package org.firstinspires.ftc.teamcode.Payload;
+package org.firstinspires.ftc.teamcode.Payload.ServoBased;
 
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.Payload.Payload;
+
 public final class Intake {
     private final Servo servo;
 
-    Intake(Payload payload){
+    public Intake(Payload payload){
         HardwareMap hardwareMap = payload.hardwareMap;
         servo = hardwareMap.servo.get("intake_servo");
     }

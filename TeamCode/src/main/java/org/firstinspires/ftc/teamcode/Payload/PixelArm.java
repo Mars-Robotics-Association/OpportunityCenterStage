@@ -41,8 +41,8 @@ public final class PixelArm {
     public static class Gripper{
 
         public enum Side{
-            A("left_gripper", .2444, .4172),
-            B("right_gripper", .7450, .6056);
+            A("left_gripper", .2511, .4505),
+            B("right_gripper", .7477, .6100);
             public final String name;
 
             public final double closePos;
@@ -87,9 +87,9 @@ public final class PixelArm {
     }
 
     public static class Wrist{
-        private static final double GROUND_POSITION = 0.22;
-        private static final double BOARD_POSITION = .38;
-        private static final double STORAGE_POSITION = .26;
+        private static final double GROUND_POSITION = 0.4283;
+        private static final double BOARD_POSITION = .5538;
+        private static final double STORAGE_POSITION = .5538;
         private static final double PROP_POSITION = .25; //to bump team prop in auto
         private final Servo servo;
 

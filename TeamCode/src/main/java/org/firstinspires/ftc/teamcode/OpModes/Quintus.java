@@ -209,7 +209,7 @@ public class Quintus
         payload.pixelArm.wrist.toBoardAngle();
 
         do Thread.sleep(100);
-            while(payload.collisionAvoidance.shouldStop(12));
+            while(payload.collisionAvoidance.shouldStop());
 
         switch(gameState.signalState){
                 case LEFT:
