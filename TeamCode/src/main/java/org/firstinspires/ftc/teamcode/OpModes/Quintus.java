@@ -198,7 +198,6 @@ public class Quintus
     }
 
 
-
 //Place yellow pixel in correct position
     public void placeYellowPix() throws InterruptedException {
         //TODO: slow for far purple pixel placement
@@ -294,6 +293,7 @@ public class Quintus
         payload.pixelArm.lift.setLiftHeight(0); //lower lift
     }
 
+    
 //Park (near → corner; far → middle)
     public void autoPark(){
         payload.pixelArm.lift.setLiftHeight(0); //lower lift
