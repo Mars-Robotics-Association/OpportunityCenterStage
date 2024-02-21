@@ -87,15 +87,15 @@ public final class PixelArm {
     }
 
     public static class Wrist{
-        private static final double GROUND_POSITION = 0.4283;
-        private static final double BOARD_POSITION = .5538;
-        private static final double STORAGE_POSITION = .5538;
-        private static final double PROP_POSITION = .25; //to bump team prop in auto
+        private static final double GROUND_POSITION = 0.42;//.22
+        private static final double BOARD_POSITION = .62;//.38
+        private static final double STORAGE_POSITION = .52;//.26
+        private static final double PROP_POSITION = .47; //to bump team prop in auto .25
         private final Servo servo;
 
         Wrist(HardwareMap hardwareMap){
             this.servo = hardwareMap.servo.get("wrist_servo");
-            toStorageAngle();
+            //toStorageAngle(); // Putting the wrist to this position in the constructor probably breaks Autommous
         }
 
         public void toGroundAngle(){
@@ -110,7 +110,10 @@ public final class PixelArm {
         public void toPropAngle(){
             servo.setPosition(PROP_POSITION);
         }
+
     }
+
+
 
     public PixelArm(Payload payload){
         HardwareMap hardwareMap = payload.hardwareMap;
