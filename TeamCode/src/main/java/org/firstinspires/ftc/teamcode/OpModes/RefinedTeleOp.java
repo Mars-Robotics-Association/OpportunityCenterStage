@@ -60,6 +60,7 @@ public class RefinedTeleOp extends OpMode {
         if (gamepad1.dpad_right)
             payload.pixelArm.wrist.toBoardAngle();
 
+        //drone launcher
         if (gamepad1.b)payload.launcher.fire();
 
         //winch for suspension

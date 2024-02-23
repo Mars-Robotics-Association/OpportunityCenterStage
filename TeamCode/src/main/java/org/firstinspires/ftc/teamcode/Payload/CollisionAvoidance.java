@@ -11,10 +11,10 @@ public class CollisionAvoidance {
     Rev2mDistanceSensor leftSensor;
     Rev2mDistanceSensor rightSensor;
 
-    static double LEFT_BLUE = 0.0;
-    static double LEFT_RED = 0.0;
-    static double RIGHT_BLUE = 0.0;
-    static double RIGHT_RED = 0.0;
+    static double LEFT_BLUE = 18;
+    static double LEFT_RED = 18.0;
+    static double RIGHT_BLUE = 18.0;
+    static double RIGHT_RED = 18.0;
 
     private final Payload payload;
 
