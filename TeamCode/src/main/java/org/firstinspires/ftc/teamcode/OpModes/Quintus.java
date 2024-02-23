@@ -207,8 +207,8 @@ public class Quintus
             payload.pixelArm.lift.setLiftHeight(10);}
         payload.pixelArm.wrist.toBoardAngle();
 
-        do Thread.sleep(100);
-            while(payload.collisionAvoidance.shouldStop());
+        //do Thread.sleep(100);
+           // while(payload.collisionAvoidance.shouldStop());
 
 
         switch(gameState.signalState){
