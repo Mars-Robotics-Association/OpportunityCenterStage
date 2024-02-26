@@ -79,7 +79,7 @@ public class LightBeams {
         beamL = hardware.tryGet(LED, "left_beam");
         sensorL = hardware.get(SENSOR, "left_gripper_dist");
 
-        beamR = hardware.tryGet(LED, "right_beams");
+        beamR = hardware.tryGet(LED, "right_beam");
         sensorR = hardware.get(SENSOR, "right_gripper_dist");
 
         runMode = RunMode.resolve(beamL != null, beamR != null);
@@ -111,7 +111,7 @@ public class LightBeams {
         Color right = determineColor(pixelArm.gripperB, sensorR);
 
         beamL.setPattern(left.pattern);
-        beamL.setPattern(right.pattern);
+        beamR.setPattern(right.pattern);
     }
 
     public void handleSingleMode(RevBlinkinLedDriver targetBeam){
