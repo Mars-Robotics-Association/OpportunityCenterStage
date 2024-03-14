@@ -20,7 +20,7 @@ public final class PixelArm {
             motor.setDirection(DcMotorSimple.Direction.REVERSE);
             motor.setTargetPosition(0);
             motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
 
         public final DcMotor motor;
@@ -29,6 +29,15 @@ public final class PixelArm {
         // Inches to Encoder Ticks conversion
         private static final double TICKS_PER_INCH = 37.192307692307692307692307692308;
 
+        public void lockLift(){
+            //if already running to a position, return
+            if(motor.getMode()== DcMotor.RunMode.RUN_TO_POSITION) return;
+            //lock the motor
+            motor.setTargetPosition(motor.getCurrentPosition());
+            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motor.setPower(0.8);
+            //Actions.runBlocking(t -> motor.isBusy());
+        }
         public void setLiftHeight(double inches){
             motor.setTargetPosition((int)(inches*TICKS_PER_INCH));
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);

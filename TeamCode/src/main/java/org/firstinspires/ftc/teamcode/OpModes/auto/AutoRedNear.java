@@ -33,7 +33,7 @@ public class AutoRedNear extends LinearOpMode {
 
         if (this.opModeIsActive()) {
         //call functions from Quintus
-            waitFor(8.5); //for doges and other teams that don't pause in auto
+            //waitFor(8.5); //for doges and other teams that don't pause in auto
             bot.payload.pixelArm.gripperA.close();
             bot.payload.pixelArm.gripperB.close();
             waitFor(1);

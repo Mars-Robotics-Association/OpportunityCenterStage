@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Payload.Payload;
 import org.firstinspires.ftc.teamcode.Payload.Winch;
@@ -45,8 +46,14 @@ public class RefinedTeleOp extends OpMode {
                 ), -gamepad1.right_stick_x * slowMul));
 
         double liftSpeed = utils.boolsToDir(gamepad1.dpad_up, gamepad1.dpad_down, LIFT_SPEED);
-
-        payload.pixelArm.lift.motor.setPower(liftSpeed);
+        telemetry.addData("Lift encoder: ", payload.pixelArm.lift.motor.getCurrentPosition());
+        if (liftSpeed == 0) {
+            payload.pixelArm.lift.lockLift();
+        }
+        else{
+            payload.pixelArm.lift.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            payload.pixelArm.lift.motor.setPower(liftSpeed);
+        }
 
         //grippers
         if (gripperLeft.poll(gamepad1.left_bumper))
