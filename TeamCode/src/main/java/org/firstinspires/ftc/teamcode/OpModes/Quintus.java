@@ -215,7 +215,7 @@ public class Quintus
                 case LEFT:
                     if (gameState.teamColor == TeamColor.BLUE) { //blue team
                         Actions.runBlocking(drive.actionBuilder(drive.pose)
-                                .splineTo(new Vector2d(54, 39.5), Math.toRadians(0)) // approach left backboard
+                                .splineTo(new Vector2d(54, 38), Math.toRadians(0)) // approach left backboard
                                 .build());
                         payload.pixelArm.gripperA.open(); //place pixel
                         waitFor(.5);
